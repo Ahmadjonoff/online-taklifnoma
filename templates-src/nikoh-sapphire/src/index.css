@@ -1,0 +1,97 @@
+@import 'tailwindcss';
+
+/* Umumiy core/ moduli: Tailwind avtomatik skaneri faqat shablon papkasini
+   ko'radi, shu sababli umumiy komponentlardagi sinflar (grid, flex, bg-paper-2,
+   py-20 ...) generatsiya qilinmay qolardi — natijada bo'limlar buzuq chiqardi. */
+@source '../../core';
+@import '../../core/fonts.css';
+
+@theme {
+  --color-paper: #0e1420;
+  --color-paper-2: #131b2a;
+  --color-paper-3: #19233a;
+
+  --color-gold: #a8b8d8;
+  --color-gold-light: #ccd8ec;
+  --color-gold-dark: #6d80a8;
+
+  --color-ink: #eef2fa;
+  --color-ink-soft: #b8c4dc;
+
+  --color-wine: #5a7bc0;
+  --color-wine-dark: #3d5a94;
+
+  --color-sage: #6d80a8;
+  --color-blush: #19233a;
+
+  --font-script: 'Taklif Script', cursive;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Cormorant Garamond', Georgia, serif;
+  --font-arabic: 'Amiri', 'Times New Roman', serif;
+
+  --animate-fall: fall linear infinite;
+  --animate-shimmer: shimmer 6s ease-in-out infinite;
+  --animate-pulse-soft: pulse-soft 2.6s ease-in-out infinite;
+  --animate-float: float 5s ease-in-out infinite;
+}
+
+/* Palitra: sapphire-noir · Tipografiya: classic · Baza: grand-opening */
+
+@keyframes fall {
+  0% { transform: translate3d(0, -10vh, 0) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.85; }
+  90% { opacity: 0.85; }
+  100% { transform: translate3d(var(--drift, 40px), 110vh, 0) rotate(var(--spin, 360deg)); opacity: 0; }
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.045); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.paper-grain { position: relative; }
+.paper-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(ellipse at top, rgba(180,200,255,0.04), transparent 60%);
+  mix-blend-mode: overlay;
+}
+
+.text-gilded {
+  background: linear-gradient(100deg, var(--color-gold-dark) 0%, var(--color-gold-light) 42%, var(--color-gold) 62%, var(--color-gold-dark) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.tracking-wider-caps { letter-spacing: 0.28em; text-transform: uppercase; }
+
+.reveal {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1), transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
+}
+
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}

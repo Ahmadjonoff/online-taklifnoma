@@ -1,0 +1,97 @@
+@import 'tailwindcss';
+
+/* Umumiy core/ moduli: Tailwind avtomatik skaneri faqat shablon papkasini
+   ko'radi, shu sababli umumiy komponentlardagi sinflar (grid, flex, bg-paper-2,
+   py-20 ...) generatsiya qilinmay qolardi — natijada bo'limlar buzuq chiqardi. */
+@source '../../core';
+@import '../../core/fonts.css';
+
+@theme {
+  --color-paper: #faf7f0;
+  --color-paper-2: #f3eee2;
+  --color-paper-3: #eae3d1;
+
+  --color-gold: #b09a5e;
+  --color-gold-light: #d6c695;
+  --color-gold-dark: #7d6a3c;
+
+  --color-ink: #3d3729;
+  --color-ink-soft: #6b6250;
+
+  --color-wine: #9c7c2c;
+  --color-wine-dark: #7d6a3c;
+
+  --color-sage: #7d6a3c;
+  --color-blush: #eae3d1;
+
+  --font-script: 'Taklif Script', cursive;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Cormorant Garamond', Georgia, serif;
+  --font-arabic: 'Amiri', 'Times New Roman', serif;
+
+  --animate-fall: fall linear infinite;
+  --animate-shimmer: shimmer 6s ease-in-out infinite;
+  --animate-pulse-soft: pulse-soft 2.6s ease-in-out infinite;
+  --animate-float: float 5s ease-in-out infinite;
+}
+
+/* Palitra: ivory-pearl · Tipografiya: classic · Baza: dinner-party */
+
+@keyframes fall {
+  0% { transform: translate3d(0, -10vh, 0) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.85; }
+  90% { opacity: 0.85; }
+  100% { transform: translate3d(var(--drift, 40px), 110vh, 0) rotate(var(--spin, 360deg)); opacity: 0; }
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.045); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.paper-grain { position: relative; }
+.paper-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(ellipse at top, rgba(120,100,60,0.04), transparent 60%);
+  mix-blend-mode: overlay;
+}
+
+.text-gilded {
+  background: linear-gradient(100deg, var(--color-gold-dark) 0%, var(--color-gold-light) 42%, var(--color-gold) 62%, var(--color-gold-dark) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.tracking-wider-caps { letter-spacing: 0.28em; text-transform: uppercase; }
+
+.reveal {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1), transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
+}
+
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}

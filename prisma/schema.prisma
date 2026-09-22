@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model EventType {
+  id        Int        @id @default(autoincrement())
+  slug      String     @unique // "toy", "nikoh", "sunnat-toyi", "tugilgan-kun"
+  name      String // "To'y", "Nikoh to'yi", ...
+  emoji     String     @default("🎉")
+  order     Int        @default(0)
+  templates Template[]
+}
+
+model Template {
+  id           Int          @id @default(autoincrement())
+  slug         String       @unique // "royal-gold", "pastel-gul"
+  name         String
+  eventTypeId  Int
+  eventType    EventType    @relation(fields: [eventTypeId], references: [id])
+  description  String       @default("")
+  price        Int          @default(0) // so'mda
+  theme        String       @default("gold") // kanonik shablon nomi (public/t/<theme>)
+  previewEmoji String       @default("💍")
+  kicker       String       @default("") // hero ustidagi kichik yozuv
+  timeline     String       @default("[]") // JSON: [{time, label}]
+  notes        String       @default("[]") // JSON: [{title, text}]
+  isActive     Boolean      @default(true)
+  orders       Order[]
+  invitations  Invitation[]
+  createdAt    DateTime     @default(now())
+}
+
+model Order {
+  id            Int         @id @default(autoincrement())
+  // Buyurtma holati sahifasi (`/buyurtma/[token]`) shu tasodifiy tokenga
+  // qarab qidiradi — ketma-ket `id` orqali emas. Aks holda `id`ni sanab,
+  // boshqa mijozlarning buyurtma holati va (to'langan bo'lsa) taklifnoma
+  // havolasini har kim ko'ra olardi.
+  accessToken   String      @unique @default(cuid())
+  customerName  String
+  phone         String
+  templateId    Int
+  template      Template    @relation(fields: [templateId], references: [id])
+  status        String      @default("PENDING") // PENDING | PAID | REJECTED
+  invitation    Invitation?
+  createdAt     DateTime    @default(now())
+}
+
+model Invitation {
+  id           Int             @id @default(autoincrement())
+  slug         String          @unique // "ali-va-dilnoza" -> /e/ali-va-dilnoza
+  orderId       Int             @unique
+  order        Order           @relation(fields: [orderId], references: [id])
+  templateId   Int
+  template     Template        @relation(fields: [templateId], references: [id])
+  // Taklifnoma mazmuni
+  title        String // "Ali va Dilnoza" yoki "Sunnat to'yi"
+  partner1     String          @default("")
+  partner2     String          @default("")
+  eventDate    DateTime
+  eventTime    String          @default("18:00")
+  venueName    String
+  venueAddress String          @default("")
+  message      String          @default("") // taklifnomadagi matn
+  views        Int             @default(0)
+  rsvps        RsvpResponse[]
+  wishes       Wish[]
+  createdAt    DateTime        @default(now())
+}
+
+model RsvpResponse {
+  id           Int        @id @default(autoincrement())
+  invitationId Int
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  guestName    String
+  attending    Boolean // true = kelaman, false = kelolmayman
+  guestsCount  Int        @default(1)
+  comment      String     @default("")
+  createdAt    DateTime   @default(now())
+}
+
+model Wish {
+  id           Int        @id @default(autoincrement())
+  invitationId Int
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  guestName    String
+  message      String
+  createdAt    DateTime   @default(now())
+}

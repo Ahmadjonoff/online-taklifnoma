@@ -1,0 +1,152 @@
+import Link from "next/link";
+import { prisma } from "@/lib/prisma";
+import { OrderActions } from "@/components/OrderActions";
+
+export const dynamic = "force-dynamic";
+
+export default async function AdminPage() {
+  const orders = await prisma.order.findMany({
+    include: { template: true, invitation: true },
+    orderBy: { id: "desc" },
+  });
+
+  const stats = {
+    total: orders.length,
+    pending: orders.filter((o) => o.status === "PENDING").length,
+    paid: orders.filter((o) => o.status === "PAID").length,
+    revenue: orders
+      .filter((o) => o.status === "PAID")
+      .reduce((sum, o) => sum + o.template.price, 0),
+  };
+
+  return (
+    <div className="min-h-screen bg-[#faf7f2]">
+      <header className="bg-stone-900 py-5 text-white">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6">
+          <h1 className="font-serif text-lg font-bold">Admin panel</h1>
+          <div className="flex items-center gap-5 text-sm">
+            <Link href="/admin/javoblar" className="text-stone-300 hover:text-white">
+              RSVP va tilaklar
+            </Link>
+            <Link href="/" className="text-stone-300 hover:text-white">
+              ← Saytga
+            </Link>
+            <form action="/api/admin/logout" method="post">
+              <button className="rounded-full border border-stone-700 px-3 py-1 text-xs text-stone-400 transition hover:border-stone-500 hover:text-white">
+                Chiqish
+              </button>
+            </form>
+          </div>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-6xl px-6 py-8">
+        {/* Statistika */}
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {[
+            { label: "Jami buyurtma", value: String(stats.total), emoji: "📦" },
+            { label: "Kutilmoqda", value: String(stats.pending), emoji: "⏳" },
+            { label: "Tasdiqlangan", value: String(stats.paid), emoji: "✅" },
+            {
+              label: "Kelishilgan summa",
+              value: `${stats.revenue.toLocaleString("uz-UZ")} so'm`,
+              emoji: "💰",
+            },
+          ].map((s) => (
+            <div
+              key={s.label}
+              className="rounded-2xl border border-stone-200/80 bg-white p-5 shadow-sm transition hover:shadow-md"
+            >
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-stone-500">{s.label}</p>
+                <span className="text-lg">{s.emoji}</span>
+              </div>
+              <p className="mt-1 font-serif text-2xl font-bold text-stone-900">
+                {s.value}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* Buyurtmalar */}
+        <h2 className="mb-4 mt-10 font-serif text-xl font-bold text-stone-900">
+          Buyurtmalar
+        </h2>
+        <div className="space-y-4">
+          {orders.map((order) => (
+            <div
+              key={order.id}
+              className="rounded-2xl border border-stone-200/80 bg-white p-6 shadow-sm transition hover:shadow-md"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-3">
+                    <span className="font-serif font-bold text-stone-900">
+                      #{order.id}
+                    </span>
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                        order.status === "PAID"
+                          ? "bg-emerald-100 text-emerald-700"
+                          : order.status === "PENDING"
+                            ? "bg-amber-100 text-amber-700"
+                            : "bg-red-100 text-red-700"
+                      }`}
+                    >
+                      {order.status === "PAID"
+                        ? "Tasdiqlangan"
+                        : order.status === "PENDING"
+                          ? "Kutilmoqda"
+                          : "Bekor qilingan"}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-sm text-stone-700">
+                    <strong>{order.customerName}</strong> • {order.phone}
+                  </p>
+                  <p className="text-sm text-stone-500">
+                    {order.template.name} — kelishuv asosidagi baho:{" "}
+                    {order.template.price.toLocaleString("uz-UZ")} so&apos;m
+                  </p>
+                  {order.invitation && (
+                    <p className="mt-1 text-xs text-stone-400">
+                      Link: /e/{order.invitation.slug} • {order.invitation.title} •{" "}
+                      {order.invitation.views} ko&apos;rish
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex flex-col items-end gap-2">
+                  <OrderActions orderId={order.id} status={order.status} />
+                  {order.status === "PAID" && order.invitation && (
+                    <div className="flex gap-3 text-xs">
+                      <Link
+                        href={`/e/${order.invitation.slug}`}
+                        className="text-rose-600 underline"
+                        target="_blank"
+                      >
+                        Taklifnoma →
+                      </Link>
+                      <a
+                        href={`/api/qr/${order.invitation.slug}`}
+                        download={`qr-${order.invitation.slug}.png`}
+                        className="text-stone-500 underline"
+                      >
+                        QR yuklab olish
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {orders.length === 0 && (
+            <div className="rounded-2xl border border-dashed border-stone-300 bg-white/50 p-12 text-center text-stone-500">
+              Hozircha buyurtmalar yo&apos;q.
+            </div>
+          )}
+        </div>
+      </main>
+    </div>
+  );
+}

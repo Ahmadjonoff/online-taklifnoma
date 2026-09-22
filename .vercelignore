@@ -1,0 +1,21 @@
+# Vercel CLI standart holatda .gitignore'ni to'liq hurmat qilmaydi — shu
+# sababli runtime uchun kerak bo'lmagan fayllar bu yerda alohida ko'rsatiladi.
+
+# Mahalliy SQLite baza — production'ga hech qachon yuklanmasligi kerak.
+*.db
+*.db-journal
+dev.db
+prisma/dev.db
+
+# Shablonlarni build qilish uchun manba (runtime `public/t/*` statik
+# fayllarini o'qiydi, bu papkani emas — next.config.ts'dagi izohga qarang).
+templates-src
+
+# Faqat lokal ishlab chiqish/hujjatlar uchun, deploy uchun kerak emas.
+docs
+scripts
+.agents
+.claude
+.windsurf
+.freebuff
+logo for invitation.jpeg
