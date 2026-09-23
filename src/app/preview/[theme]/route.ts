@@ -102,6 +102,11 @@ export async function GET(
   let config = DEMO as Record<string, unknown>;
   const url = new URL(req.url);
   const cfgParam = url.searchParams.get("cfg");
+  // ?thumb=1 — katalog kartasidagi kichik ko'rinish: gulbarg animatsiyasi
+  // o'chiriladi (o'nlab karta bir vaqtda animatsiya qilsa telefon qiynaladi)
+  if (!cfgParam && url.searchParams.get("thumb") === "1") {
+    config = { ...DEMO, petals: { enabled: false, count: 0 } };
+  }
   if (cfgParam) {
     try {
       config = JSON.parse(cfgParam) as Record<string, unknown>;
@@ -119,6 +124,14 @@ export async function GET(
   html = html.replace("<head>", `<head>${inject}`);
 
   return new Response(html, {
-    headers: { "Content-Type": "text/html; charset=utf-8" },
+    headers: {
+      "Content-Type": "text/html; charset=utf-8",
+      // Demo preview hamma uchun bir xil — CDN'da (foydalanuvchiga eng yaqin
+      // nuqtada) keshlanadi, har karta uchun AQShdagi funksiyaga borilmaydi.
+      // ?cfg= esa foydalanuvchi kiritgan ma'lumot — keshlanmaydi.
+      "Cache-Control": cfgParam
+        ? "private, no-store"
+        : "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800",
+    },
   });
 }

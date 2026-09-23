@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import { getCatalog } from "@/lib/catalogData";
+import { PreviewFrame } from "@/components/site/PreviewFrame";
 import { Reveal } from "@/components/site/Reveal";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -19,10 +20,8 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const template = await prisma.template.findUnique({
-    where: { slug },
-    include: { eventType: true },
-  });
+  const { templates } = await getCatalog();
+  const template = templates.find((tpl) => tpl.slug === slug);
 
   if (!template) return { title: "Shablon topilmadi" };
 
@@ -42,27 +41,21 @@ export default async function TemplatePage({
   const dict = getDictionary(locale);
   const td = dict.templateDetail;
 
-  const template = await prisma.template.findUnique({
-    where: { slug },
-    include: { eventType: true },
-  });
+  // Katalogda faqat faol shablonlar bor — nofaol shablon ham 404 bo'ladi
+  const { eventTypes, templates } = await getCatalog();
+  const template = templates.find((tpl) => tpl.slug === slug);
 
-  if (!template || !template.isActive) notFound();
+  if (!template) notFound();
 
   const tier = tierOf(template.price);
   const tierLabel = tier === "premium" ? dict.common.tierPremium : dict.common.tierStandard;
   const tierFeatures = tier === "premium" ? td.featuresPremium : td.featuresStandard;
 
-  const [related, eventTypes, total] = await Promise.all([
-    prisma.template.findMany({
-      where: { isActive: true, eventTypeId: template.eventTypeId, NOT: { id: template.id } },
-      include: { eventType: true },
-      orderBy: [{ price: "desc" }, { id: "asc" }],
-      take: 3,
-    }),
-    prisma.eventType.findMany({ orderBy: { order: "asc" } }),
-    prisma.template.count({ where: { isActive: true } }),
-  ]);
+  // `templates` allaqachon narx↓, id↑ tartibida
+  const related = templates
+    .filter((tpl) => tpl.eventTypeId === template.eventTypeId && tpl.id !== template.id)
+    .slice(0, 3);
+  const total = templates.length;
 
   let timeline: Array<{ time: string; label: string }> = [];
   try {
@@ -211,12 +204,11 @@ export default async function TemplatePage({
                   <div className="absolute -inset-5 -z-10 rounded-[3rem] bg-gradient-to-br from-amber-100/70 via-rose-100/40 to-transparent blur-2xl" />
                   <div className="overflow-hidden rounded-[2.75rem] border-[10px] border-stone-900 bg-stone-900 shadow-[0_40px_80px_-45px_rgba(60,45,20,0.8)]">
                     <div className="overflow-hidden rounded-[2.1rem]">
-                      <iframe
+                      <PreviewFrame
+                        mode="gated"
                         src={`/preview/${template.theme}`}
                         title={template.name}
-                        loading="lazy"
-                        className="h-[720px] w-full border-0"
-                        sandbox="allow-scripts allow-same-origin"
+                        className="block h-[720px] w-full border-0"
                       />
                     </div>
                   </div>

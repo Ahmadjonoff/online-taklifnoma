@@ -41,7 +41,14 @@ export function Reveal({
   }, []);
 
   return (
-    <div ref={ref} className={`reveal-up ${className}`} style={{ transitionDelay: `${delay}ms` }}>
+    // suppressHydrationWarning: layout'dagi skript birinchi ekrandagilarga
+    // `is-visible`ni gidratsiyadan oldin qo'shadi — bu kutilgan farq
+    <div
+      ref={ref}
+      className={`reveal-up ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
+      suppressHydrationWarning
+    >
       {children}
     </div>
   );

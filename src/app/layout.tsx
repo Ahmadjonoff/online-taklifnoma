@@ -46,6 +46,9 @@ export const metadata: Metadata = {
   },
 };
 
+const REVEAL_ABOVE_FOLD =
+  "document.querySelectorAll('.reveal-up').forEach(function(e){if(e.getBoundingClientRect().top<innerHeight)e.classList.add('is-visible')})";
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -59,6 +62,10 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased`}
       >
         {children}
+        {/* Birinchi ekrandagi `Reveal` bloklari JS yuklanib, gidratsiya
+            tugashini kutmasin — aks holda sekin tarmoqda sahifa bir necha
+            soniya bo'sh turadi. Pastdagilar odatdagidek scroll'da ochiladi. */}
+        <script dangerouslySetInnerHTML={{ __html: REVEAL_ABOVE_FOLD }} />
       </body>
     </html>
   );

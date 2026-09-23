@@ -16,6 +16,20 @@ const nextConfig: NextConfig = {
     "/e/[slug]": ["./public/t/*/index.html"],
     "/preview/[theme]": ["./public/t/*/index.html"],
   },
+  async headers() {
+    return [
+      {
+        // Vite chiqargan JS/CSS/shriftlar nomida hash bor — o'zgarsa nomi
+        // ham o'zgaradi, shuning uchun brauzer ularni qayta so'ramasin.
+        source: "/t/:theme/assets/:file*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+      {
+        source: "/music.mp3",
+        headers: [{ key: "Cache-Control", value: "public, max-age=604800" }],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

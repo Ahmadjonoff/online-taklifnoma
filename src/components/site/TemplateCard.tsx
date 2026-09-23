@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PreviewFrame } from "./PreviewFrame";
 import { TIER_STYLE, tierOf } from "@/lib/catalog";
 import type { Dictionary } from "@/lib/i18n/dictionary";
 
@@ -26,19 +27,15 @@ export function TemplateCard({ template, dict }: { template: CardTemplate; dict:
     <div className="group relative flex flex-col overflow-hidden rounded-3xl border border-stone-200/80 bg-white shadow-sm transition duration-500 hover:-translate-y-1.5 hover:border-amber-200 hover:shadow-[0_28px_60px_-30px_rgba(60,45,20,0.4)]">
       {/* Jonli preview */}
       <div className="relative h-72 overflow-hidden bg-gradient-to-br from-stone-100 to-stone-50">
-        {/* pointer-events-none: bu shunchaki karta ichidagi vitrina —
-            sichqoncha ustiga kelib scroll qilinganda iframe o'zining ichki
-            kontentini emas, sahifani scroll qilishi kerak. Shablonni
-            ko'rish uchun pastdagi "Ko'rish" tugmasi bosilib, alohida
-            sahifaga o'tiladi. */}
-        <iframe
+        {/* Bu shunchaki karta ichidagi vitrina — scroll doim sahifaga
+            o'tadi. Shablonni ko'rish uchun pastdagi "Ko'rish" tugmasi
+            bosilib, alohida sahifaga o'tiladi. */}
+        <PreviewFrame
+          mode="thumb"
           src={`/preview/${template.theme}`}
           title={template.name}
-          loading="lazy"
-          className="pointer-events-none h-[640px] w-full scale-[0.42] border-0 transition-transform duration-[900ms] group-hover:scale-[0.45]"
+          className="h-[640px] w-full scale-[0.42] border-0 transition-transform duration-[900ms] group-hover:scale-[0.45]"
           style={{ transformOrigin: "top left", width: "238%" }}
-          sandbox="allow-scripts allow-same-origin"
-          tabIndex={-1}
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/12 via-transparent to-transparent" />
 

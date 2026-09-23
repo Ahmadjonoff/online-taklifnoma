@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { PreviewFrame } from "@/components/site/PreviewFrame";
 import { TelegramIcon } from "@/components/site/TelegramIcon";
 import { telegramUrl } from "@/lib/contact";
 import { t, type Dictionary } from "@/lib/i18n/dictionary";
@@ -292,12 +293,14 @@ export function OrderForm({
       <div className="lg:sticky lg:top-6 lg:self-start">
         <p className="mb-3 text-center text-sm font-medium text-stone-500">{dict.order.livePreview}</p>
         <div className="overflow-hidden rounded-[2rem] border-8 border-stone-800 bg-stone-800 shadow-2xl">
-          <iframe
+          {/* key: ma'lumot o'zgarsa preview qaytadan yuklanadi (konvert yana
+              yopiq) — qatlam ham qaytadan paydo bo'lishi kerak */}
+          <PreviewFrame
             key={previewSrc}
+            mode="gated"
             src={previewSrc}
             title={dict.order.livePreview}
-            className="h-[640px] w-full border-0"
-            sandbox="allow-scripts allow-same-origin"
+            className="block h-[640px] w-full border-0"
           />
         </div>
       </div>

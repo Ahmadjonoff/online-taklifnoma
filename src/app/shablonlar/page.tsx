@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
+import { getCatalog } from "@/lib/catalogData";
 import { Reveal } from "@/components/site/Reveal";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -24,17 +24,7 @@ export default async function TemplatesPage({
   const locale = await getLocale();
   const dict = getDictionary(locale);
 
-  const [eventTypes, templates] = await Promise.all([
-    prisma.eventType.findMany({
-      orderBy: { order: "asc" },
-      include: { _count: { select: { templates: { where: { isActive: true } } } } },
-    }),
-    prisma.template.findMany({
-      where: { isActive: true },
-      include: { eventType: true },
-      orderBy: [{ price: "desc" }, { id: "asc" }],
-    }),
-  ]);
+  const { eventTypes, templates } = await getCatalog();
 
   const catalog: CatalogTemplate[] = templates.map((t) => ({
     slug: t.slug,

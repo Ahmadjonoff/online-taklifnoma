@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
+import { getCatalog } from "@/lib/catalogData";
 import { Faq } from "@/components/site/Faq";
+import { PreviewFrame } from "@/components/site/PreviewFrame";
 import { Reveal } from "@/components/site/Reveal";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -18,19 +19,9 @@ export default async function HomePage() {
   const dict = getDictionary(locale);
   const home = dict.home;
 
-  const [eventTypes, featured, total] = await Promise.all([
-    prisma.eventType.findMany({
-      orderBy: { order: "asc" },
-      include: { _count: { select: { templates: { where: { isActive: true } } } } },
-    }),
-    prisma.template.findMany({
-      where: { isActive: true },
-      include: { eventType: true },
-      orderBy: [{ price: "desc" }, { id: "asc" }],
-      take: 6,
-    }),
-    prisma.template.count({ where: { isActive: true } }),
-  ]);
+  const { eventTypes, templates } = await getCatalog();
+  const featured = templates.slice(0, 6);
+  const total = templates.length;
 
   const hero = featured[0];
   const premiumCount = featured.filter((tpl) => tierOf(tpl.price) === "premium").length;
@@ -119,12 +110,11 @@ export default async function HomePage() {
                 <div className="mx-auto w-full max-w-[340px] overflow-hidden rounded-[2.75rem] border-[10px] border-stone-900 bg-stone-900 shadow-[0_40px_80px_-40px_rgba(60,45,20,0.7)]">
                   <div className="overflow-hidden rounded-[2.1rem]">
                     {hero && (
-                      <iframe
+                      <PreviewFrame
+                        mode="showcase"
                         src={`/preview/${hero.theme}`}
                         title={hero.name}
-                        loading="lazy"
-                        className="h-[600px] w-full border-0"
-                        sandbox="allow-scripts allow-same-origin"
+                        className="block h-[600px] w-full border-0"
                       />
                     )}
                   </div>
