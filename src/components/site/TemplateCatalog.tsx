@@ -6,7 +6,8 @@ import { TemplateCard, type CardTemplate } from "./TemplateCard";
 import { tierOf } from "@/lib/catalog";
 import type { Dictionary } from "@/lib/i18n/dictionary";
 
-export type CatalogTemplate = CardTemplate & { eventSlug: string };
+/** `categories` — shablon ko'rinadigan barcha tadbir turlari (bitta dizayn bir nechta tadbirga mos) */
+export type CatalogTemplate = CardTemplate & { categories: { slug: string; name: string }[] };
 
 type EventTypeOption = { slug: string; name: string; emoji: string; count: number };
 
@@ -61,13 +62,13 @@ export function TemplateCatalog({
     const q = query.trim().toLowerCase();
 
     const list = templates.filter((t) => {
-      if (event && t.eventSlug !== event) return false;
+      if (event && !t.categories.some((c) => c.slug === event)) return false;
       if (tier !== "all" && tierOf(t.price) !== tier) return false;
       if (!q) return true;
       return (
         t.name.toLowerCase().includes(q) ||
         t.description.toLowerCase().includes(q) ||
-        t.eventName.toLowerCase().includes(q)
+        t.categories.some((c) => c.name.toLowerCase().includes(q))
       );
     });
 
@@ -222,7 +223,15 @@ export function TemplateCatalog({
 
       <div className="mt-6 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((tpl) => (
-          <TemplateCard key={tpl.slug} template={tpl} dict={dict} />
+          <TemplateCard
+            key={tpl.slug}
+            // Tadbir turi bo'yicha filtrlanganda kartada o'sha tur nomi ko'rinsin
+            template={{
+              ...tpl,
+              eventName: tpl.categories.find((c) => c.slug === event)?.name ?? tpl.eventName,
+            }}
+            dict={dict}
+          />
         ))}
       </div>
 

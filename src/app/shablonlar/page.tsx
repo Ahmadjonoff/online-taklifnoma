@@ -34,7 +34,7 @@ export default async function TemplatesPage({
     price: t.price,
     previewEmoji: t.previewEmoji,
     eventName: t.eventType.name,
-    eventSlug: t.eventType.slug,
+    categories: t.categories.map(({ slug, name }) => ({ slug, name })),
   }));
 
   const activeType = eventTypes.find((e) => e.slug === tadbir);

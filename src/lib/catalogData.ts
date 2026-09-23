@@ -19,20 +19,31 @@ export const getCatalog = unstable_cache(
     const [eventTypes, templates] = await Promise.all([
       prisma.eventType.findMany({
         orderBy: { order: "asc" },
-        include: { _count: { select: { templates: { where: { isActive: true } } } } },
+        // Soni — shu tur ostida katalogda ko'rinadigan shablonlar (kategoriya bo'yicha)
+        include: { _count: { select: { categoryTemplates: { where: { isActive: true } } } } },
       }),
       prisma.template.findMany({
         where: { isActive: true },
-        include: { eventType: true },
+        include: {
+          eventType: true,
+          categories: { select: { slug: true, name: true, emoji: true, order: true } },
+        },
         orderBy: [{ price: "desc" }, { id: "asc" }],
       }),
     ]);
     return {
-      eventTypes,
-      templates: templates.map(({ createdAt: _createdAt, ...t }) => t),
+      eventTypes: eventTypes.map(({ _count, ...e }) => ({
+        ...e,
+        _count: { templates: _count.categoryTemplates },
+      })),
+      templates: templates.map(({ createdAt: _createdAt, categories, ...t }) => ({
+        ...t,
+        categories: [...categories].sort((a, b) => a.order - b.order),
+      })),
     };
   },
-  ["catalog-v1"],
+  // v2: kategoriyalar qo'shildi — eski keshdagi shakl bilan aralashmasin
+  ["catalog-v2"],
   // revalidate: seed qo'lda qayta ishga tushirilsa ham 5 daqiqada yangilanadi
   { tags: [CATALOG_TAG], revalidate: 300 }
 );

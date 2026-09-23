@@ -1,4 +1,7 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
+import { customizationSummary, sanitizeCustomization } from "@/lib/customization";
+import { musicTrack } from "@/lib/music";
+import { findPalette, getPalettes } from "@/lib/palettes";
 import { prisma } from "@/lib/prisma";
 import { notifyAdminNewOrder } from "@/lib/telegramBot";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
@@ -42,6 +45,7 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
+    const options: unknown = body?.options;
     const {
       templateSlug,
       customerName,
@@ -87,9 +91,18 @@ export async function POST(req: Request) {
 
     const template = await prisma.template.findUnique({
       where: { slug: templateSlug },
+      include: { categories: { select: { slug: true, name: true } } },
     });
     if (!template || !template.isActive) {
       return NextResponse.json({ error: "Shablon topilmadi" }, { status: 404 });
+    }
+
+    const custom = sanitizeCustomization(options, {
+      paletteIds: getPalettes(template.theme).map((p) => p.id),
+      eventTypeSlugs: template.categories.map((e) => e.slug),
+    });
+    if (!custom.ok) {
+      return NextResponse.json({ error: custom.error }, { status: 400 });
     }
 
     const slug = makeSlug(partner1 && partner2 ? `${partner1}-va-${partner2}` : title);
@@ -112,18 +125,33 @@ export async function POST(req: Request) {
             venueName,
             venueAddress: venueAddress ?? "",
             message: message ?? "",
+            options: JSON.stringify(custom.value),
           },
         },
       },
       include: { invitation: true },
     });
 
-    notifyAdminNewOrder({
-      id: order.id,
-      customerName: order.customerName,
-      phone: order.phone,
-      templateName: template.name,
-    });
+    // after(): Vercel javobni qaytargach ham funksiya xabar yuborilguncha
+    // yashaydi (waitUntil). Avval await'siz chaqirilardi — funksiya muzlab,
+    // xabar kechikar yoki umuman kelmasdi.
+    const c = custom.value;
+    after(() =>
+      notifyAdminNewOrder({
+        id: order.id,
+        customerName: order.customerName,
+        phone: order.phone,
+        templateName: template.name,
+        title,
+        eventDate: `${eventDate.split("-").reverse().join(".")} ${eventTime || "18:00"}`,
+        venueName,
+        details: customizationSummary(c, {
+          eventType: template.categories.find((e) => e.slug === c.eventType)?.name,
+          palette: c.palette ? findPalette(template.theme, c.palette)?.name : undefined,
+          music: musicTrack(c.music)?.name,
+        }),
+      })
+    );
 
     // DIQQAT: mijozga ketma-ket `order.id` emas, tasodifiy `accessToken`
     // qaytariladi — status sahifasi shu token bo'yicha qidiradi. Aks holda

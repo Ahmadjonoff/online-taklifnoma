@@ -1,5 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
+import { getCatalog } from "@/lib/catalogData";
+import { sanitizeCustomization } from "@/lib/customization";
+import { buildInvitationConfig } from "@/lib/invitationConfig";
+import { getPalettes, paletteStyleTag } from "@/lib/palettes";
 
 /** Bu route Next.js sahifasi emas (iframe uchun statik HTML) — o'zining 404'ini beradi. */
 function notFoundHtml(): string {
@@ -98,29 +102,32 @@ export async function GET(
 
   let html = fs.readFileSync(htmlPath, "utf8");
 
-  // URL'da ?cfg=... berilsa — uni ishlatamiz (buyurtma formasidagi jonli preview)
+  // ?draft=... — buyurtma formasidagi jonli preview: mijoz kiritgan
+  // ma'lumotlar tayyor taklifnoma bilan bir xil yo'l bilan config'ga
+  // aylantiriladi (tekshiruv + buildInvitationConfig).
   let config = DEMO as Record<string, unknown>;
+  let paletteStyle = "";
   const url = new URL(req.url);
-  const cfgParam = url.searchParams.get("cfg");
-  // ?thumb=1 — katalog kartasidagi kichik ko'rinish: gulbarg animatsiyasi
-  // o'chiriladi (o'nlab karta bir vaqtda animatsiya qilsa telefon qiynaladi)
-  if (!cfgParam && url.searchParams.get("thumb") === "1") {
+  const draftParam = url.searchParams.get("draft");
+  if (draftParam) {
+    const draft = await buildDraft(theme, draftParam);
+    if (draft) {
+      config = draft.config;
+      paletteStyle = paletteStyleTag(theme, draft.palette);
+    }
+  } else if (url.searchParams.get("thumb") === "1") {
+    // Katalog kartasidagi kichik ko'rinish: gulbarg animatsiyasi o'chiriladi
+    // (o'nlab karta bir vaqtda animatsiya qilsa telefon qiynaladi)
     config = { ...DEMO, petals: { enabled: false, count: 0 } };
   }
-  if (cfgParam) {
-    try {
-      config = JSON.parse(cfgParam) as Record<string, unknown>;
-    } catch {
-      // noto'g'ri JSON bo'lsa — demo qoladi
-    }
-  }
 
-  // `config` ?cfg= query-parametridan kelishi mumkin (foydalanuvchi kiritgan
-  // matnlarni o'z ichiga oladi) — `</script` ketma-ketligini escape qilmasak,
-  // JSON string ichidan haqiqiy <script> tegini yopib, XSS ochib beradi.
+  // `config` foydalanuvchi kiritgan matnlarni o'z ichiga olishi mumkin —
+  // `</script` ketma-ketligini escape qilmasak, JSON string ichidan haqiqiy
+  // <script> tegini yopib, XSS ochib beradi.
   const inject = `<link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/icon.png" type="image/png">
-<script>window.__INV_CONFIG__=${JSON.stringify(config).replace(/<\/script/gi, "<\\/script")};</script>`;
+<script>window.__INV_CONFIG__=${JSON.stringify(config).replace(/<\/script/gi, "<\\/script")};</script>
+${paletteStyle}`;
   html = html.replace("<head>", `<head>${inject}`);
 
   return new Response(html, {
@@ -128,10 +135,59 @@ export async function GET(
       "Content-Type": "text/html; charset=utf-8",
       // Demo preview hamma uchun bir xil — CDN'da (foydalanuvchiga eng yaqin
       // nuqtada) keshlanadi, har karta uchun AQShdagi funksiyaga borilmaydi.
-      // ?cfg= esa foydalanuvchi kiritgan ma'lumot — keshlanmaydi.
-      "Cache-Control": cfgParam
+      // ?draft= esa foydalanuvchi kiritgan ma'lumot — keshlanmaydi.
+      "Cache-Control": draftParam
         ? "private, no-store"
         : "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800",
     },
   });
+}
+
+function text(v: unknown, max: number): string {
+  return typeof v === "string" ? v.trim().slice(0, max) : "";
+}
+
+async function buildDraft(theme: string, raw: string) {
+  let draft: { content?: Record<string, unknown>; options?: unknown };
+  try {
+    draft = JSON.parse(raw);
+  } catch {
+    return null;
+  }
+  const { templates } = await getCatalog();
+  const template = templates.find((t) => t.theme === theme);
+  if (!template) return null;
+
+  const c = draft.content ?? {};
+  const eventDate = text(c.eventDate, 10);
+  const eventTime = text(c.eventTime, 5);
+  const partner1 = text(c.partner1, 80);
+
+  // Preview'da qat'iy emas: hali to'liq yozilmagan havola xato bermaydi
+  const options = sanitizeCustomization(
+    draft.options,
+    {
+      paletteIds: getPalettes(theme).map((p) => p.id),
+      eventTypeSlugs: template.categories.map((e) => e.slug),
+    },
+    false
+  );
+  if (!options.ok) return null;
+
+  const config = buildInvitationConfig(
+    {
+      title: text(c.title, 120),
+      // Bo'sh maydonlar o'rniga namuna — shablon bo'sh ko'rinmasin
+      partner1: partner1 || "Ismingiz",
+      partner2: text(c.partner2, 80),
+      eventDate: /^\d{4}-\d{2}-\d{2}$/.test(eventDate) ? eventDate : "2026-12-31",
+      eventTime: /^\d{2}:\d{2}$/.test(eventTime) ? eventTime : "18:00",
+      venueName: text(c.venueName, 120) || "To'yxona nomi",
+      venueAddress: text(c.venueAddress, 200),
+      message: text(c.message, 1000) || "Sizni tadbirimizda ko'rishdan baxtiyor bo'lamiz!",
+    },
+    template,
+    options.value
+  );
+  return { config, palette: options.value.palette };
 }

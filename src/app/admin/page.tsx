@@ -1,12 +1,18 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { OrderActions } from "@/components/OrderActions";
+import { customizationSummary, parseStoredCustomization } from "@/lib/customization";
+import { musicTrack } from "@/lib/music";
+import { findPalette } from "@/lib/palettes";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
   const orders = await prisma.order.findMany({
-    include: { template: true, invitation: true },
+    include: {
+      template: { include: { categories: { select: { slug: true, name: true } } } },
+      invitation: true,
+    },
     orderBy: { id: "desc" },
   });
 
@@ -113,6 +119,7 @@ export default async function AdminPage() {
                       {order.invitation.views} ko&apos;rish
                     </p>
                   )}
+                  {order.invitation && <OrderOptions order={order} />}
                 </div>
 
                 <div className="flex flex-col items-end gap-2">
@@ -147,6 +154,47 @@ export default async function AdminPage() {
           )}
         </div>
       </main>
+    </div>
+  );
+}
+
+/** Mijoz buyurtmada tanlagan sozlamalar (rang, musiqa, xarita ...). */
+function OrderOptions({
+  order,
+}: {
+  order: {
+    template: { theme: string; categories: { slug: string; name: string }[] };
+    invitation: { options: string } | null;
+  };
+}) {
+  const c = parseStoredCustomization(order.invitation?.options);
+  const lines = customizationSummary(c, {
+    eventType: order.template.categories.find((e) => e.slug === c.eventType)?.name,
+    palette: c.palette ? findPalette(order.template.theme, c.palette)?.name : undefined,
+    music: musicTrack(c.music)?.name,
+  });
+  return (
+    <div className="mt-2 space-y-0.5 text-xs text-stone-500">
+      {lines.map((l) => (
+        <p key={l}>{l}</p>
+      ))}
+      {c.timeline && c.timeline.length > 0 && (
+        <p>{c.timeline.map((r) => `${r.time} ${r.label}`.trim()).join(" · ")}</p>
+      )}
+      {(c.googleMapsUrl || c.yandexMapsUrl) && (
+        <p className="space-x-3">
+          {c.googleMapsUrl && (
+            <a href={c.googleMapsUrl} target="_blank" rel="noopener noreferrer" className="underline">
+              Google Maps
+            </a>
+          )}
+          {c.yandexMapsUrl && (
+            <a href={c.yandexMapsUrl} target="_blank" rel="noopener noreferrer" className="underline">
+              Yandex Maps
+            </a>
+          )}
+        </p>
+      )}
     </div>
   );
 }

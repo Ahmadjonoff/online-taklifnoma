@@ -11,12 +11,15 @@ datasource db {
 }
 
 model EventType {
-  id        Int        @id @default(autoincrement())
-  slug      String     @unique // "toy", "nikoh", "sunnat-toyi", "tugilgan-kun"
-  name      String // "To'y", "Nikoh to'yi", ...
-  emoji     String     @default("🎉")
-  order     Int        @default(0)
-  templates Template[]
+  id                Int        @id @default(autoincrement())
+  slug              String     @unique // "toy", "nikoh", "sunnat-toyi", "tugilgan-kun"
+  name              String // "To'y", "Nikoh to'yi", ...
+  emoji             String     @default("🎉")
+  order             Int        @default(0)
+  templates         Template[]
+  // Katalogda shu tadbir turi ostida ko'rinadigan shablonlar (asosiy turi
+  // boshqa bo'lsa ham) — bitta dizayn bir nechta tadbirga mos keladi.
+  categoryTemplates Template[] @relation("TemplateCategories")
 }
 
 model Template {
@@ -33,47 +36,54 @@ model Template {
   timeline     String       @default("[]") // JSON: [{time, label}]
   notes        String       @default("[]") // JSON: [{title, text}]
   isActive     Boolean      @default(true)
+  // Katalog filtri uchun: shablon ko'rinadigan barcha tadbir turlari
+  // (asosiy `eventType` ham shu ro'yxatda bo'ladi)
+  categories   EventType[]  @relation("TemplateCategories")
   orders       Order[]
   invitations  Invitation[]
   createdAt    DateTime     @default(now())
 }
 
 model Order {
-  id            Int         @id @default(autoincrement())
+  id           Int         @id @default(autoincrement())
   // Buyurtma holati sahifasi (`/buyurtma/[token]`) shu tasodifiy tokenga
   // qarab qidiradi — ketma-ket `id` orqali emas. Aks holda `id`ni sanab,
   // boshqa mijozlarning buyurtma holati va (to'langan bo'lsa) taklifnoma
   // havolasini har kim ko'ra olardi.
-  accessToken   String      @unique @default(cuid())
-  customerName  String
-  phone         String
-  templateId    Int
-  template      Template    @relation(fields: [templateId], references: [id])
-  status        String      @default("PENDING") // PENDING | PAID | REJECTED
-  invitation    Invitation?
-  createdAt     DateTime    @default(now())
+  accessToken  String      @unique @default(cuid())
+  customerName String
+  phone        String
+  templateId   Int
+  template     Template    @relation(fields: [templateId], references: [id])
+  status       String      @default("PENDING") // PENDING | PAID | REJECTED
+  invitation   Invitation?
+  createdAt    DateTime    @default(now())
 }
 
 model Invitation {
-  id           Int             @id @default(autoincrement())
-  slug         String          @unique // "ali-va-dilnoza" -> /e/ali-va-dilnoza
-  orderId       Int             @unique
-  order        Order           @relation(fields: [orderId], references: [id])
+  id           Int            @id @default(autoincrement())
+  slug         String         @unique // "ali-va-dilnoza" -> /e/ali-va-dilnoza
+  orderId      Int            @unique
+  order        Order          @relation(fields: [orderId], references: [id])
   templateId   Int
-  template     Template        @relation(fields: [templateId], references: [id])
+  template     Template       @relation(fields: [templateId], references: [id])
   // Taklifnoma mazmuni
   title        String // "Ali va Dilnoza" yoki "Sunnat to'yi"
-  partner1     String          @default("")
-  partner2     String          @default("")
+  partner1     String         @default("")
+  partner2     String         @default("")
   eventDate    DateTime
-  eventTime    String          @default("18:00")
+  eventTime    String         @default("18:00")
   venueName    String
-  venueAddress String          @default("")
-  message      String          @default("") // taklifnomadagi matn
-  views        Int             @default(0)
+  venueAddress String         @default("")
+  message      String         @default("") // taklifnomadagi matn
+  // Mijoz tanlagan sozlamalar (rang, kun tartibi, xarita havolalari,
+  // musiqa, dress-kod ...) — JSON. Tuzilishi va tekshiruvi:
+  // src/lib/customization.ts. Yangi sozlama qo'shish migratsiya talab qilmaydi.
+  options      String         @default("{}")
+  views        Int            @default(0)
   rsvps        RsvpResponse[]
   wishes       Wish[]
-  createdAt    DateTime        @default(now())
+  createdAt    DateTime       @default(now())
 }
 
 model RsvpResponse {

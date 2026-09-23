@@ -1,6 +1,11 @@
-import "dotenv/config";
 import path from "node:path";
+import { loadEnvConfig } from "@next/env";
 import { defineConfig } from "prisma/config";
+
+// Next.js va seed bilan bir xil tartibda: .env.local → .env. Avval
+// `dotenv/config` faqat .env'ni o'qirdi — .env.local'dagi (vercel env pull)
+// bazaga emas, .env'da qolib ketgan eski bazaga migratsiya qilinardi.
+loadEnvConfig(process.cwd());
 
 export default defineConfig({
   schema: path.join("prisma", "schema.prisma"),

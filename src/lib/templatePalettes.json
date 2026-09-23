@@ -1,0 +1,1119 @@
+{
+ "toy-royal-gold": [
+  {
+   "id": "royal-gold",
+   "name": "Qirollik oltini",
+   "vars": {
+    "--color-paper": "#1a1612",
+    "--color-paper-2": "#221d17",
+    "--color-paper-3": "#2b241b",
+    "--color-gold": "#d4a843",
+    "--color-gold-light": "#ecd28a",
+    "--color-gold-dark": "#8a6d1f",
+    "--color-ink": "#f0e8d5",
+    "--color-ink-soft": "#c9bda0",
+    "--color-wine": "#b8860b",
+    "--color-wine-dark": "#8a6d1f",
+    "--color-sage": "#8a6d1f",
+    "--color-blush": "#2b241b"
+   }
+  },
+  {
+   "id": "ivory-pearl",
+   "name": "Fil suyagi",
+   "vars": {
+    "--color-paper": "#faf7f0",
+    "--color-paper-2": "#f3eee2",
+    "--color-paper-3": "#eae3d1",
+    "--color-gold": "#b09a5e",
+    "--color-gold-light": "#d6c695",
+    "--color-gold-dark": "#7d6a3c",
+    "--color-ink": "#3d3729",
+    "--color-ink-soft": "#6b6250",
+    "--color-wine": "#9c7c2c",
+    "--color-wine-dark": "#7d6a3c",
+    "--color-sage": "#7d6a3c",
+    "--color-blush": "#eae3d1"
+   }
+  },
+  {
+   "id": "rose-garden",
+   "name": "Atirgul",
+   "vars": {
+    "--color-paper": "#fdf4f4",
+    "--color-paper-2": "#f9e9ea",
+    "--color-paper-3": "#f2dcde",
+    "--color-gold": "#c48b8f",
+    "--color-gold-light": "#e2b7ba",
+    "--color-gold-dark": "#8f565a",
+    "--color-ink": "#4a2c2e",
+    "--color-ink-soft": "#7d5558",
+    "--color-wine": "#a9545e",
+    "--color-wine-dark": "#8f565a",
+    "--color-sage": "#8f565a",
+    "--color-blush": "#f2dcde"
+   }
+  },
+  {
+   "id": "emerald-night",
+   "name": "Zumrad tun",
+   "vars": {
+    "--color-paper": "#0f1f17",
+    "--color-paper-2": "#15291e",
+    "--color-paper-3": "#1c3327",
+    "--color-gold": "#c9a227",
+    "--color-gold-light": "#e5c558",
+    "--color-gold-dark": "#8a7015",
+    "--color-ink": "#e8efe6",
+    "--color-ink-soft": "#a8bfae",
+    "--color-wine": "#2e8b57",
+    "--color-wine-dark": "#1f6b40",
+    "--color-sage": "#8a7015",
+    "--color-blush": "#1c3327"
+   }
+  },
+  {
+   "id": "burgundy-luxe",
+   "name": "Bordo",
+   "vars": {
+    "--color-paper": "#2a1215",
+    "--color-paper-2": "#351919",
+    "--color-paper-3": "#412021",
+    "--color-gold": "#d4a843",
+    "--color-gold-light": "#ecd28a",
+    "--color-gold-dark": "#9a7524",
+    "--color-ink": "#f5e6dc",
+    "--color-ink-soft": "#cfb2a3",
+    "--color-wine": "#a03030",
+    "--color-wine-dark": "#7d2020",
+    "--color-sage": "#9a7524",
+    "--color-blush": "#412021"
+   }
+  },
+  {
+   "id": "sage-mist",
+   "name": "Yashil tuman",
+   "vars": {
+    "--color-paper": "#f4f6f1",
+    "--color-paper-2": "#eaeee5",
+    "--color-paper-3": "#dfe5d8",
+    "--color-gold": "#8a9a5b",
+    "--color-gold-light": "#b3c187",
+    "--color-gold-dark": "#5d6c3a",
+    "--color-ink": "#33392c",
+    "--color-ink-soft": "#5c6550",
+    "--color-wine": "#6b7c4a",
+    "--color-wine-dark": "#556339",
+    "--color-sage": "#5d6c3a",
+    "--color-blush": "#dfe5d8"
+   }
+  }
+ ],
+ "nikoh-amanat": [
+  {
+   "id": "ivory-pearl",
+   "name": "Fil suyagi",
+   "vars": {
+    "--color-paper": "#faf7f0",
+    "--color-paper-2": "#f3eee2",
+    "--color-paper-3": "#eae3d1",
+    "--color-gold": "#b09a5e",
+    "--color-gold-light": "#d6c695",
+    "--color-gold-dark": "#7d6a3c",
+    "--color-ink": "#3d3729",
+    "--color-ink-soft": "#6b6250",
+    "--color-wine": "#9c7c2c",
+    "--color-wine-dark": "#7d6a3c",
+    "--color-sage": "#7d6a3c",
+    "--color-blush": "#eae3d1"
+   }
+  }
+ ],
+ "nikoh-crescent": [
+  {
+   "id": "emerald-night",
+   "name": "Zumrad tun",
+   "vars": {
+    "--color-paper": "#0f1f17",
+    "--color-paper-2": "#15291e",
+    "--color-paper-3": "#1c3327",
+    "--color-gold": "#c9a227",
+    "--color-gold-light": "#e5c558",
+    "--color-gold-dark": "#8a7015",
+    "--color-ink": "#e8efe6",
+    "--color-ink-soft": "#a8bfae",
+    "--color-wine": "#2e8b57",
+    "--color-wine-dark": "#1f6b40",
+    "--color-sage": "#8a7015",
+    "--color-blush": "#1c3327"
+   }
+  },
+  {
+   "id": "royal-gold",
+   "name": "Qirollik oltini",
+   "vars": {
+    "--color-paper": "#1a1612",
+    "--color-paper-2": "#221d17",
+    "--color-paper-3": "#2b241b",
+    "--color-gold": "#d4a843",
+    "--color-gold-light": "#ecd28a",
+    "--color-gold-dark": "#8a6d1f",
+    "--color-ink": "#f0e8d5",
+    "--color-ink-soft": "#c9bda0",
+    "--color-wine": "#b8860b",
+    "--color-wine-dark": "#8a6d1f",
+    "--color-sage": "#8a6d1f",
+    "--color-blush": "#2b241b"
+   }
+  },
+  {
+   "id": "night-sky",
+   "name": "Tungi osmon",
+   "vars": {
+    "--color-paper": "#12121f",
+    "--color-paper-2": "#181828",
+    "--color-paper-3": "#202033",
+    "--color-gold": "#f0c75e",
+    "--color-gold-light": "#f8dd91",
+    "--color-gold-dark": "#b8953a",
+    "--color-ink": "#eef0fa",
+    "--color-ink-soft": "#b8bcd4",
+    "--color-wine": "#7a6ff0",
+    "--color-wine-dark": "#5a50c8",
+    "--color-sage": "#b8953a",
+    "--color-blush": "#202033"
+   }
+  }
+ ],
+ "nikoh-olovrang": [
+  {
+   "id": "sunset-amber",
+   "name": "Qahrabo shafaq",
+   "vars": {
+    "--color-paper": "#fdf6ec",
+    "--color-paper-2": "#f9ecd8",
+    "--color-paper-3": "#f2dfc2",
+    "--color-gold": "#d98324",
+    "--color-gold-light": "#f0ad6a",
+    "--color-gold-dark": "#9c5c14",
+    "--color-ink": "#4a2f18",
+    "--color-ink-soft": "#7c583a",
+    "--color-wine": "#c05c2c",
+    "--color-wine-dark": "#96431c",
+    "--color-sage": "#9c5c14",
+    "--color-blush": "#f2dfc2"
+   }
+  },
+  {
+   "id": "rose-garden",
+   "name": "Atirgul",
+   "vars": {
+    "--color-paper": "#fdf4f4",
+    "--color-paper-2": "#f9e9ea",
+    "--color-paper-3": "#f2dcde",
+    "--color-gold": "#c48b8f",
+    "--color-gold-light": "#e2b7ba",
+    "--color-gold-dark": "#8f565a",
+    "--color-ink": "#4a2c2e",
+    "--color-ink-soft": "#7d5558",
+    "--color-wine": "#a9545e",
+    "--color-wine-dark": "#8f565a",
+    "--color-sage": "#8f565a",
+    "--color-blush": "#f2dcde"
+   }
+  }
+ ],
+ "nikoh-marvarid": [
+  {
+   "id": "ivory-pearl",
+   "name": "Fil suyagi",
+   "vars": {
+    "--color-paper": "#faf7f0",
+    "--color-paper-2": "#f3eee2",
+    "--color-paper-3": "#eae3d1",
+    "--color-gold": "#b09a5e",
+    "--color-gold-light": "#d6c695",
+    "--color-gold-dark": "#7d6a3c",
+    "--color-ink": "#3d3729",
+    "--color-ink-soft": "#6b6250",
+    "--color-wine": "#9c7c2c",
+    "--color-wine-dark": "#7d6a3c",
+    "--color-sage": "#7d6a3c",
+    "--color-blush": "#eae3d1"
+   }
+  },
+  {
+   "id": "emerald-night",
+   "name": "Zumrad tun",
+   "vars": {
+    "--color-paper": "#0f1f17",
+    "--color-paper-2": "#15291e",
+    "--color-paper-3": "#1c3327",
+    "--color-gold": "#c9a227",
+    "--color-gold-light": "#e5c558",
+    "--color-gold-dark": "#8a7015",
+    "--color-ink": "#e8efe6",
+    "--color-ink-soft": "#a8bfae",
+    "--color-wine": "#2e8b57",
+    "--color-wine-dark": "#1f6b40",
+    "--color-sage": "#8a7015",
+    "--color-blush": "#1c3327"
+   }
+  },
+  {
+   "id": "rose-garden",
+   "name": "Atirgul",
+   "vars": {
+    "--color-paper": "#fdf4f4",
+    "--color-paper-2": "#f9e9ea",
+    "--color-paper-3": "#f2dcde",
+    "--color-gold": "#c48b8f",
+    "--color-gold-light": "#e2b7ba",
+    "--color-gold-dark": "#8f565a",
+    "--color-ink": "#4a2c2e",
+    "--color-ink-soft": "#7d5558",
+    "--color-wine": "#a9545e",
+    "--color-wine-dark": "#8f565a",
+    "--color-sage": "#8f565a",
+    "--color-blush": "#f2dcde"
+   }
+  }
+ ],
+ "nikoh-sapphire": [
+  {
+   "id": "sapphire-noir",
+   "name": "Qora sapfir",
+   "vars": {
+    "--color-paper": "#0e1420",
+    "--color-paper-2": "#131b2a",
+    "--color-paper-3": "#19233a",
+    "--color-gold": "#a8b8d8",
+    "--color-gold-light": "#ccd8ec",
+    "--color-gold-dark": "#6d80a8",
+    "--color-ink": "#eef2fa",
+    "--color-ink-soft": "#b8c4dc",
+    "--color-wine": "#5a7bc0",
+    "--color-wine-dark": "#3d5a94",
+    "--color-sage": "#6d80a8",
+    "--color-blush": "#19233a"
+   }
+  },
+  {
+   "id": "sunset-amber",
+   "name": "Qahrabo shafaq",
+   "vars": {
+    "--color-paper": "#fdf6ec",
+    "--color-paper-2": "#f9ecd8",
+    "--color-paper-3": "#f2dfc2",
+    "--color-gold": "#d98324",
+    "--color-gold-light": "#f0ad6a",
+    "--color-gold-dark": "#9c5c14",
+    "--color-ink": "#4a2f18",
+    "--color-ink-soft": "#7c583a",
+    "--color-wine": "#c05c2c",
+    "--color-wine-dark": "#96431c",
+    "--color-sage": "#9c5c14",
+    "--color-blush": "#f2dfc2"
+   }
+  },
+  {
+   "id": "royal-gold",
+   "name": "Qirollik oltini",
+   "vars": {
+    "--color-paper": "#1a1612",
+    "--color-paper-2": "#221d17",
+    "--color-paper-3": "#2b241b",
+    "--color-gold": "#d4a843",
+    "--color-gold-light": "#ecd28a",
+    "--color-gold-dark": "#8a6d1f",
+    "--color-ink": "#f0e8d5",
+    "--color-ink-soft": "#c9bda0",
+    "--color-wine": "#b8860b",
+    "--color-wine-dark": "#8a6d1f",
+    "--color-sage": "#8a6d1f",
+    "--color-blush": "#2b241b"
+   }
+  }
+ ],
+ "nikoh-bog": [
+  {
+   "id": "sage-mist",
+   "name": "Yashil tuman",
+   "vars": {
+    "--color-paper": "#f4f6f1",
+    "--color-paper-2": "#eaeee5",
+    "--color-paper-3": "#dfe5d8",
+    "--color-gold": "#8a9a5b",
+    "--color-gold-light": "#b3c187",
+    "--color-gold-dark": "#5d6c3a",
+    "--color-ink": "#33392c",
+    "--color-ink-soft": "#5c6550",
+    "--color-wine": "#6b7c4a",
+    "--color-wine-dark": "#556339",
+    "--color-sage": "#5d6c3a",
+    "--color-blush": "#dfe5d8"
+   }
+  },
+  {
+   "id": "spring-meadow",
+   "name": "Bahor o'tloqi",
+   "vars": {
+    "--color-paper": "#f6faf2",
+    "--color-paper-2": "#ecf4e3",
+    "--color-paper-3": "#dfedd1",
+    "--color-gold": "#d4a843",
+    "--color-gold-light": "#ecd28a",
+    "--color-gold-dark": "#8a6d1f",
+    "--color-ink": "#2e3b26",
+    "--color-ink-soft": "#56654a",
+    "--color-wine": "#5a8a3c",
+    "--color-wine-dark": "#43682c",
+    "--color-sage": "#8a6d1f",
+    "--color-blush": "#dfedd1"
+   }
+  }
+ ],
+ "biznes-vechin": [
+  {
+   "id": "sunset-amber",
+   "name": "Qahrabo shafaq",
+   "vars": {
+    "--color-paper": "#fdf6ec",
+    "--color-paper-2": "#f9ecd8",
+    "--color-paper-3": "#f2dfc2",
+    "--color-gold": "#d98324",
+    "--color-gold-light": "#f0ad6a",
+    "--color-gold-dark": "#9c5c14",
+    "--color-ink": "#4a2f18",
+    "--color-ink-soft": "#7c583a",
+    "--color-wine": "#c05c2c",
+    "--color-wine-dark": "#96431c",
+    "--color-sage": "#9c5c14",
+    "--color-blush": "#f2dfc2"
+   }
+  },
+  {
+   "id": "burgundy-luxe",
+   "name": "Bordo",
+   "vars": {
+    "--color-paper": "#2a1215",
+    "--color-paper-2": "#351919",
+    "--color-paper-3": "#412021",
+    "--color-gold": "#d4a843",
+    "--color-gold-light": "#ecd28a",
+    "--color-gold-dark": "#9a7524",
+    "--color-ink": "#f5e6dc",
+    "--color-ink-soft": "#cfb2a3",
+    "--color-wine": "#a03030",
+    "--color-wine-dark": "#7d2020",
+    "--color-sage": "#9a7524",
+    "--color-blush": "#412021"
+   }
+  },
+  {
+   "id": "ivory-pearl",
+   "name": "Fil suyagi",
+   "vars": {
+    "--color-paper": "#faf7f0",
+    "--color-paper-2": "#f3eee2",
+    "--color-paper-3": "#eae3d1",
+    "--color-gold": "#b09a5e",
+    "--color-gold-light": "#d6c695",
+    "--color-gold-dark": "#7d6a3c",
+    "--color-ink": "#3d3729",
+    "--color-ink-soft": "#6b6250",
+    "--color-wine": "#9c7c2c",
+    "--color-wine-dark": "#7d6a3c",
+    "--color-sage": "#7d6a3c",
+    "--color-blush": "#eae3d1"
+   }
+  }
+ ],
+ "sunnat-quyosh": [
+  {
+   "id": "sunset-amber",
+   "name": "Qahrabo shafaq",
+   "vars": {
+    "--color-paper": "#fdf6ec",
+    "--color-paper-2": "#f9ecd8",
+    "--color-paper-3": "#f2dfc2",
+    "--color-gold": "#d98324",
+    "--color-gold-light": "#f0ad6a",
+    "--color-gold-dark": "#9c5c14",
+    "--color-ink": "#4a2f18",
+    "--color-ink-soft": "#7c583a",
+    "--color-wine": "#c05c2c",
+    "--color-wine-dark": "#96431c",
+    "--color-sage": "#9c5c14",
+    "--color-blush": "#f2dfc2"
+   }
+  },
+  {
+   "id": "rose-garden",
+   "name": "Atirgul",
+   "vars": {
+    "--color-paper": "#fdf4f4",
+    "--color-paper-2": "#f9e9ea",
+    "--color-paper-3": "#f2dcde",
+    "--color-gold": "#c48b8f",
+    "--color-gold-light": "#e2b7ba",
+    "--color-gold-dark": "#8f565a",
+    "--color-ink": "#4a2c2e",
+    "--color-ink-soft": "#7d5558",
+    "--color-wine": "#a9545e",
+    "--color-wine-dark": "#8f565a",
+    "--color-sage": "#8f565a",
+    "--color-blush": "#f2dcde"
+   }
+  },
+  {
+   "id": "night-sky",
+   "name": "Tungi osmon",
+   "vars": {
+    "--color-paper": "#12121f",
+    "--color-paper-2": "#181828",
+    "--color-paper-3": "#202033",
+    "--color-gold": "#f0c75e",
+    "--color-gold-light": "#f8dd91",
+    "--color-gold-dark": "#b8953a",
+    "--color-ink": "#eef0fa",
+    "--color-ink-soft": "#b8bcd4",
+    "--color-wine": "#7a6ff0",
+    "--color-wine-dark": "#5a50c8",
+    "--color-sage": "#b8953a",
+    "--color-blush": "#202033"
+   }
+  }
+ ],
+ "sunnat-shirin": [
+  {
+   "id": "candy-cloud",
+   "name": "Pushti bulut",
+   "vars": {
+    "--color-paper": "#fdf6fa",
+    "--color-paper-2": "#f9ecf5",
+    "--color-paper-3": "#f3e0ee",
+    "--color-gold": "#c77dbb",
+    "--color-gold-light": "#e3a8d8",
+    "--color-gold-dark": "#94528a",
+    "--color-ink": "#452a40",
+    "--color-ink-soft": "#755170",
+    "--color-wine": "#a05a94",
+    "--color-wine-dark": "#7d4273",
+    "--color-sage": "#94528a",
+    "--color-blush": "#f3e0ee"
+   }
+  }
+ ],
+ "yubiley-tun": [
+  {
+   "id": "emerald-night",
+   "name": "Zumrad tun",
+   "vars": {
+    "--color-paper": "#0f1f17",
+    "--color-paper-2": "#15291e",
+    "--color-paper-3": "#1c3327",
+    "--color-gold": "#c9a227",
+    "--color-gold-light": "#e5c558",
+    "--color-gold-dark": "#8a7015",
+    "--color-ink": "#e8efe6",
+    "--color-ink-soft": "#a8bfae",
+    "--color-wine": "#2e8b57",
+    "--color-wine-dark": "#1f6b40",
+    "--color-sage": "#8a7015",
+    "--color-blush": "#1c3327"
+   }
+  },
+  {
+   "id": "spring-meadow",
+   "name": "Bahor o'tloqi",
+   "vars": {
+    "--color-paper": "#f6faf2",
+    "--color-paper-2": "#ecf4e3",
+    "--color-paper-3": "#dfedd1",
+    "--color-gold": "#d4a843",
+    "--color-gold-light": "#ecd28a",
+    "--color-gold-dark": "#8a6d1f",
+    "--color-ink": "#2e3b26",
+    "--color-ink-soft": "#56654a",
+    "--color-wine": "#5a8a3c",
+    "--color-wine-dark": "#43682c",
+    "--color-sage": "#8a6d1f",
+    "--color-blush": "#dfedd1"
+   }
+  }
+ ],
+ "beshik-olovrang": [
+  {
+   "id": "sunset-amber",
+   "name": "Qahrabo shafaq",
+   "vars": {
+    "--color-paper": "#fdf6ec",
+    "--color-paper-2": "#f9ecd8",
+    "--color-paper-3": "#f2dfc2",
+    "--color-gold": "#d98324",
+    "--color-gold-light": "#f0ad6a",
+    "--color-gold-dark": "#9c5c14",
+    "--color-ink": "#4a2f18",
+    "--color-ink-soft": "#7c583a",
+    "--color-wine": "#c05c2c",
+    "--color-wine-dark": "#96431c",
+    "--color-sage": "#9c5c14",
+    "--color-blush": "#f2dfc2"
+   }
+  },
+  {
+   "id": "spring-meadow",
+   "name": "Bahor o'tloqi",
+   "vars": {
+    "--color-paper": "#f6faf2",
+    "--color-paper-2": "#ecf4e3",
+    "--color-paper-3": "#dfedd1",
+    "--color-gold": "#d4a843",
+    "--color-gold-light": "#ecd28a",
+    "--color-gold-dark": "#8a6d1f",
+    "--color-ink": "#2e3b26",
+    "--color-ink-soft": "#56654a",
+    "--color-wine": "#5a8a3c",
+    "--color-wine-dark": "#43682c",
+    "--color-sage": "#8a6d1f",
+    "--color-blush": "#dfedd1"
+   }
+  }
+ ],
+ "beshik-kok": [
+  {
+   "id": "sapphire-noir",
+   "name": "Qora sapfir",
+   "vars": {
+    "--color-paper": "#0e1420",
+    "--color-paper-2": "#131b2a",
+    "--color-paper-3": "#19233a",
+    "--color-gold": "#a8b8d8",
+    "--color-gold-light": "#ccd8ec",
+    "--color-gold-dark": "#6d80a8",
+    "--color-ink": "#eef2fa",
+    "--color-ink-soft": "#b8c4dc",
+    "--color-wine": "#5a7bc0",
+    "--color-wine-dark": "#3d5a94",
+    "--color-sage": "#6d80a8",
+    "--color-blush": "#19233a"
+   }
+  },
+  {
+   "id": "candy-cloud",
+   "name": "Pushti bulut",
+   "vars": {
+    "--color-paper": "#fdf6fa",
+    "--color-paper-2": "#f9ecf5",
+    "--color-paper-3": "#f3e0ee",
+    "--color-gold": "#c77dbb",
+    "--color-gold-light": "#e3a8d8",
+    "--color-gold-dark": "#94528a",
+    "--color-ink": "#452a40",
+    "--color-ink-soft": "#755170",
+    "--color-wine": "#a05a94",
+    "--color-wine-dark": "#7d4273",
+    "--color-sage": "#94528a",
+    "--color-blush": "#f3e0ee"
+   }
+  }
+ ],
+ "oilaviy-gul": [
+  {
+   "id": "rose-garden",
+   "name": "Atirgul",
+   "vars": {
+    "--color-paper": "#fdf4f4",
+    "--color-paper-2": "#f9e9ea",
+    "--color-paper-3": "#f2dcde",
+    "--color-gold": "#c48b8f",
+    "--color-gold-light": "#e2b7ba",
+    "--color-gold-dark": "#8f565a",
+    "--color-ink": "#4a2c2e",
+    "--color-ink-soft": "#7d5558",
+    "--color-wine": "#a9545e",
+    "--color-wine-dark": "#8f565a",
+    "--color-sage": "#8f565a",
+    "--color-blush": "#f2dcde"
+   }
+  }
+ ],
+ "biznes-summit": [
+  {
+   "id": "sapphire-noir",
+   "name": "Qora sapfir",
+   "vars": {
+    "--color-paper": "#0e1420",
+    "--color-paper-2": "#131b2a",
+    "--color-paper-3": "#19233a",
+    "--color-gold": "#a8b8d8",
+    "--color-gold-light": "#ccd8ec",
+    "--color-gold-dark": "#6d80a8",
+    "--color-ink": "#eef2fa",
+    "--color-ink-soft": "#b8c4dc",
+    "--color-wine": "#5a7bc0",
+    "--color-wine-dark": "#3d5a94",
+    "--color-sage": "#6d80a8",
+    "--color-blush": "#19233a"
+   }
+  }
+ ],
+ "biznes-forum": [
+  {
+   "id": "sapphire-noir",
+   "name": "Qora sapfir",
+   "vars": {
+    "--color-paper": "#0e1420",
+    "--color-paper-2": "#131b2a",
+    "--color-paper-3": "#19233a",
+    "--color-gold": "#a8b8d8",
+    "--color-gold-light": "#ccd8ec",
+    "--color-gold-dark": "#6d80a8",
+    "--color-ink": "#eef2fa",
+    "--color-ink-soft": "#b8c4dc",
+    "--color-wine": "#5a7bc0",
+    "--color-wine-dark": "#3d5a94",
+    "--color-sage": "#6d80a8",
+    "--color-blush": "#19233a"
+   }
+  }
+ ],
+ "biznes-restoran": [
+  {
+   "id": "burgundy-luxe",
+   "name": "Bordo",
+   "vars": {
+    "--color-paper": "#2a1215",
+    "--color-paper-2": "#351919",
+    "--color-paper-3": "#412021",
+    "--color-gold": "#d4a843",
+    "--color-gold-light": "#ecd28a",
+    "--color-gold-dark": "#9a7524",
+    "--color-ink": "#f5e6dc",
+    "--color-ink-soft": "#cfb2a3",
+    "--color-wine": "#a03030",
+    "--color-wine-dark": "#7d2020",
+    "--color-sage": "#9a7524",
+    "--color-blush": "#412021"
+   }
+  }
+ ],
+ "oilaviy-oltin-toy": [
+  {
+   "id": "royal-gold",
+   "name": "Qirollik oltini",
+   "vars": {
+    "--color-paper": "#1a1612",
+    "--color-paper-2": "#221d17",
+    "--color-paper-3": "#2b241b",
+    "--color-gold": "#d4a843",
+    "--color-gold-light": "#ecd28a",
+    "--color-gold-dark": "#8a6d1f",
+    "--color-ink": "#f0e8d5",
+    "--color-ink-soft": "#c9bda0",
+    "--color-wine": "#b8860b",
+    "--color-wine-dark": "#8a6d1f",
+    "--color-sage": "#8a6d1f",
+    "--color-blush": "#2b241b"
+   }
+  }
+ ],
+ "nikoh-imperial": [
+  {
+   "id": "nikoh-imperial",
+   "name": "Oq va oltin",
+   "vars": {
+    "--color-paper": "#FFFEFB",
+    "--color-paper-2": "#F6F6F4",
+    "--color-paper-3": "#EDE7DA",
+    "--color-gold": "#A9842F",
+    "--color-gold-light": "#E0C172",
+    "--color-gold-dark": "#7D5F22",
+    "--color-ink": "#1A1A1A",
+    "--color-ink-soft": "#3A3A3A",
+    "--color-wine": "#9B8347",
+    "--color-wine-dark": "#6F5F2E",
+    "--color-sage": "#B08F4D",
+    "--color-blush": "#E6DDC8",
+    "--tpl-petal-a": "#E7CD86",
+    "--tpl-petal-b": "#FFF3CF",
+    "--tpl-grad-a": "#FFFEFB",
+    "--tpl-grad-b": "#EDE7DA",
+    "--tpl-accent": "#C9A96E"
+   }
+  },
+  {
+   "id": "toy-yoqut",
+   "name": "Yoqut va tilla",
+   "vars": {
+    "--color-paper": "#0F0204",
+    "--color-paper-2": "#1A0506",
+    "--color-paper-3": "#241013",
+    "--color-gold": "#E8CE7A",
+    "--color-gold-light": "#F5E3AC",
+    "--color-gold-dark": "#B89542",
+    "--color-ink": "#F5E8D0",
+    "--color-ink-soft": "#C6B08A",
+    "--color-wine": "#8E1F2A",
+    "--color-wine-dark": "#5C1018",
+    "--color-sage": "#6E6242",
+    "--color-blush": "#2A1214",
+    "--tpl-petal-a": "#8E1F2A",
+    "--tpl-petal-b": "#E8CE7A",
+    "--tpl-grad-a": "#0F0204",
+    "--tpl-grad-b": "#1A0506",
+    "--tpl-accent": "#E8CE7A"
+   }
+  },
+  {
+   "id": "nikoh-royal",
+   "name": "Qirollik ko‘ki",
+   "vars": {
+    "--color-paper": "#FFFDF6",
+    "--color-paper-2": "#F4F1E6",
+    "--color-paper-3": "#E4E1D3",
+    "--color-gold": "#C9A96E",
+    "--color-gold-light": "#E5CD96",
+    "--color-gold-dark": "#96793F",
+    "--color-ink": "#112250",
+    "--color-ink-soft": "#3B4A78",
+    "--color-wine": "#1B2F63",
+    "--color-wine-dark": "#112250",
+    "--color-sage": "#6C7BA6",
+    "--color-blush": "#DCE2F2",
+    "--tpl-petal-a": "#112250",
+    "--tpl-petal-b": "#C9A96E",
+    "--tpl-grad-a": "#FFFDF6",
+    "--tpl-grad-b": "#E4E1D3",
+    "--tpl-accent": "#112250"
+   }
+  },
+  {
+   "id": "nikoh-ivory",
+   "name": "Fil suyagi va bordo",
+   "vars": {
+    "--color-paper": "#F9F0E0",
+    "--color-paper-2": "#F2E7D2",
+    "--color-paper-3": "#E9DCC2",
+    "--color-gold": "#8A6A34",
+    "--color-gold-light": "#C9A961",
+    "--color-gold-dark": "#6C513F",
+    "--color-ink": "#3C2F24",
+    "--color-ink-soft": "#6C513F",
+    "--color-wine": "#7D1F28",
+    "--color-wine-dark": "#4E1016",
+    "--color-sage": "#8A9A7B",
+    "--color-blush": "#E2CDB4",
+    "--tpl-petal-a": "#E2CDB4",
+    "--tpl-petal-b": "#C9A961",
+    "--tpl-grad-a": "#F9F0E0",
+    "--tpl-grad-b": "#E9DCC2",
+    "--tpl-accent": "#8A6A34"
+   }
+  },
+  {
+   "id": "nikoh-sacred",
+   "name": "Zaytun bog‘",
+   "vars": {
+    "--color-paper": "#F9F0E0",
+    "--color-paper-2": "#F1EAD8",
+    "--color-paper-3": "#E6DCC5",
+    "--color-gold": "#7E8C55",
+    "--color-gold-light": "#A8B87C",
+    "--color-gold-dark": "#59633A",
+    "--color-ink": "#33392C",
+    "--color-ink-soft": "#5C6550",
+    "--color-wine": "#7D1F28",
+    "--color-wine-dark": "#4E1016",
+    "--color-sage": "#89916B",
+    "--color-blush": "#E2CDB4",
+    "--tpl-petal-a": "#DDE6CE",
+    "--tpl-petal-b": "#E2CDB4",
+    "--tpl-grad-a": "#F9F0E0",
+    "--tpl-grad-b": "#E6DCC5",
+    "--tpl-accent": "#89916B"
+   }
+  },
+  {
+   "id": "qiz-bazmi-nafis",
+   "name": "Nafis yashil",
+   "vars": {
+    "--color-paper": "#F7F6EC",
+    "--color-paper-2": "#EFF1E1",
+    "--color-paper-3": "#E3E7D2",
+    "--color-gold": "#8A6A34",
+    "--color-gold-light": "#CFA95E",
+    "--color-gold-dark": "#54603A",
+    "--color-ink": "#2E3A1E",
+    "--color-ink-soft": "#4A5232",
+    "--color-wine": "#77894E",
+    "--color-wine-dark": "#54603A",
+    "--color-sage": "#7B8C53",
+    "--color-blush": "#ECD9A4",
+    "--tpl-petal-a": "#CFA95E",
+    "--tpl-petal-b": "#7B8C53",
+    "--tpl-grad-a": "#F7F6EC",
+    "--tpl-grad-b": "#E3E7D2",
+    "--tpl-accent": "#8A6A34"
+   }
+  },
+  {
+   "id": "qiz-bazmi-sharqona",
+   "name": "Sharqona",
+   "vars": {
+    "--color-paper": "#FBF6E6",
+    "--color-paper-2": "#F1E6C6",
+    "--color-paper-3": "#E4D5AC",
+    "--color-gold": "#9A6A2F",
+    "--color-gold-light": "#E0C07F",
+    "--color-gold-dark": "#5A3B28",
+    "--color-ink": "#3A241A",
+    "--color-ink-soft": "#5A3B28",
+    "--color-wine": "#7A1F2B",
+    "--color-wine-dark": "#4A3222",
+    "--color-sage": "#8A6A34",
+    "--color-blush": "#D8B978",
+    "--tpl-petal-a": "#E0C07F",
+    "--tpl-petal-b": "#7A1F2B",
+    "--tpl-grad-a": "#FFF9EC",
+    "--tpl-grad-b": "#E4D5AC",
+    "--tpl-accent": "#9A6A2F"
+   }
+  },
+  {
+   "id": "milliy-anor",
+   "name": "Anor",
+   "vars": {
+    "--color-paper": "#F4EEE4",
+    "--color-paper-2": "#FFF4EA",
+    "--color-paper-3": "#EADFCF",
+    "--color-gold": "#B07B2E",
+    "--color-gold-light": "#D9B266",
+    "--color-gold-dark": "#5F211F",
+    "--color-ink": "#3A2422",
+    "--color-ink-soft": "#6B4A44",
+    "--color-wine": "#5F211F",
+    "--color-wine-dark": "#3F1413",
+    "--color-sage": "#7E8B62",
+    "--color-blush": "#E4C9A8",
+    "--tpl-petal-a": "#5F211F",
+    "--tpl-petal-b": "#D9B266",
+    "--tpl-grad-a": "#F4EEE4",
+    "--tpl-grad-b": "#EADFCF",
+    "--tpl-accent": "#5F211F"
+   }
+  },
+  {
+   "id": "sunnat-luxe",
+   "name": "Pushti oltin",
+   "vars": {
+    "--color-paper": "#FFFAF2",
+    "--color-paper-2": "#F8ECE4",
+    "--color-paper-3": "#F0DFD6",
+    "--color-gold": "#B76E79",
+    "--color-gold-light": "#E0A8B0",
+    "--color-gold-dark": "#8C4A54",
+    "--color-ink": "#3A2A28",
+    "--color-ink-soft": "#6A4F4C",
+    "--color-wine": "#B76E79",
+    "--color-wine-dark": "#8C4A54",
+    "--color-sage": "#A8A48C",
+    "--color-blush": "#F0D9D2",
+    "--tpl-petal-a": "#F0D9D2",
+    "--tpl-petal-b": "#E0A8B0",
+    "--tpl-grad-a": "#FFFAF2",
+    "--tpl-grad-b": "#F0DFD6",
+    "--tpl-accent": "#B76E79"
+   }
+  },
+  {
+   "id": "nikoh-pearl",
+   "name": "Marvarid",
+   "vars": {
+    "--color-paper": "#F8F5F0",
+    "--color-paper-2": "#F0E8DF",
+    "--color-paper-3": "#E5DCCC",
+    "--color-gold": "#C9A96E",
+    "--color-gold-light": "#E3CD9C",
+    "--color-gold-dark": "#8A7647",
+    "--color-ink": "#1A1A1A",
+    "--color-ink-soft": "#5A5A5A",
+    "--color-wine": "#8A8A8A",
+    "--color-wine-dark": "#4A4A4A",
+    "--color-sage": "#C8B89E",
+    "--color-blush": "#EDE2D0",
+    "--tpl-petal-a": "#EDE2D0",
+    "--tpl-petal-b": "#C8B89E",
+    "--tpl-grad-a": "#F8F5F0",
+    "--tpl-grad-b": "#E5DCCC",
+    "--tpl-accent": "#C9A96E"
+   }
+  },
+  {
+   "id": "nikoh-velvet",
+   "name": "Qora baxmal",
+   "vars": {
+    "--color-paper": "#150509",
+    "--color-paper-2": "#1A060F",
+    "--color-paper-3": "#2A0810",
+    "--color-gold": "#D4A87C",
+    "--color-gold-light": "#F3D9A8",
+    "--color-gold-dark": "#8A5A3A",
+    "--color-ink": "#F5E6D3",
+    "--color-ink-soft": "#C9A98C",
+    "--color-wine": "#5A1432",
+    "--color-wine-dark": "#3D0A1F",
+    "--color-sage": "#8A5A3A",
+    "--color-blush": "#4A0F24",
+    "--tpl-petal-a": "#5A1432",
+    "--tpl-petal-b": "#F3D9A8",
+    "--tpl-grad-a": "#0A0307",
+    "--tpl-grad-b": "#2A0810",
+    "--tpl-accent": "#D4A87C"
+   }
+  }
+ ],
+ "nikoh-floral": [
+  {
+   "id": "nikoh-floral",
+   "name": "Yashil gullar",
+   "vars": {
+    "--color-paper": "#F4F6EF",
+    "--color-paper-2": "#EEF2E6",
+    "--color-paper-3": "#E2E9D6",
+    "--color-gold": "#7D9160",
+    "--color-gold-light": "#A8BD8A",
+    "--color-gold-dark": "#54683C",
+    "--color-ink": "#33392C",
+    "--color-ink-soft": "#5C6550",
+    "--color-wine": "#A9545E",
+    "--color-wine-dark": "#8F565A",
+    "--color-sage": "#7D9160",
+    "--color-blush": "#E6D3D8",
+    "--tpl-petal-a": "#DBE8CD",
+    "--tpl-petal-b": "#E6D3D8",
+    "--tpl-grad-a": "#F4F6EF",
+    "--tpl-grad-b": "#E2E9D6",
+    "--tpl-accent": "#7D9160"
+   }
+  },
+  {
+   "id": "fotiha-floral",
+   "name": "To‘q yashil gullar",
+   "vars": {
+    "--color-paper": "#F4F6EF",
+    "--color-paper-2": "#EDF2E4",
+    "--color-paper-3": "#E0E8D3",
+    "--color-gold": "#6F8552",
+    "--color-gold-light": "#9FB37C",
+    "--color-gold-dark": "#4C5A32",
+    "--color-ink": "#33392C",
+    "--color-ink-soft": "#5C6550",
+    "--color-wine": "#A9545E",
+    "--color-wine-dark": "#8F565A",
+    "--color-sage": "#6F8552",
+    "--color-blush": "#E6D3D8",
+    "--tpl-petal-a": "#D8E6C8",
+    "--tpl-petal-b": "#E6D3D8",
+    "--tpl-grad-a": "#F4F6EF",
+    "--tpl-grad-b": "#E0E8D3",
+    "--tpl-accent": "#6F8552"
+   }
+  },
+  {
+   "id": "nikoh-gul",
+   "name": "Pushti gullar",
+   "vars": {
+    "--color-paper": "#F9F1E7",
+    "--color-paper-2": "#F2E6D8",
+    "--color-paper-3": "#E8D9C6",
+    "--color-gold": "#8B7355",
+    "--color-gold-light": "#DCBFA0",
+    "--color-gold-dark": "#5F4E38",
+    "--color-ink": "#3B3B3B",
+    "--color-ink-soft": "#6B6B6B",
+    "--color-wine": "#FB7185",
+    "--color-wine-dark": "#E05575",
+    "--color-sage": "#A8B48C",
+    "--color-blush": "#FBD9DF",
+    "--tpl-petal-a": "#FBC7D4",
+    "--tpl-petal-b": "#DCBFA0",
+    "--tpl-grad-a": "#F9F1E7",
+    "--tpl-grad-b": "#E8D9C6",
+    "--tpl-accent": "#FB7185"
+   }
+  }
+ ],
+ "nikoh-aurora": [
+  {
+   "id": "nikoh-aurora",
+   "name": "Shimol shafag‘i",
+   "vars": {
+    "--color-paper": "#1A1530",
+    "--color-paper-2": "#221A3C",
+    "--color-paper-3": "#2B2148",
+    "--color-gold": "#C9B6E3",
+    "--color-gold-light": "#E8D4F5",
+    "--color-gold-dark": "#A8D0E6",
+    "--color-ink": "#F4F1FA",
+    "--color-ink-soft": "#C3BAD8",
+    "--color-wine": "#FFB6D2",
+    "--color-wine-dark": "#FF9EC0",
+    "--color-sage": "#88E5D3",
+    "--color-blush": "#B8A3FF",
+    "--tpl-petal-a": "#B8A3FF",
+    "--tpl-petal-b": "#FFB6D2",
+    "--tpl-grad-a": "#0F0A25",
+    "--tpl-grad-b": "#2A1F4A",
+    "--tpl-accent": "#88E5D3"
+   }
+  },
+  {
+   "id": "nikoh-epic",
+   "name": "Qora va oltin",
+   "vars": {
+    "--color-paper": "#12100C",
+    "--color-paper-2": "#1A0E00",
+    "--color-paper-3": "#241A0C",
+    "--color-gold": "#FBBF24",
+    "--color-gold-light": "#FDE08A",
+    "--color-gold-dark": "#F59E0B",
+    "--color-ink": "#FDF6E7",
+    "--color-ink-soft": "#CDBB99",
+    "--color-wine": "#1976D2",
+    "--color-wine-dark": "#1565C0",
+    "--color-sage": "#1976D2",
+    "--color-blush": "#2B3550",
+    "--tpl-petal-a": "#FBBF24",
+    "--tpl-petal-b": "#1976D2",
+    "--tpl-grad-a": "#0A0806",
+    "--tpl-grad-b": "#1A0E00",
+    "--tpl-accent": "#1976D2"
+   }
+  },
+  {
+   "id": "nikoh-modern",
+   "name": "Tun va bronza",
+   "vars": {
+    "--color-paper": "#070707",
+    "--color-paper-2": "#16171A",
+    "--color-paper-3": "#21231F",
+    "--color-gold": "#C9A96E",
+    "--color-gold-light": "#F5E0A0",
+    "--color-gold-dark": "#8B6045",
+    "--color-ink": "#F4EAD8",
+    "--color-ink-soft": "#B48A58",
+    "--color-wine": "#A07840",
+    "--color-wine-dark": "#6F4C33",
+    "--color-sage": "#8B6045",
+    "--color-blush": "#D6BB8F",
+    "--tpl-petal-a": "#D6BB8F",
+    "--tpl-petal-b": "#C9A96E",
+    "--tpl-grad-a": "#050505",
+    "--tpl-grad-b": "#21231F",
+    "--tpl-accent": "#C9A96E"
+   }
+  }
+ ]
+}

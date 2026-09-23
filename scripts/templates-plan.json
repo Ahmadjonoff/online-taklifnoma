@@ -72,67 +72,14 @@
       "desc": "Qorong'i fon, oltin zarhal hoshiyalar — hashamatli nikoh to'yi",
       "price": 99000,
       "emoji": "👑",
-      "kicker": "Nikoh kuni"
-    },
-    {
-      "slug": "toy-ivory-pearl",
-      "name": "Ivory Pearl",
-      "base": "toy-original",
-      "eventType": "toy",
-      "palette": "ivory-pearl",
-      "typo": "script",
-      "desc": "Sutrang oq va marvarid — nafis, yengil to'y taklifnomasi",
-      "price": 89000,
-      "emoji": "🤍",
-      "kicker": "To'y marosimi"
-    },
-    {
-      "slug": "toy-rose-garden",
-      "name": "Rose Garden",
-      "base": "toy-original",
-      "eventType": "toy",
-      "palette": "rose-garden",
-      "typo": "script",
-      "desc": "Pushti gullar va романтика — yosh juftlik uchun",
-      "price": 89000,
-      "emoji": "🌹",
-      "kicker": "Biznik bo'lamiz"
-    },
-    {
-      "slug": "toy-emerald-night",
-      "name": "Emerald Night",
-      "base": "toy-original",
-      "eventType": "toy",
-      "palette": "emerald-night",
-      "typo": "classic",
-      "desc": "Zumrad yashil va tunda oltin — mazmunli chuqurlik",
-      "price": 99000,
-      "emoji": "💚",
-      "kicker": "Nikoh to'yi"
-    },
-    {
-      "slug": "toy-burgundy-luxe",
-      "name": "Burgundy Luxe",
-      "base": "toy-original",
-      "eventType": "toy",
-      "palette": "burgundy-luxe",
-      "typo": "classic",
-      "desc": "Qizil sharob va oltin — issiq, badavlat kayfiyat",
-      "price": 94000,
-      "emoji": "🍷",
-      "kicker": "To'y dasturxoni"
-    },
-    {
-      "slug": "toy-sage-mist",
-      "name": "Sage Mist",
-      "base": "toy-original",
-      "eventType": "toy",
-      "palette": "sage-mist",
-      "typo": "minimal",
-      "desc": "Shimoliy yashil va krem — zamonaviy minimalistika",
-      "price": 79000,
-      "emoji": "🌿",
-      "kicker": "Keling, birlashamiz"
+      "kicker": "Nikoh kuni",
+      "categories": [
+        "toy",
+        "sunnat-toyi",
+        "beshik-toyi",
+        "yubiley",
+        "oilaviy"
+      ]
     },
     {
       "slug": "nikoh-amanat",
@@ -144,7 +91,12 @@
       "desc": "An'anaviy nikoh to'yi — oq-oltin, hurmatli uslub",
       "price": 89000,
       "emoji": "🕌",
-      "kicker": "Nikoh to'yi"
+      "kicker": "Nikoh to'yi",
+      "categories": [
+        "nikoh-toyi",
+        "fotiha-toyi",
+        "bayramlar"
+      ]
     },
     {
       "slug": "nikoh-crescent",
@@ -156,7 +108,13 @@
       "desc": "Yarim oy naqshlari — islomiy nafislik",
       "price": 94000,
       "emoji": "☪",
-      "kicker": "Nikoh marosimi"
+      "kicker": "Nikoh marosimi",
+      "categories": [
+        "nikoh-toyi",
+        "fotiha-toyi",
+        "sunnat-toyi",
+        "bayramlar"
+      ]
     },
     {
       "slug": "nikoh-olovrang",
@@ -168,7 +126,12 @@
       "desc": "Quyosh botishi ranglari — iliq nikoh to'yi",
       "price": 89000,
       "emoji": "🌅",
-      "kicker": "Nikoh dasturxoni"
+      "kicker": "Nikoh dasturxoni",
+      "categories": [
+        "nikoh-toyi",
+        "tugilgan-kun",
+        "yubiley"
+      ]
     },
     {
       "slug": "nikoh-marvarid",
@@ -180,7 +143,12 @@
       "desc": "Marvarid dumaloqlari — yumshoq, ayol bag'ri",
       "price": 84000,
       "emoji": "🤍",
-      "kicker": "Nikoh kechasi"
+      "kicker": "Nikoh kechasi",
+      "categories": [
+        "nikoh-toyi",
+        "fotiha-toyi",
+        "yubiley"
+      ]
     },
     {
       "slug": "nikoh-sapphire",
@@ -192,7 +160,15 @@
       "desc": "Safir ko'ki va oltin — tunda yorqin",
       "price": 99000,
       "emoji": "💙",
-      "kicker": "Nikoh to'yi"
+      "kicker": "Nikoh to'yi",
+      "categories": [
+        "nikoh-toyi",
+        "fotiha-toyi",
+        "tugilgan-kun",
+        "yubiley",
+        "bayramlar",
+        "biznes"
+      ]
     },
     {
       "slug": "nikoh-bog",
@@ -204,91 +180,16 @@
       "desc": "Bog' va gullar — tabiiy, ochiq havodagi nikoh",
       "price": 84000,
       "emoji": "🌸",
-      "kicker": "Biz nikoh qilamiz"
-    },
-    {
-      "slug": "fotiha-anana",
-      "name": "An'ana",
-      "base": "fotiha-sovchilik",
-      "eventType": "fotiha-toyi",
-      "palette": "ivory-pearl",
-      "typo": "classic",
-      "desc": "Sovchilik uchun an'anaviy oq-oltin dizayn",
-      "price": 69000,
-      "emoji": "📖",
-      "kicker": "Fotiha to'yi"
-    },
-    {
-      "slug": "fotiha-duo",
-      "name": "Duo",
-      "base": "sunnat-toy",
-      "eventType": "fotiha-toyi",
-      "palette": "royal-gold",
-      "typo": "classic",
-      "desc": "Muqaddas marosim — oltin va qorong'i fon",
-      "price": 74000,
-      "emoji": "🤲",
-      "kicker": "Fotiha marosimi"
-    },
-    {
-      "slug": "fotiha-olovrang",
-      "name": "Iliq Uchrashuv",
-      "base": "dinner-party",
-      "eventType": "fotiha-toyi",
-      "palette": "sunset-amber",
-      "typo": "script",
-      "desc": "Sovchilik kechki ovqati — iliq, samimiy",
-      "price": 69000,
-      "emoji": "🍯",
-      "kicker": "Sovchilik"
-    },
-    {
-      "slug": "fotiha-yashil",
-      "name": "Xayrli Kun",
-      "base": "oilaviy-tadbir",
-      "eventType": "fotiha-toyi",
-      "palette": "sage-mist",
-      "typo": "minimal",
-      "desc": "Xayrli kun uchun yengil yashil",
-      "price": 64000,
-      "emoji": "🍀",
-      "kicker": "Fotiha to'yi"
-    },
-    {
-      "slug": "fotiha-zumrad",
-      "name": "Zumrad Marosim",
-      "base": "kelin-salom",
-      "eventType": "fotiha-toyi",
-      "palette": "emerald-night",
-      "typo": "classic",
-      "desc": "Zumrad fon — katta marosimlar uchun",
-      "price": 74000,
-      "emoji": "💚",
-      "kicker": "Fotiha tadbiri"
-    },
-    {
-      "slug": "fotiha-noir",
-      "name": "Noir Invite",
-      "base": "grand-opening",
-      "eventType": "fotiha-toyi",
-      "palette": "sapphire-noir",
-      "typo": "classic",
-      "desc": "Zamonaviy qora-oq kontrast",
-      "price": 69000,
-      "emoji": "🖤",
-      "kicker": "Marosim"
-    },
-    {
-      "slug": "sunnat-yulduz",
-      "name": "Yulduzli Kechalar",
-      "base": "sunnat-toy",
-      "eventType": "sunnat-toyi",
-      "palette": "night-sky",
-      "typo": "script",
-      "desc": "Oy va yulduzlar — bolalar sunnat to'yi",
-      "price": 59000,
-      "emoji": "🌙",
-      "kicker": "Sunnat to'yi"
+      "kicker": "Biz nikoh qilamiz",
+      "categories": [
+        "nikoh-toyi",
+        "fotiha-toyi",
+        "sunnat-toyi",
+        "beshik-toyi",
+        "tugilgan-kun",
+        "bayramlar",
+        "oilaviy"
+      ]
     },
     {
       "slug": "sunnat-quyosh",
@@ -300,31 +201,13 @@
       "desc": "Quvnoq quyoshli kun — yosh azamatlar",
       "price": 54000,
       "emoji": "☀️",
-      "kicker": "Sunnat to'yi"
-    },
-    {
-      "slug": "sunnat-oltin",
-      "name": "Oltin Sunnat",
-      "base": "toy-original",
-      "eventType": "sunnat-toyi",
-      "palette": "royal-gold",
-      "typo": "classic",
-      "desc": "Hashamatli sunnat — katta dasturxon",
-      "price": 74000,
-      "emoji": "👑",
-      "kicker": "Sunnat to'yi"
-    },
-    {
-      "slug": "sunnat-bogbon",
-      "name": "Bog'bon",
-      "base": "oilaviy-tadbir",
-      "eventType": "sunnat-toyi",
-      "palette": "sage-mist",
-      "typo": "minimal",
-      "desc": "Bog'dagi kichik sunnat — tabiiy",
-      "price": 49000,
-      "emoji": "🌱",
-      "kicker": "Farzandimiz sunnati"
+      "kicker": "Sunnat to'yi",
+      "categories": [
+        "sunnat-toyi",
+        "beshik-toyi",
+        "tugilgan-kun",
+        "bayramlar"
+      ]
     },
     {
       "slug": "sunnat-shirin",
@@ -336,19 +219,11 @@
       "desc": "Shirinliklar va sharlar — quvnoq kun",
       "price": 54000,
       "emoji": "🎈",
-      "kicker": "Sunnat bayrami"
-    },
-    {
-      "slug": "sunnat-tun",
-      "name": "Tun Kechasi",
-      "base": "graduation",
-      "eventType": "sunnat-toyi",
-      "palette": "emerald-night",
-      "typo": "classic",
-      "desc": "Kechki tantanali sunnat",
-      "price": 64000,
-      "emoji": "🌙",
-      "kicker": "Sunnat kechasi"
+      "kicker": "Sunnat bayrami",
+      "categories": [
+        "sunnat-toyi",
+        "beshik-toyi"
+      ]
     },
     {
       "slug": "beshik-olovrang",
@@ -360,31 +235,11 @@
       "desc": "Beshik to'yi — iliq, uyumli ranglar",
       "price": 49000,
       "emoji": "🍼",
-      "kicker": "Beshik to'yi"
-    },
-    {
-      "slug": "beshik-bulut",
-      "name": "Bulutcha",
-      "base": "baby-shower",
-      "eventType": "beshik-toyi",
-      "palette": "candy-cloud",
-      "typo": "script",
-      "desc": "Bulut va yulduzlar — yangi tug'ilgan chaqaloq",
-      "price": 49000,
-      "emoji": "☁️",
-      "kicker": "Beshik to'yi"
-    },
-    {
-      "slug": "beshik-pastel",
-      "name": "Pastel Kechalar",
-      "base": "1-yosh",
-      "eventType": "beshik-toyi",
-      "palette": "rose-garden",
-      "typo": "script",
-      "desc": "Pastel pushti — qiz chaqaloq beshigi",
-      "price": 44000,
-      "emoji": "🌸",
-      "kicker": "Beshik to'yi"
+      "kicker": "Beshik to'yi",
+      "categories": [
+        "beshik-toyi",
+        "oilaviy"
+      ]
     },
     {
       "slug": "beshik-kok",
@@ -396,127 +251,11 @@
       "desc": "Osmon ko'ki — o'g'il chaqaloq",
       "price": 44000,
       "emoji": "💙",
-      "kicker": "Beshik to'yi"
-    },
-    {
-      "slug": "beshik-osimlik",
-      "name": "Yashil Baxt",
-      "base": "oilaviy-tadbir",
-      "eventType": "beshik-toyi",
-      "palette": "sage-mist",
-      "typo": "minimal",
-      "desc": "Yam-yashil — sog'lik va o'sish tilagi",
-      "price": 44000,
-      "emoji": "🌿",
-      "kicker": "Beshik to'yi"
-    },
-    {
-      "slug": "beshik-oltin",
-      "name": "Oltin Beshik",
-      "base": "toy-original",
-      "eventType": "beshik-toyi",
-      "palette": "ivory-pearl",
-      "typo": "classic",
-      "desc": "Oq-oltin nafis beshik to'yi",
-      "price": 59000,
-      "emoji": "🤍",
-      "kicker": "Beshik to'yi"
-    },
-    {
-      "slug": "tk-bolalar-sharlar",
-      "name": "Sharlar Fest",
-      "base": "tugilgan-kun-bolalar",
-      "eventType": "tugilgan-kun",
-      "palette": "candy-cloud",
-      "typo": "script",
-      "desc": "Rang-barang sharlar — bolalar bayrami",
-      "price": 44000,
-      "emoji": "🎈",
-      "kicker": "Tug'ilgan kun"
-    },
-    {
-      "slug": "tk-bolalar-kosmos",
-      "name": "Kosmonavt",
-      "base": "1-yosh",
-      "eventType": "tugilgan-kun",
-      "palette": "night-sky",
-      "typo": "script",
-      "desc": "Kosmik sayohat — sarguzashtli bolalar",
-      "price": 49000,
-      "emoji": "🚀",
-      "kicker": "Kosmik yosh"
-    },
-    {
-      "slug": "tk-bolalar-jungle",
-      "name": "Jungle",
-      "base": "oilaviy-tadbir",
-      "eventType": "tugilgan-kun",
-      "palette": "sage-mist",
-      "typo": "script",
-      "desc": "Yashil dzhunglilar — hayvonot bog'i kayfiyati",
-      "price": 44000,
-      "emoji": "🦁",
-      "kicker": "Yovvoyi yosh"
-    },
-    {
-      "slug": "tk-kattalar-vineyard",
-      "name": "Vineyard",
-      "base": "dinner-party",
-      "eventType": "tugilgan-kun",
-      "palette": "burgundy-luxe",
-      "typo": "classic",
-      "desc": "Uzumzor va vino — kattalar kechki ovqati",
-      "price": 69000,
-      "emoji": "🍷",
-      "kicker": "Tug'ilgan kun"
-    },
-    {
-      "slug": "tk-kattalar-gala",
-      "name": "Gala Night",
-      "base": "grand-opening",
-      "eventType": "tugilgan-kun",
-      "palette": "sapphire-noir",
-      "typo": "classic",
-      "desc": "Qora galastuk — hashamatli gala kecha",
-      "price": 74000,
-      "emoji": "🥂",
-      "kicker": "Gala kechasi"
-    },
-    {
-      "slug": "tk-kattalar-bog",
-      "name": "Bog'dagi Kechalar",
-      "base": "yubiley",
-      "eventType": "tugilgan-kun",
-      "palette": "rose-garden",
-      "typo": "script",
-      "desc": "Bog'da tug'ilgan kun — gul va sham",
-      "price": 59000,
-      "emoji": "🕯️",
-      "kicker": "Tug'ilgan kun"
-    },
-    {
-      "slug": "yubiley-olovrang",
-      "name": "Olovrang Yubiley",
-      "base": "yubiley",
-      "eventType": "yubiley",
-      "palette": "sunset-amber",
-      "typo": "classic",
-      "desc": "Yubiley uchun olovrang tantana",
-      "price": 79000,
-      "emoji": "🏅",
-      "kicker": "Yubiley"
-    },
-    {
-      "slug": "yubiley-oltin",
-      "name": "Oltin Faxr",
-      "base": "toy-original",
-      "eventType": "yubiley",
-      "palette": "royal-gold",
-      "typo": "classic",
-      "desc": "Oltin yubiley — qizil sharob va oltin",
-      "price": 89000,
-      "emoji": "🏆",
-      "kicker": "Yubiley kechasi"
+      "kicker": "Beshik to'yi",
+      "categories": [
+        "beshik-toyi",
+        "tugilgan-kun"
+      ]
     },
     {
       "slug": "yubiley-tun",
@@ -528,115 +267,12 @@
       "desc": "Kechki yubiley — zumrad va oltin",
       "price": 79000,
       "emoji": "✨",
-      "kicker": "Yubiley kechasi"
-    },
-    {
-      "slug": "yubiley-noir",
-      "name": "Noir Yubiley",
-      "base": "grand-opening",
-      "eventType": "yubiley",
-      "palette": "sapphire-noir",
-      "typo": "classic",
-      "desc": "Qora fon, oq matn — zamonaviy yubiley",
-      "price": 74000,
-      "emoji": "🖤",
-      "kicker": "Yubiley"
-    },
-    {
-      "slug": "yubiley-gul",
-      "name": "Gul Yubiley",
-      "base": "kelin-salom",
-      "eventType": "yubiley",
-      "palette": "rose-garden",
-      "typo": "script",
-      "desc": "Gullar bilan bezatilgan yubiley",
-      "price": 69000,
-      "emoji": "🌹",
-      "kicker": "Yubiley"
-    },
-    {
-      "slug": "yubiley-krem",
-      "name": "Krem Classic",
-      "base": "dinner-party",
-      "eventType": "yubiley",
-      "palette": "ivory-pearl",
-      "typo": "classic",
-      "desc": "Krem fon, klassik yubiley",
-      "price": 69000,
-      "emoji": "🍽️",
-      "kicker": "Yubiley dasturxoni"
-    },
-    {
-      "slug": "bayram-navroz",
-      "name": "Navro'z",
-      "base": "oilaviy-tadbir",
-      "eventType": "bayramlar",
-      "palette": "spring-meadow",
-      "typo": "script",
-      "desc": "Navro'z bayrami — bahor, gullar",
-      "price": 39000,
-      "emoji": "🌱",
-      "kicker": "Navro'z muborak"
-    },
-    {
-      "slug": "bayram-hayit",
-      "name": "Hayit",
-      "base": "sunnat-toy",
-      "eventType": "bayramlar",
-      "palette": "emerald-night",
-      "typo": "classic",
-      "desc": "Hayit va Qurbon bayrami — islomiy",
-      "price": 44000,
-      "emoji": "☪",
-      "kicker": "Bayram muborak"
-    },
-    {
-      "slug": "bayram-yangiyil",
-      "name": "Yangi Yil",
-      "base": "1-yosh",
-      "eventType": "bayramlar",
-      "palette": "night-sky",
-      "typo": "script",
-      "desc": "Yangi yil kechasi — qor va yulduzlar",
-      "price": 44000,
-      "emoji": "🎄",
-      "kicker": "Yangi yil"
-    },
-    {
-      "slug": "bayram-mustaqillik",
-      "name": "Mustaqillik",
-      "base": "grand-opening",
-      "eventType": "bayramlar",
-      "palette": "sunset-amber",
-      "typo": "classic",
-      "desc": "Mustaqillik kuni — bayroq ranglari",
-      "price": 44000,
-      "emoji": "🇺🇿",
-      "kicker": "Mustaqillik bayrami"
-    },
-    {
-      "slug": "bayram-kurbon",
-      "name": "Kurbon Hayit",
-      "base": "fotiha-sovchilik",
-      "eventType": "bayramlar",
-      "palette": "ivory-pearl",
-      "typo": "classic",
-      "desc": "Kurbon hayit — sakinqo'l, oq-oltin",
-      "price": 44000,
-      "emoji": "🤲",
-      "kicker": "Qurbon hayit"
-    },
-    {
-      "slug": "bayram-8-mart",
-      "name": "8-Mart",
-      "base": "bridal-shower",
-      "eventType": "bayramlar",
-      "palette": "rose-garden",
-      "typo": "script",
-      "desc": "Xotin-qizlar kuni — gullar va mayinlik",
-      "price": 39000,
-      "emoji": "🌷",
-      "kicker": "8-mart"
+      "kicker": "Yubiley kechasi",
+      "categories": [
+        "yubiley",
+        "sunnat-toyi",
+        "biznes"
+      ]
     },
     {
       "slug": "biznes-summit",
@@ -648,7 +284,10 @@
       "desc": "Texnologiya sammiti — professional",
       "price": 99000,
       "emoji": "🎤",
-      "kicker": "Texnologiya sammiti"
+      "kicker": "Texnologiya sammiti",
+      "categories": [
+        "biznes"
+      ]
     },
     {
       "slug": "biznes-forum",
@@ -660,19 +299,10 @@
       "desc": "Biznes konferensiya — ishonchli",
       "price": 99000,
       "emoji": "💼",
-      "kicker": "Biznes konferensiya"
-    },
-    {
-      "slug": "biznes-ochilish",
-      "name": "Grand Ochilish",
-      "base": "grand-opening",
-      "eventType": "biznes",
-      "palette": "royal-gold",
-      "typo": "classic",
-      "desc": "Do'kon/filial ochilishi — tantanali",
-      "price": 89000,
-      "emoji": "🎀",
-      "kicker": "Katta ochilish"
+      "kicker": "Biznes konferensiya",
+      "categories": [
+        "biznes"
+      ]
     },
     {
       "slug": "biznes-restoran",
@@ -684,19 +314,10 @@
       "desc": "Restoran/kafe ochilishi — mazali kayfiyat",
       "price": 89000,
       "emoji": "🍴",
-      "kicker": "Restoran ochilishi"
-    },
-    {
-      "slug": "biznes-startup",
-      "name": "Startup Pitch",
-      "base": "graduation",
-      "eventType": "biznes",
-      "palette": "spring-meadow",
-      "typo": "minimal",
-      "desc": "Startup demo kuni — zamonaviy, yosh",
-      "price": 79000,
-      "emoji": "🚀",
-      "kicker": "Demo Day"
+      "kicker": "Restoran ochilishi",
+      "categories": [
+        "biznes"
+      ]
     },
     {
       "slug": "biznes-vechin",
@@ -708,43 +329,14 @@
       "desc": "Hamkorlar uchun kechki qabul",
       "price": 84000,
       "emoji": "🤝",
-      "kicker": "Kechki qabul"
-    },
-    {
-      "slug": "oilaviy-toplam",
-      "name": "Oilaviy Yig'ilish",
-      "base": "oilaviy-tadbir",
-      "eventType": "oilaviy",
-      "palette": "sage-mist",
-      "typo": "minimal",
-      "desc": "Oilaviy yig'ilish — uyumli, iliq",
-      "price": 39000,
-      "emoji": "🏡",
-      "kicker": "Oilaviy yig'ilish"
-    },
-    {
-      "slug": "oilaviy-sekin",
-      "name": "Sekin Kechalar",
-      "base": "dinner-party",
-      "eventType": "oilaviy",
-      "palette": "sunset-amber",
-      "typo": "script",
-      "desc": "Oilaviy kechki ovqat — samimiy",
-      "price": 44000,
-      "emoji": "🍲",
-      "kicker": "Oila dasturxoni"
-    },
-    {
-      "slug": "oilaviy-chorshanba",
-      "name": "Chorshanba",
-      "base": "beshik-toy",
-      "eventType": "oilaviy",
-      "palette": "spring-meadow",
-      "typo": "script",
-      "desc": "An'anaviy chorshanba kuni",
-      "price": 39000,
-      "emoji": "🍵",
-      "kicker": "Chorshanba"
+      "kicker": "Kechki qabul",
+      "categories": [
+        "biznes",
+        "fotiha-toyi",
+        "tugilgan-kun",
+        "yubiley",
+        "oilaviy"
+      ]
     },
     {
       "slug": "oilaviy-oltin-toy",
@@ -756,7 +348,10 @@
       "desc": "Ota-onalarning oltin to'yi",
       "price": 84000,
       "emoji": "💞",
-      "kicker": "Oltin to'y"
+      "kicker": "Oltin to'y",
+      "categories": [
+        "oilaviy"
+      ]
     },
     {
       "slug": "oilaviy-gul",
@@ -768,19 +363,11 @@
       "desc": "Ayollar uchun gul sayli",
       "price": 44000,
       "emoji": "💐",
-      "kicker": "Gul sayli"
-    },
-    {
-      "slug": "oilaviy-kichik-toy",
-      "name": "Kichik To'y",
-      "base": "toy-original",
-      "eventType": "oilaviy",
-      "palette": "ivory-pearl",
-      "typo": "classic",
-      "desc": "Kichik oilaviy to'y — yopiq",
-      "price": 74000,
-      "emoji": "🤍",
-      "kicker": "Oilaviy to'y"
+      "kicker": "Gul sayli",
+      "categories": [
+        "oilaviy",
+        "bayramlar"
+      ]
     }
   ]
 }

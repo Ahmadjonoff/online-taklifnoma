@@ -1,5 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
+import { parseStoredCustomization } from "@/lib/customization";
+import { buildInvitationConfig } from "@/lib/invitationConfig";
+import { paletteStyleTag } from "@/lib/palettes";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -39,97 +42,6 @@ function notFoundResponse(): Response {
     status: 404,
     headers: { "Content-Type": "text/html; charset=utf-8" },
   });
-}
-
-function buildInvConfig(inv: {
-  title: string;
-  partner1: string;
-  partner2: string;
-  eventDate: Date;
-  eventTime: string;
-  venueName: string;
-  venueAddress: string;
-  message: string;
-  template: {
-    theme: string;
-    kicker: string;
-    timeline: string;
-    notes: string;
-  };
-}) {
-  const d = inv.eventDate;
-  const pad = (n: number) => String(n).padStart(2, "0");
-  const dateISO = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(
-    d.getDate()
-  )}T${inv.eventTime || "18:00"}:00`;
-  const dateLabel = `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()}`;
-
-  // Ism va sarlavha: juftlik bo'lsa "Ism1 & Ism2"
-  const groom = inv.partner1 || inv.title;
-  const bride = inv.partner2 || "";
-
-  let timeline: Array<{ time: string; label: string }> = [];
-  try {
-    timeline = JSON.parse(inv.template.timeline || "[]");
-  } catch {}
-
-  let notes: Array<{ title: string; text: string }> = [];
-  try {
-    notes = JSON.parse(inv.template.notes || "[]");
-  } catch {}
-
-  return {
-    couple: {
-      groom,
-      bride,
-      // Monogram: bosh harflar
-      monogram:
-        [groom[0], bride[0]].filter(Boolean).join("&").toUpperCase() || "✦",
-    },
-    event: {
-      dateISO,
-      dateLabel,
-      timeLabel: inv.eventTime || "18:00",
-      kicker: inv.template.kicker || "",
-    },
-    blessing: {
-      lines: inv.message ? [inv.message] : [],
-      text: inv.message || "",
-      greeting: "",
-    },
-    countdown: {
-      title: "Tadbirgacha qoldi",
-      finishedText: "Bugun katta kun!",
-    },
-    timeline: {
-      title: "Dastur",
-      items: timeline,
-    },
-    venue: {
-      title: "Manzil",
-      name: inv.venueName,
-      address: inv.venueAddress,
-      googleMapsUrl: "",
-      yandexMapsUrl: "",
-    },
-    notes,
-    rsvp: { enabled: true },
-    wishes: { enabled: true },
-    gift: { enabled: false },
-    gallery: { enabled: false, photos: [] },
-    petals: { enabled: true, count: 14 },
-    music: { enabled: true, src: "/music.mp3" },
-    specialOffer: { enabled: false, title: "", text: "", badge: "" },
-    speakers: { enabled: false, title: "", people: [] },
-    sponsors: { enabled: false, title: "", names: [] },
-    dressCode: { enabled: false, title: "", text: "", colors: [] },
-    bigNumber: { enabled: false, value: "", title: "", subtitle: "" },
-    achievement: { enabled: false, degree: "", institution: "", text: "" },
-    footer: {
-      title: "Sizni kutamiz!",
-      signature: groom + (bride ? ` va ${bride}` : ""),
-    },
-  };
 }
 
 /**
@@ -176,7 +88,17 @@ export async function GET(
   );
   let html = fs.readFileSync(htmlPath, "utf8");
 
-  const invConfig = buildInvConfig(invitation);
+  const options = parseStoredCustomization(invitation.options);
+  const d = invitation.eventDate;
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const invConfig = buildInvitationConfig(
+    {
+      ...invitation,
+      eventDate: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`,
+    },
+    invitation.template,
+    options
+  );
 
   // Sarlavha va Open Graph teglari — ijtimoiy tarmoqlarda (Telegram/WhatsApp)
   // ulashganda chiroyli preview chiqishi uchun.
@@ -196,7 +118,8 @@ export async function GET(
 <meta property="og:type" content="website">
 <meta property="og:title" content="${pageTitle}">
 <meta property="og:description" content="${pageDescription}">
-<script>window.__INV_CONFIG__=${JSON.stringify(invConfig).replace(/<\/script/gi, "<\\/script")};</script>`;
+<script>window.__INV_CONFIG__=${JSON.stringify(invConfig).replace(/<\/script/gi, "<\\/script")};</script>
+${paletteStyleTag(invitation.template.theme, options.palette)}`;
   html = html.replace("<head>", `<head>${inject}`);
 
   return new Response(html, {

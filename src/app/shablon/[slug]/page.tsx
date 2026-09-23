@@ -52,8 +52,10 @@ export default async function TemplatePage({
   const tierFeatures = tier === "premium" ? td.featuresPremium : td.featuresStandard;
 
   // `templates` allaqachon narx↓, id↑ tartibida
+  // O'xshash: kamida bitta umumiy tadbir turi bor shablonlar
+  const slugs = new Set(template.categories.map((c) => c.slug));
   const related = templates
-    .filter((tpl) => tpl.eventTypeId === template.eventTypeId && tpl.id !== template.id)
+    .filter((tpl) => tpl.id !== template.id && tpl.categories.some((c) => slugs.has(c.slug)))
     .slice(0, 3);
   const total = templates.length;
 
@@ -109,7 +111,7 @@ export default async function TemplatePage({
               </h1>
 
               <p className="mt-2 text-sm text-stone-500">
-                {template.previewEmoji} {template.eventType.name}
+                {template.previewEmoji} {template.categories.map((c) => c.name).join(" · ")}
               </p>
 
               <p className="mt-4 leading-relaxed text-stone-600">{template.description}</p>

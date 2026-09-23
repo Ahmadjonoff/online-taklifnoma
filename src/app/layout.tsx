@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     template: "%s | Online taklifnomalar",
   },
   description:
-    "To'y, nikoh, sunnat to'yi, qiz bazmi va boshqa tadbirlar uchun jonli online taklifnomalar. 77 premium shablon, RSVP, tilaklar daftari, QR kod — hammasi bir joyda.",
+    "To'y, nikoh, sunnat to'yi, qiz bazmi va boshqa tadbirlar uchun jonli online taklifnomalar. 21 ta noyob dizayn, o'zingiz tanlaydigan ranglar, RSVP, tilaklar daftari, QR kod — hammasi bir joyda.",
   keywords: [
     "taklifnoma",
     "to'y taklifnomasi",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Online taklifnomalar — Premium raqamli taklifnomalar",
     description:
-      "Tadbiringiz uchun esda qoladigan raqamli taklifnoma: 77 shablon, RSVP, QR kod.",
+      "Tadbiringiz uchun esda qoladigan raqamli taklifnoma: 21 ta noyob dizayn, RSVP, QR kod.",
     type: "website",
     locale: "uz_UZ",
   },

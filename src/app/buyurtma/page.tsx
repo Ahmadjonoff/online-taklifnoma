@@ -1,25 +1,40 @@
-import { prisma } from "@/lib/prisma";
 import { OrderForm } from "@/components/OrderForm";
 import { BrandMark } from "@/components/site/BrandMark";
 import { TelegramIcon } from "@/components/site/TelegramIcon";
 import { telegramUrl } from "@/lib/contact";
+import { getCatalog } from "@/lib/catalogData";
+import { defaultTimeline } from "@/lib/eventDefaults";
 import { getDictionary } from "@/lib/i18n/dictionary";
 import { getLocale } from "@/lib/i18n/server";
+import { MUSIC_TRACKS } from "@/lib/music";
+import { getPalettes, paletteSwatch } from "@/lib/palettes";
 
 export const dynamic = "force-dynamic";
 
 export default async function OrderPage({
   searchParams,
 }: {
-  searchParams: Promise<{ shablon?: string }>;
+  searchParams: Promise<{ shablon?: string; tadbir?: string }>;
 }) {
-  const { shablon } = await searchParams;
+  const { shablon, tadbir } = await searchParams;
   const locale = await getLocale();
   const dict = getDictionary(locale);
 
-  const template = shablon
-    ? await prisma.template.findUnique({ where: { slug: shablon } })
-    : null;
+  // Katalogda faqat faol shablonlar bor — nofaol shablonga buyurtma berilmaydi
+  const { templates } = await getCatalog();
+  const template = shablon ? templates.find((tpl) => tpl.slug === shablon) : undefined;
+
+  const palettes = template
+    ? getPalettes(template.theme).map((p) => ({ id: p.id, name: p.name, swatch: paletteSwatch(p) }))
+    : [];
+  const categories = (template?.categories ?? []).map((c) => ({
+    slug: c.slug,
+    name: c.name,
+    timeline: defaultTimeline(c.slug),
+  }));
+  // Katalogdan tadbir turi bo'yicha kelgan bo'lsa (?tadbir=) — o'sha, aks holda asosiy turi
+  const defaultEventType =
+    categories.find((c) => c.slug === tadbir)?.slug ?? template?.eventType.slug ?? "";
 
   return (
     <div className="min-h-screen bg-[#faf7f2]">
@@ -59,7 +74,11 @@ export default async function OrderPage({
           <OrderForm
             templateSlug={template?.slug ?? ""}
             templateName={template?.name ?? dict.order.title}
-            templateTheme={template?.theme ?? "toy-yoqut"}
+            templateTheme={template?.theme ?? ""}
+            palettes={palettes}
+            categories={categories}
+            defaultEventType={defaultEventType}
+            musicTracks={MUSIC_TRACKS}
             dict={dict}
           />
         </div>
