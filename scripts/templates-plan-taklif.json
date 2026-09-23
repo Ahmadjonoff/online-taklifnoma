@@ -10,7 +10,7 @@
   "templates": [
     {
       "slug": "nikoh-imperial",
-      "name": "Imperial ✨",
+      "name": "Imperial",
       "base": "luxe-vow",
       "eventType": "nikoh-toyi",
       "palette": "nikoh-imperial",
@@ -19,29 +19,37 @@
       "price": 279000,
       "emoji": "✨",
       "kicker": "Tantanali marosim",
-      "tier": "premium",
+      "tier": "luxury",
       "categories": [
         "nikoh-toyi",
         "toy",
-        "qiz-bazmi",
-        "sunnat-toyi"
+        "fotiha-toyi",
+        "sunnat-toyi",
+        "yubiley",
+        "oilaviy",
+        "qiz-bazmi"
       ]
     },
     {
       "slug": "nikoh-floral",
-      "name": "Floral 💐",
+      "name": "Floral",
       "base": "watercolor-garden",
       "eventType": "nikoh-toyi",
       "palette": "nikoh-floral",
       "typo": "script",
-      "desc": "Akvarel gullar, nozik yashil bog‘ uslubi",
+      "desc": "Akvarel gullar, nozik yashil bog' uslubi — yengil va nafis",
       "price": 279000,
       "emoji": "💐",
       "kicker": "Nikoh to‘yi",
-      "tier": "premium",
+      "tier": "luxury",
       "categories": [
         "nikoh-toyi",
-        "fotiha-toyi"
+        "toy",
+        "fotiha-toyi",
+        "beshik-toyi",
+        "tugilgan-kun",
+        "oilaviy",
+        "qiz-bazmi"
       ]
     },
     {
@@ -55,9 +63,13 @@
       "price": 279000,
       "emoji": "🌌",
       "kicker": "Visol oqshomi",
-      "tier": "premium",
+      "tier": "luxury",
       "categories": [
-        "nikoh-toyi"
+        "nikoh-toyi",
+        "tugilgan-kun",
+        "yubiley",
+        "bayramlar",
+        "biznes"
       ]
     }
   ]

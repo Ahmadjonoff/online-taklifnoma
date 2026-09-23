@@ -69,18 +69,20 @@
       "eventType": "toy",
       "palette": "royal-gold",
       "typo": "classic",
-      "desc": "Qorong'i fon, oltin zarhal hoshiyalar — hashamatli nikoh to'yi",
+      "desc": "Qorong'i fon, oltin zarhal ramka va gullar — hashamatli, sahnaviy uslub",
       "price": 279000,
       "emoji": "👑",
       "kicker": "Nikoh kuni",
       "categories": [
         "toy",
+        "nikoh-toyi",
         "sunnat-toyi",
         "beshik-toyi",
         "yubiley",
-        "oilaviy"
+        "bayramlar",
+        "biznes"
       ],
-      "tier": "premium"
+      "tier": "luxury"
     },
     {
       "slug": "nikoh-amanat",
@@ -89,16 +91,17 @@
       "eventType": "nikoh-toyi",
       "palette": "ivory-pearl",
       "typo": "classic",
-      "desc": "An'anaviy nikoh to'yi — oq-oltin, hurmatli uslub",
+      "desc": "Oq-oltin, gulli va hurmatli an'anaviy uslub",
       "price": 199000,
       "emoji": "🕌",
       "kicker": "Nikoh to'yi",
       "categories": [
         "nikoh-toyi",
         "fotiha-toyi",
-        "bayramlar"
+        "beshik-toyi",
+        "qiz-bazmi"
       ],
-      "tier": "standard"
+      "tier": "premium"
     },
     {
       "slug": "nikoh-crescent",
@@ -107,7 +110,7 @@
       "eventType": "nikoh-toyi",
       "palette": "emerald-night",
       "typo": "classic",
-      "desc": "Yarim oy naqshlari — islomiy nafislik",
+      "desc": "Yarim oy va yulduz naqshlari — sharqona nafislik",
       "price": 199000,
       "emoji": "☪",
       "kicker": "Nikoh marosimi",
@@ -117,25 +120,27 @@
         "sunnat-toyi",
         "bayramlar"
       ],
-      "tier": "standard"
+      "tier": "premium"
     },
     {
       "slug": "nikoh-olovrang",
       "name": "Olovrang",
       "base": "yubiley",
-      "eventType": "nikoh-toyi",
+      "eventType": "toy",
       "palette": "sunset-amber",
       "typo": "classic",
-      "desc": "Quyosh botishi ranglari — iliq nikoh to'yi",
+      "desc": "Art-deko oltin ramka va iliq shafaq ranglari",
       "price": 199000,
       "emoji": "🌅",
       "kicker": "Nikoh dasturxoni",
       "categories": [
-        "nikoh-toyi",
+        "toy",
+        "beshik-toyi",
         "tugilgan-kun",
-        "yubiley"
+        "yubiley",
+        "biznes"
       ],
-      "tier": "standard"
+      "tier": "premium"
     },
     {
       "slug": "nikoh-marvarid",
@@ -144,16 +149,17 @@
       "eventType": "nikoh-toyi",
       "palette": "ivory-pearl",
       "typo": "script",
-      "desc": "Marvarid dumaloqlari — yumshoq, ayol bag'ri",
+      "desc": "Anor va marvarid naqshlari — yumshoq, sharqona uslub",
       "price": 199000,
       "emoji": "🤍",
       "kicker": "Nikoh kechasi",
       "categories": [
         "nikoh-toyi",
-        "fotiha-toyi",
-        "yubiley"
+        "toy",
+        "oilaviy",
+        "qiz-bazmi"
       ],
-      "tier": "standard"
+      "tier": "premium"
     },
     {
       "slug": "nikoh-sapphire",
@@ -162,19 +168,17 @@
       "eventType": "nikoh-toyi",
       "palette": "sapphire-noir",
       "typo": "classic",
-      "desc": "Safir ko'ki va oltin — tunda yorqin",
-      "price": 279000,
+      "desc": "Safir ko'ki va oltin — tungi, zamonaviy uslub",
+      "price": 149000,
       "emoji": "💙",
       "kicker": "Nikoh to'yi",
       "categories": [
         "nikoh-toyi",
+        "toy",
         "fotiha-toyi",
-        "tugilgan-kun",
-        "yubiley",
-        "bayramlar",
-        "biznes"
+        "yubiley"
       ],
-      "tier": "premium"
+      "tier": "standard"
     },
     {
       "slug": "nikoh-bog",
@@ -183,18 +187,16 @@
       "eventType": "nikoh-toyi",
       "palette": "sage-mist",
       "typo": "minimal",
-      "desc": "Bog' va gullar — tabiiy, ochiq havodagi nikoh",
-      "price": 199000,
+      "desc": "Anor va gullar — tabiiy, ochiq havo uslubi",
+      "price": 149000,
       "emoji": "🌸",
       "kicker": "Biz nikoh qilamiz",
       "categories": [
         "nikoh-toyi",
+        "toy",
         "fotiha-toyi",
-        "sunnat-toyi",
-        "beshik-toyi",
-        "tugilgan-kun",
-        "bayramlar",
-        "oilaviy"
+        "oilaviy",
+        "qiz-bazmi"
       ],
       "tier": "standard"
     },
@@ -205,17 +207,15 @@
       "eventType": "sunnat-toyi",
       "palette": "sunset-amber",
       "typo": "script",
-      "desc": "Quvnoq quyoshli kun — yosh azamatlar",
+      "desc": "Bulut va yulduzlar — bolalar bayramlari uchun quvnoq uslub",
       "price": 149000,
       "emoji": "☀️",
       "kicker": "Sunnat to'yi",
       "categories": [
         "sunnat-toyi",
-        "beshik-toyi",
-        "tugilgan-kun",
-        "bayramlar"
+        "tugilgan-kun"
       ],
-      "tier": "light"
+      "tier": "standard"
     },
     {
       "slug": "sunnat-shirin",
@@ -232,7 +232,7 @@
         "sunnat-toyi",
         "beshik-toyi"
       ],
-      "tier": "light"
+      "tier": "standard"
     },
     {
       "slug": "beshik-olovrang",
@@ -241,15 +241,14 @@
       "eventType": "beshik-toyi",
       "palette": "sunset-amber",
       "typo": "script",
-      "desc": "Beshik to'yi — iliq, uyumli ranglar",
+      "desc": "Iliq, uyumli ranglar — chaqaloq bayrami",
       "price": 149000,
       "emoji": "🍼",
       "kicker": "Beshik to'yi",
       "categories": [
-        "beshik-toyi",
-        "oilaviy"
+        "beshik-toyi"
       ],
-      "tier": "light"
+      "tier": "standard"
     },
     {
       "slug": "beshik-kok",
@@ -258,7 +257,7 @@
       "eventType": "beshik-toyi",
       "palette": "sapphire-noir",
       "typo": "script",
-      "desc": "Osmon ko'ki — o'g'il chaqaloq",
+      "desc": "Osmon ko'ki — chaqaloq va bolalar bayrami",
       "price": 149000,
       "emoji": "💙",
       "kicker": "Beshik to'yi",
@@ -266,7 +265,7 @@
         "beshik-toyi",
         "tugilgan-kun"
       ],
-      "tier": "light"
+      "tier": "standard"
     },
     {
       "slug": "yubiley-tun",
@@ -275,14 +274,13 @@
       "eventType": "yubiley",
       "palette": "emerald-night",
       "typo": "classic",
-      "desc": "Kechki yubiley — zumrad va oltin",
-      "price": 199000,
+      "desc": "Zumrad va oltin — kechki tantana",
+      "price": 149000,
       "emoji": "✨",
       "kicker": "Yubiley kechasi",
       "categories": [
         "yubiley",
-        "sunnat-toyi",
-        "biznes"
+        "bayramlar"
       ],
       "tier": "standard"
     },
@@ -294,7 +292,7 @@
       "palette": "sapphire-noir",
       "typo": "classic",
       "desc": "Texnologiya sammiti — professional",
-      "price": 199000,
+      "price": 149000,
       "emoji": "🎤",
       "kicker": "Texnologiya sammiti",
       "categories": [
@@ -310,7 +308,7 @@
       "palette": "sapphire-noir",
       "typo": "classic",
       "desc": "Biznes konferensiya — ishonchli",
-      "price": 199000,
+      "price": 149000,
       "emoji": "💼",
       "kicker": "Biznes konferensiya",
       "categories": [
@@ -326,7 +324,7 @@
       "palette": "burgundy-luxe",
       "typo": "classic",
       "desc": "Restoran/kafe ochilishi — mazali kayfiyat",
-      "price": 199000,
+      "price": 149000,
       "emoji": "🍴",
       "kicker": "Restoran ochilishi",
       "categories": [
@@ -336,39 +334,40 @@
     },
     {
       "slug": "biznes-vechin",
-      "name": "Biznes Kechki",
+      "name": "Kechki Ziyofat",
       "base": "dinner-party",
       "eventType": "biznes",
       "palette": "sunset-amber",
       "typo": "classic",
-      "desc": "Hamkorlar uchun kechki qabul",
+      "desc": "Anor naqshli iliq uslub — kechki qabul va oilaviy davralar uchun",
       "price": 199000,
       "emoji": "🤝",
       "kicker": "Kechki qabul",
       "categories": [
         "biznes",
-        "fotiha-toyi",
         "tugilgan-kun",
-        "yubiley",
+        "bayramlar",
         "oilaviy"
       ],
-      "tier": "standard"
+      "tier": "premium"
     },
     {
       "slug": "oilaviy-oltin-toy",
-      "name": "Oltin To'y",
+      "name": "Oltin Nur",
       "base": "anniversary",
       "eventType": "oilaviy",
       "palette": "royal-gold",
       "typo": "classic",
-      "desc": "Ota-onalarning oltin to'yi",
+      "desc": "Qorong'i fon, oltin nur va gullar — tantanali oqshom",
       "price": 199000,
       "emoji": "💞",
       "kicker": "Oltin to'y",
       "categories": [
-        "oilaviy"
+        "oilaviy",
+        "sunnat-toyi",
+        "yubiley"
       ],
-      "tier": "standard"
+      "tier": "premium"
     },
     {
       "slug": "oilaviy-gul",
@@ -377,15 +376,17 @@
       "eventType": "oilaviy",
       "palette": "rose-garden",
       "typo": "script",
-      "desc": "Ayollar uchun gul sayli",
+      "desc": "Pushti bulutlar va gullar — samimiy davralar va bayramlar",
       "price": 149000,
       "emoji": "💐",
       "kicker": "Gul sayli",
       "categories": [
         "oilaviy",
-        "bayramlar"
+        "bayramlar",
+        "qiz-bazmi",
+        "tugilgan-kun"
       ],
-      "tier": "light"
+      "tier": "standard"
     }
   ]
 }

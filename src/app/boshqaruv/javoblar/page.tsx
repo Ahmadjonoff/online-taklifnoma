@@ -20,7 +20,7 @@ export default async function AdminResponsesPage() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6">
           <h1 className="font-serif text-lg font-bold">RSVP va tilaklar</h1>
           <div className="flex items-center gap-5 text-sm">
-            <Link href="/admin" className="text-stone-300 hover:text-white">
+            <Link href="/boshqaruv" className="text-stone-300 hover:text-white">
               Buyurtmalar
             </Link>
             <Link href="/" className="text-stone-300 hover:text-white">

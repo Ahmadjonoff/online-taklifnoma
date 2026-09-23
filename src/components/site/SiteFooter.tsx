@@ -14,7 +14,7 @@ export function SiteFooter({
 }) {
   return (
     <footer className="relative border-t border-stone-200/80 bg-white/70">
-      <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <div className="flex items-center gap-2.5">
             <BrandMark />
@@ -100,26 +100,6 @@ export function SiteFooter({
           </ul>
         </div>
 
-        <div>
-          <h3 className="text-xs font-semibold uppercase tracking-widest text-stone-400">{dict.footer.manageTitle}</h3>
-          <ul className="mt-4 space-y-2.5 text-sm text-stone-600">
-            <li>
-              <Link href="/admin" className="transition hover:text-rose-700">
-                {dict.footer.adminPanel}
-              </Link>
-            </li>
-            <li>
-              <Link href="/admin/javoblar" className="transition hover:text-rose-700">
-                {dict.footer.adminResponses}
-              </Link>
-            </li>
-            <li>
-              <Link href="/buyurtma" className="transition hover:text-rose-700">
-                {dict.footer.orderSubmit}
-              </Link>
-            </li>
-          </ul>
-        </div>
       </div>
 
       <div className="border-t border-stone-200/80">

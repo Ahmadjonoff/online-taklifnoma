@@ -23,7 +23,7 @@ export function AdminLoginForm({ dict }: { dict: Dictionary }) {
       if (!res.ok) {
         throw new Error(res.status === 429 ? dict.adminLogin.rateLimited : dict.adminLogin.wrongPassword);
       }
-      router.push("/admin");
+      router.push("/boshqaruv");
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : dict.adminLogin.wrongPassword);

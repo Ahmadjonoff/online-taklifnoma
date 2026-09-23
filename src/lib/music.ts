@@ -9,11 +9,13 @@ export type MusicTrack = { id: string; name: string; src: string };
 
 export const MUSIC_TRACKS: MusicTrack[] = [
   { id: "classic", name: "Nafis kuy", src: "/music.mp3" },
-  // Quyidagilar — public domain / CC0 yozuvlar, manbalar: public/music/CREDITS.md
+  // Quyidagilar — public domain / CC0 yozuvlar (zamonaviy fortepiano
+  // ijrolari), manbalar: public/music/CREDITS.md
+  { id: "chopin-nocturne", name: "Shopen — Nokturn (fortepiano)", src: "/music/chopin-nocturne.mp3" },
+  { id: "bach-goldberg-aria", name: "Bax — Aria (fortepiano)", src: "/music/bach-goldberg-aria.mp3" },
+  { id: "satie-gymnopedie", name: "Sati — Gimnopediya (fortepiano)", src: "/music/satie-gymnopedie.mp3" },
+  { id: "schumann-traumerei", name: "Shuman — Orzu (fortepiano)", src: "/music/schumann-traumerei.mp3" },
   { id: "wedding-march", name: "Mendelson — To'y marshi", src: "/music/wedding-march.mp3" },
-  { id: "waltz-of-flowers", name: "Chaykovskiy — Gullar valsi", src: "/music/waltz-of-flowers.mp3" },
-  { id: "blue-danube", name: "Shtraus — Moviy Dunay", src: "/music/blue-danube.mp3" },
-  { id: "bach-air", name: "Bax — Air", src: "/music/bach-air.mp3" },
   { id: "ave-maria", name: "Shubert — Ave Maria", src: "/music/ave-maria.mp3" },
 ];
 

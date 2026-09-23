@@ -16,6 +16,25 @@ export const TELEGRAM_LABEL = `@${TELEGRAM_USERNAME}`;
 /** Kanalsiz, oddiy chat havolasi. */
 export const TELEGRAM_URL = `https://t.me/${TELEGRAM_USERNAME}`;
 
+/** Sayt manzili — taklifnomalardagi reklama blokida ko'rsatiladi. */
+export const SITE_URL = "https://online-taklifnoma-neon.vercel.app";
+
+export const INSTAGRAM_URL = "https://www.instagram.com/abdurauf.dev/";
+
+/**
+ * Har bir taklifnoma oxiridagi reklama bloki (shablonlardagi Footer
+ * ko'rsatadi): mehmonlar ham shunday taklifnoma buyurtma qilishi uchun.
+ */
+export const INVITATION_PROMO = {
+  enabled: true,
+  title: "Sizga ham shunday taklifnoma kerakmi?",
+  text: "Online taklifnomalar — bir necha daqiqada buyurtma bering",
+  siteUrl: SITE_URL,
+  siteLabel: "Sayt",
+  telegramUrl: TELEGRAM_URL,
+  instagramUrl: INSTAGRAM_URL,
+};
+
 /**
  * Telegram havolasi. `text` berilganda chatda tayyor xabar ochiladi — mijoz
  * nima haqida yozayotganini o'zi tushuntirib o'tirmaydi.

@@ -41,7 +41,56 @@ export function Footer(skin: Skin) {
             {config.event.dateLabel}
           </p>
         </Reveal>
+
+        <Promo />
       </div>
     </footer>
+  )
+}
+
+type PromoConfig = {
+  enabled?: boolean
+  title?: string
+  text?: string
+  siteUrl?: string
+  siteLabel?: string
+  telegramUrl?: string
+  instagramUrl?: string
+}
+
+/**
+ * Platforma reklamasi: mehmon ham shunday taklifnoma buyurtma qila olsin.
+ * Qiymatlar platformadan (`config.promo`) keladi — shablon ranglarida,
+ * taklifnomaning o'zidan ajralib turadigan, lekin bezovta qilmaydigan blok.
+ */
+function Promo() {
+  const promo = (config as unknown as { promo?: PromoConfig }).promo
+  if (!promo?.enabled) return null
+
+  const links = [
+    promo.siteUrl && { href: promo.siteUrl, label: promo.siteLabel || 'Sayt', icon: '✦' },
+    promo.telegramUrl && { href: promo.telegramUrl, label: 'Telegram', icon: '✈' },
+    promo.instagramUrl && { href: promo.instagramUrl, label: 'Instagram', icon: '◎' },
+  ].filter(Boolean) as { href: string; label: string; icon: string }[]
+
+  return (
+    <aside className="mt-14 rounded-2xl border border-gold/25 bg-paper-2/60 px-5 py-6 backdrop-blur-sm">
+      <p className="font-display text-lg text-ink">{promo.title}</p>
+      {promo.text && <p className="mt-1.5 font-body text-sm text-ink-soft">{promo.text}</p>}
+      <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+        {links.map((l) => (
+          <a
+            key={l.label}
+            href={l.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 px-4 py-2 font-body text-xs tracking-wide text-gold transition hover:bg-gold hover:text-paper"
+          >
+            <span aria-hidden="true">{l.icon}</span>
+            {l.label}
+          </a>
+        ))}
+      </div>
+    </aside>
   )
 }

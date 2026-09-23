@@ -1,5 +1,6 @@
 import type { Customization } from "./customization";
 import { defaultNotes, type NoteItem, type TimelineItem } from "./eventDefaults";
+import { INVITATION_PROMO } from "./contact";
 import { MUSIC_CUSTOM, MUSIC_NONE, musicTrack } from "./music";
 
 /**
@@ -129,5 +130,6 @@ export function buildInvitationConfig(
       title: "Sizni kutamiz!",
       signature: groom + (bride ? ` va ${bride}` : ""),
     },
+    promo: INVITATION_PROMO,
   };
 }

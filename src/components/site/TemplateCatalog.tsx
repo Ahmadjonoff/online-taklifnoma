@@ -51,9 +51,9 @@ export function TemplateCatalog({
   // Tarif tugmalari arzonidan qimmatiga: narxi bilan birga ko'rinadi
   const TIER_OPTIONS: Array<{ value: TierFilter; label: string; price?: number }> = [
     { value: "all", label: dict.catalog.tierAll },
-    { value: "light", label: dict.catalog.tierLight, price: TIER_PRICE.light },
     { value: "standard", label: dict.catalog.tierStandard, price: TIER_PRICE.standard },
     { value: "premium", label: dict.catalog.tierPremium, price: TIER_PRICE.premium },
+    { value: "luxury", label: dict.catalog.tierLuxury, price: TIER_PRICE.luxury },
   ];
 
   const [query, setQuery] = useState("");
@@ -158,8 +158,6 @@ export function TemplateCatalog({
           </span>
           <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
             {TIER_OPTIONS.map((o) => {
-              const count =
-                o.value === "all" ? templates.length : templates.filter((t) => tierOf(t.price) === o.value).length;
               const active = tier === o.value;
               return (
                 <button
@@ -174,7 +172,6 @@ export function TemplateCatalog({
                   }`}
                 >
                   <span className="font-semibold">{o.label.replace(/^★\s*/, "")}</span>
-                  <span className="ml-1.5 text-xs opacity-70">{count}</span>
                   {o.price !== undefined && (
                     <span className="block text-xs text-stone-500">
                       {t(dict.common.priceShort, { price: formatPrice(o.price) })}
@@ -199,7 +196,6 @@ export function TemplateCatalog({
             }`}
           >
             {dict.catalog.chipAll}
-            <span className="ml-1.5 text-xs opacity-70">{templates.length}</span>
           </button>
 
           {eventTypes.map((et) => (
@@ -214,7 +210,6 @@ export function TemplateCatalog({
               }`}
             >
               {et.emoji} {et.name}
-              <span className="ml-1.5 text-xs opacity-70">{et.count}</span>
             </button>
           ))}
         </div>
@@ -222,18 +217,8 @@ export function TemplateCatalog({
 
       {/* Natija */}
       <div className="mt-6 flex items-center justify-between text-sm text-stone-500">
-        <p>
-          {(() => {
-            const [before, after] = dict.catalog.resultCount.split("{count}");
-            return (
-              <>
-                {before}
-                <span className="font-semibold text-stone-800">{filtered.length}</span>
-                {after}
-              </>
-            );
-          })()}
-        </p>
+        {/* Bo'lim/tadbir bo'yicha shablonlar soni ataylab ko'rsatilmaydi */}
+        <span />
         {(query || event || tier !== "all") && (
           <button
             type="button"

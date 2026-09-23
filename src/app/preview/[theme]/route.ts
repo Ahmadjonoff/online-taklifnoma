@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { getCatalog } from "@/lib/catalogData";
+import { INVITATION_PROMO } from "@/lib/contact";
 import { sanitizeCustomization } from "@/lib/customization";
 import { buildInvitationConfig } from "@/lib/invitationConfig";
 import { getPalettes, paletteStyleTag } from "@/lib/palettes";
@@ -79,6 +80,7 @@ const DEMO = {
     title: "Sizni kutamiz!",
     signature: "Bekzod va Malika",
   },
+  promo: INVITATION_PROMO,
 };
 
 export async function GET(

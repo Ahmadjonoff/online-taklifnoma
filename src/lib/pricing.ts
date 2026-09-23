@@ -13,21 +13,21 @@ import { MUSIC_CUSTOM } from "./music";
  * tanlash barcha darajalarga kiradi — daraja faqat dizayn murakkabligiga
  * (qilinadigan ish hajmiga) qarab farq qiladi.
  */
-export type Tier = "light" | "standard" | "premium";
+export type Tier = "standard" | "premium" | "luxury";
 
 export const TIER_PRICE: Record<Tier, number> = {
-  light: 149_000,
-  standard: 199_000,
-  premium: 279_000,
+  standard: 149_000,
+  premium: 199_000,
+  luxury: 279_000,
 };
 
 /** Mijoz o'z musiqasini yuklasa: operator faylni tekshiradi, qirqadi, ovozini tekislaydi */
 export const CUSTOM_MUSIC_PRICE = 29_000;
 
 export function tierOf(price: number): Tier {
+  if (price >= TIER_PRICE.luxury) return "luxury";
   if (price >= TIER_PRICE.premium) return "premium";
-  if (price >= TIER_PRICE.standard) return "standard";
-  return "light";
+  return "standard";
 }
 
 export type PriceLine = { key: "template" | "customMusic"; amount: number };

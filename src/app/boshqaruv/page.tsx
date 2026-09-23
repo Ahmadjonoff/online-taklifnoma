@@ -6,7 +6,7 @@ import { musicTrack } from "@/lib/music";
 import { tierLabel } from "@/lib/catalog";
 import { formatPrice, tierOf } from "@/lib/pricing";
 
-const TIER_NAMES = { tierLight: "Yengil", tierStandard: "Standart", tierPremium: "Premium" };
+const TIER_NAMES = { tierStandard: "Standart", tierPremium: "Premium", tierLuxury: "Luxury" };
 import { findPalette } from "@/lib/palettes";
 
 export const dynamic = "force-dynamic";
@@ -35,7 +35,7 @@ export default async function AdminPage() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6">
           <h1 className="font-serif text-lg font-bold">Admin panel</h1>
           <div className="flex items-center gap-5 text-sm">
-            <Link href="/admin/javoblar" className="text-stone-300 hover:text-white">
+            <Link href="/boshqaruv/javoblar" className="text-stone-300 hover:text-white">
               RSVP va tilaklar
             </Link>
             <Link href="/" className="text-stone-300 hover:text-white">

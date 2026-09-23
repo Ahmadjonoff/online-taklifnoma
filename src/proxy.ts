@@ -24,18 +24,19 @@ export function proxy(req: NextRequest) {
     return NextResponse.json({ error: "Ruxsat yo'q" }, { status: 401 });
   }
 
-  // /admin sahifalari
-  if (pathname.startsWith("/admin")) {
+  // Boshqaruv (admin) sahifalari — saytda havolasi yo'q, faqat manzilni
+  // bilgan kishi kiradi: /boshqaruv
+  if (pathname.startsWith("/boshqaruv")) {
     // Login sahifasiga ruxsat
-    if (pathname === "/admin/login") return NextResponse.next();
+    if (pathname === "/boshqaruv/login") return NextResponse.next();
 
     if (isAuthed) return NextResponse.next();
-    return NextResponse.redirect(new URL("/admin/login", req.url));
+    return NextResponse.redirect(new URL("/boshqaruv/login", req.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*"],
+  matcher: ["/boshqaruv/:path*", "/api/admin/:path*"],
 };

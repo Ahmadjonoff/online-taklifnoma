@@ -21,7 +21,7 @@ export default async function TemplatesPage({
   searchParams: Promise<{ tadbir?: string; tarif?: string }>;
 }) {
   const { tadbir, tarif } = await searchParams;
-  const initialTier = tarif === "light" || tarif === "standard" || tarif === "premium" ? tarif : "all";
+  const initialTier = tarif === "standard" || tarif === "premium" || tarif === "luxury" ? tarif : "all";
   const locale = await getLocale();
   const dict = getDictionary(locale);
 
