@@ -161,6 +161,8 @@ export async function POST(req: Request) {
         title,
         eventDate: `${eventDate.split("-").reverse().join(".")} ${eventTime || "18:00"}`,
         venueName,
+        // So'rov kelgan domen (preview deploy'larda ham to'g'ri havola bo'lsin)
+        customerPageUrl: `${new URL(req.url).origin}/buyurtma/${order.accessToken}`,
         details: customizationSummary(c, {
           eventType: template.categories.find((e) => e.slug === c.eventType)?.name,
           palette: c.palette ? findPalette(template.theme, c.palette)?.name : undefined,

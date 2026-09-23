@@ -27,6 +27,8 @@ export type NewOrderNotice = {
   eventDate: string; // "25.12.2026 18:00"
   venueName: string;
   details: string[]; // mijoz tanlagan qo'shimcha sozlamalar (rang, musiqa ...)
+  /** Mijozning shaxsiy sahifasi: buyurtma holati, RSVP va tilaklar */
+  customerPageUrl: string;
 };
 
 async function sendOnce(text: string): Promise<{ ok: boolean; retryAfterSec?: number; error?: string }> {
@@ -53,12 +55,53 @@ async function sendOnce(text: string): Promise<{ ok: boolean; retryAfterSec?: nu
   }
 }
 
-export async function notifyAdminNewOrder(order: NewOrderNotice): Promise<boolean> {
+async function sendWithRetry(text: string): Promise<boolean> {
   if (!BOT_TOKEN || !ADMIN_CHAT_ID) {
     console.warn("Telegram sozlanmagan (TELEGRAM_BOT_TOKEN / TELEGRAM_ADMIN_CHAT_ID) — xabar yuborilmadi.");
     return false;
   }
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    const r = await sendOnce(text);
+    if (r.ok) return true;
+    console.error(`Telegram xabari yuborilmadi (urinish ${attempt}/${MAX_ATTEMPTS}): ${r.error}`);
+    if (attempt < MAX_ATTEMPTS) {
+      // 429 bo'lsa Telegram aytgan vaqtcha, aks holda qisqa kutish
+      const waitMs = Math.min((r.retryAfterSec ?? attempt) * 1000, 10_000);
+      await new Promise((resolve) => setTimeout(resolve, waitMs));
+    }
+  }
+  return false;
+}
 
+/**
+ * Buyurtma tasdiqlanganda (PAID) — admin mijozga shunchaki forward qilishi
+ * uchun tayyor xabar: taklifnoma havolasi va mijozning RSVP sahifasi.
+ */
+export async function notifyAdminOrderConfirmed(o: {
+  id: number;
+  customerName: string;
+  phone: string;
+  invitationUrl: string;
+  customerPageUrl: string;
+}): Promise<boolean> {
+  return sendWithRetry(
+    [
+      `✅ №${o.id} tasdiqlandi — ${o.customerName}, ${o.phone}`,
+      "",
+      "Quyidagini mijozga yuboring 👇",
+      "",
+      `Assalomu alaykum, ${o.customerName}! Taklifnomangiz tayyor 🎉`,
+      "",
+      "💌 Mehmonlarga yuboriladigan havola:",
+      o.invitationUrl,
+      "",
+      "📋 Mehmonlar javoblari (RSVP) va tilaklar — faqat siz uchun:",
+      o.customerPageUrl,
+    ].join("\n")
+  );
+}
+
+export async function notifyAdminNewOrder(order: NewOrderNotice): Promise<boolean> {
   const text = [
     "🆕 Yangi buyurtma!",
     `№${order.id} — ${order.templateName}`,
@@ -71,17 +114,10 @@ export async function notifyAdminNewOrder(order: NewOrderNotice): Promise<boolea
     `📅 ${order.eventDate}`,
     `📍 ${order.venueName}`,
     ...(order.details.length ? ["", ...order.details] : []),
+    "",
+    "🔗 Mijoz sahifasi (holat, RSVP va tilaklar) — mijozga yuboring:",
+    order.customerPageUrl,
   ].join("\n");
 
-  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-    const r = await sendOnce(text);
-    if (r.ok) return true;
-    console.error(`Telegram xabari yuborilmadi (urinish ${attempt}/${MAX_ATTEMPTS}): ${r.error}`);
-    if (attempt < MAX_ATTEMPTS) {
-      // 429 bo'lsa Telegram aytgan vaqtcha, aks holda qisqa kutish
-      const waitMs = Math.min((r.retryAfterSec ?? attempt) * 1000, 10_000);
-      await new Promise((resolve) => setTimeout(resolve, waitMs));
-    }
-  }
-  return false;
+  return sendWithRetry(text);
 }

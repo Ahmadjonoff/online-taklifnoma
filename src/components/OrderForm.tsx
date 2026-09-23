@@ -151,7 +151,11 @@ export function OrderForm({
 
   const draftSrc = useMemo(() => {
     const content = { title, partner1, partner2, eventDate, eventTime, venueName, venueAddress, message };
-    const params = new URLSearchParams({ draft: JSON.stringify({ content, options }) });
+    // Tanlangan musiqa namunada eshitilmaydi — u faqat buyurtmada saqlanib,
+    // tayyor taklifnomaga qo'shiladi (musiqani ro'yxatdagi ▶ bilan tinglash mumkin).
+    // Shu sababli musiqa o'zgarganda namuna qayta yuklanmaydi ham.
+    const previewOptions = { ...options, music: MUSIC_NONE, customMusicUrl: "" };
+    const params = new URLSearchParams({ draft: JSON.stringify({ content, options: previewOptions }) });
     return `/preview/${templateTheme}?${params}`;
   }, [title, partner1, partner2, eventDate, eventTime, venueName, venueAddress, message, options, templateTheme]);
 

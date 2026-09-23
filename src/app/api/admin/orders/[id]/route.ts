@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { notifyAdminOrderConfirmed } from "@/lib/telegramBot";
 
 export async function PATCH(
   req: Request,
@@ -19,7 +20,10 @@ export async function PATCH(
       return NextResponse.json({ error: "Noto'g'ri holat" }, { status: 400 });
     }
 
-    const order = await prisma.order.findUnique({ where: { id: orderId } });
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: { invitation: { select: { slug: true } } },
+    });
     if (!order) {
       return NextResponse.json({ error: "Buyurtma topilmadi" }, { status: 404 });
     }
@@ -28,6 +32,20 @@ export async function PATCH(
       where: { id: orderId },
       data: { status },
     });
+
+    // Endi tasdiqlangan bo'lsa — mijozga yuborish uchun tayyor xabar botga
+    if (status === "PAID" && order.status !== "PAID" && order.invitation) {
+      const origin = new URL(req.url).origin;
+      after(() =>
+        notifyAdminOrderConfirmed({
+          id: order.id,
+          customerName: order.customerName,
+          phone: order.phone,
+          invitationUrl: `${origin}/e/${order.invitation!.slug}`,
+          customerPageUrl: `${origin}/buyurtma/${order.accessToken}`,
+        })
+      );
+    }
 
     return NextResponse.json({ ok: true });
   } catch (e) {
