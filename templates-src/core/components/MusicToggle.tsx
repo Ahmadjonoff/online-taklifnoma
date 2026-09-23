@@ -67,7 +67,11 @@ export function MusicToggle({ autoplay }: { autoplay: boolean }) {
         ref={audioRef}
         src={config.music.src}
         loop
-        preload="auto"
+        // "none": fayl faqat ijro boshlanganda yuklanadi. "auto" bo'lganda
+        // buyurtma formasidagi har bir jonli preview butun mp3 ni yuklab,
+        // ulanishni band qilardi (buyurtmadan keyingi sahifaga o'tish
+        // 10+ soniya kechikardi) va mehmonlar trafigini behuda sarflardi.
+        preload="none"
         onError={() => {
           setBroken(true)
           console.warn(`[taklifnoma] Musiqa yuklanmadi: ${config.music.src} — public/ papkasini tekshiring.`)

@@ -8,7 +8,7 @@ export const en: Dictionary = {
     priceShort: "{price} UZS",
     priceFrom: "from {price} UZS",
     priceNote:
-      "The price depends on the design tier — music, countdown, RSVP, guest wishes and colour choice are always included. No online payment: after you order, the operator contacts you on Telegram.",
+      "The price depends on the design tier — music, countdown, RSVP, guest wishes and colour choice are always included. Payment via Telegram: after you order, message the operator to pay.",
     tierStandard: "Standard",
     tierPremium: "Premium",
     tierLuxury: "Luxury",
@@ -143,7 +143,7 @@ export const en: Dictionary = {
       {
         n: "03",
         title: "We'll talk on Telegram",
-        text: "No online payment: the operator reaches out and we agree on price and details.",
+        text: "After ordering, message us on Telegram to pay — we'll send the payment details.",
       },
       {
         n: "04",
@@ -180,7 +180,7 @@ export const en: Dictionary = {
       },
     ],
     plansCtaButton: "Browse templates",
-    pricingFooterNote: "Extra: upload your own music — +{music} UZS. No online payment; after you order, the operator contacts you on Telegram.",
+    pricingFooterNote: "Extra: upload your own music — +{music} UZS. Payment is made via Telegram.",
     customDesignText: "None of the ready-made templates fit? No problem — we'll also build a fully custom invitation for you.",
     customDesignCta: "Place an order",
     customDesignTelegramMsg: "Hello! I'd like a fully custom invitation (no template).",
@@ -219,7 +219,7 @@ export const en: Dictionary = {
     },
     {
       q: "How much does it cost and how do I pay?",
-      a: "The price depends on the design: Standard — 149 000, Premium — 199 000, Luxury — 279 000 UZS. Music, countdown, RSVP, guest wishes and colour choice are included; uploading your own music is +29 000 UZS. No online payment — after you order, the operator contacts you on Telegram to arrange payment.",
+      a: "The price depends on the design: Standard — 149 000, Premium — 199 000, Luxury — 279 000 UZS. Music, countdown, RSVP, guest wishes and colour choice are included; uploading your own music is +29 000 UZS. Payment is via Telegram: after sending your order, message the operator to pay.",
     },
     {
       q: "Can I just contact you on Telegram?",
@@ -265,7 +265,7 @@ export const en: Dictionary = {
     notesTitle: "Notes",
     orderBtn: "Place an order",
     telegramBtn: "Message on Telegram",
-    noOnlinePayment: "No online payment — once you place an order, the operator will reach out on Telegram and we'll arrange payment.",
+    noOnlinePayment: "Payment via Telegram — after sending your order, message the operator to pay.",
     livePreviewHint: "☝️ Live sample — open the envelope",
     statPhone: "Mobile",
     statPhoneLabel: "friendly",
@@ -297,7 +297,7 @@ export const en: Dictionary = {
   order: {
     tag: "Order",
     title: "Put together your invitation",
-    text: "Fill in the details — the live preview on the right updates instantly. The order itself is free: no online payment, pricing is agreed on Telegram.",
+    text: "Fill in the details — the live preview on the right updates instantly. After ordering, you pay via Telegram.",
     noTemplateWarning: "No template selected. Please",
     noTemplateWarningLink: "pick one from the templates page",
     noTemplateWarningEnd: ".",
@@ -320,9 +320,9 @@ export const en: Dictionary = {
     messagePlaceholder: "We'd be delighted to see you at our wedding!",
     submit: "Submit order",
     submitting: "Submitting...",
-    noPaymentTitle: "No payment needed",
-    noPaymentText: "Send your order — the operator will reach out on Telegram, we'll confirm the details and take it from there.",
-    telegramBtn: "Telegram: {label}",
+    noPaymentTitle: "Message us on Telegram to complete payment",
+    noPaymentText: "Send your order, then message the operator on Telegram to pay — we'll send the payment details and prepare your invitation.",
+    telegramBtn: "Message on Telegram — {label}",
     livePreview: "Live preview",
     genericError: "Something went wrong",
     colorPresets: "Ready-made combinations",
@@ -412,9 +412,9 @@ export const en: Dictionary = {
     openInvitation: "Open invitation →",
     pendingTitle: "Your order has been received!",
     orderNumber: "Order number:",
-    telegramBoxTitle: "We'll be in touch on Telegram",
+    telegramBoxTitle: "Message us on Telegram to pay",
     telegramBoxText:
-      "No online payment is required. The operator will contact you on Telegram, confirm the details and arrange payment — then we'll prepare your invitation.",
+      "Your order has been received. To complete payment, message the operator on Telegram — we'll send the payment details, and your invitation link goes live once paid.",
     telegramBoxBtn: "Message on Telegram — {label}",
     telegramBoxHint: "The message text and order number are added automatically.",
     priceLabel: "Price",

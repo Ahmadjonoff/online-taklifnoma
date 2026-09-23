@@ -14,7 +14,7 @@ export const uz = {
     priceShort: "{price} so'm",
     priceFrom: "{price} so'mdan",
     priceNote:
-      "Narx dizayn darajasiga bog'liq — musiqa, taymer, RSVP, tilaklar va rang tanlash hammasiga kiritilgan. Onlayn to'lov yo'q: buyurtmadan so'ng operator Telegram orqali bog'lanadi.",
+      "Narx dizayn darajasiga bog'liq — musiqa, taymer, RSVP, tilaklar va rang tanlash hammasiga kiritilgan. To'lov Telegram orqali: buyurtma yuborgach, to'lov uchun operatorga yozing.",
     tierStandard: "Standart",
     tierPremium: "Premium",
     tierLuxury: "Luxury",
@@ -149,7 +149,7 @@ export const uz = {
       {
         n: "03",
         title: "Telegram orqali kelishamiz",
-        text: "Onlayn to'lov yo'q: operator yozadi, to'lov va tafsilotlarni kelishamiz.",
+        text: "Buyurtmadan so'ng to'lov uchun Telegram orqali yozasiz — to'lov ma'lumotlarini beramiz.",
       },
       {
         n: "04",
@@ -186,7 +186,7 @@ export const uz = {
       },
     ],
     plansCtaButton: "Shablonlarni ko'rish",
-    pricingFooterNote: "Qo'shimcha xizmat: o'z musiqangizni yuklash — +{music} so'm. Onlayn to'lov yo'q, buyurtmadan so'ng operator Telegram orqali bog'lanadi.",
+    pricingFooterNote: "Qo'shimcha xizmat: o'z musiqangizni yuklash — +{music} so'm. To'lov Telegram orqali amalga oshiriladi.",
     customDesignText: "Tayyor shablon yoqmadimi? Muammo emas — mijoz xohlagan dizaynda, alohida taklifnomani ham tayyorlab beramiz.",
     customDesignCta: "Buyurtma berish",
     customDesignTelegramMsg: "Assalomu alaykum! Menga alohida (shablonsiz) taklifnoma kerak edi.",
@@ -225,7 +225,7 @@ export const uz = {
     },
     {
       q: "Narx qancha va qanday to'lanadi?",
-      a: "Narx shablon dizayniga bog'liq: Standart — 149 000, Premium — 199 000, Luxury — 279 000 so'm. Musiqa, taymer, RSVP, tilaklar va rang tanlash hammasiga kiritilgan; o'z musiqangizni yuklash +29 000 so'm. Onlayn to'lov yo'q — buyurtmadan so'ng operator Telegram orqali bog'lanadi va to'lovni kelishasiz.",
+      a: "Narx shablon dizayniga bog'liq: Standart — 149 000, Premium — 199 000, Luxury — 279 000 so'm. Musiqa, taymer, RSVP, tilaklar va rang tanlash hammasiga kiritilgan; o'z musiqangizni yuklash +29 000 so'm. To'lov Telegram orqali: buyurtma yuborgach, to'lov uchun operatorga yozasiz.",
     },
     {
       q: "Telegram orqali bog'lanishim mumkinmi?",
@@ -271,7 +271,7 @@ export const uz = {
     notesTitle: "Eslatmalar",
     orderBtn: "Buyurtma berish",
     telegramBtn: "Telegram orqali yozish",
-    noOnlinePayment: "Onlayn to'lov yo'q — buyurtma yuborilgach operator Telegram orqali bog'lanadi va to'lovni kelishamiz.",
+    noOnlinePayment: "To'lov Telegram orqali — buyurtma yuborgach, to'lov uchun operatorga yozing.",
     livePreviewHint: "☝️ Jonli namuna — konvertni bosib oching",
     statPhone: "Telefon",
     statPhoneLabel: "uchun mos",
@@ -303,7 +303,7 @@ export const uz = {
   order: {
     tag: "Buyurtma",
     title: "Taklifnomangizni shakllantiring",
-    text: "Ma'lumotlarni to'ldiring — o'ng tomonda jonli ko'rinish darhol yangilanadi. Buyurtma bepul: onlayn to'lov yo'q, to'lovni Telegram orqali kelishamiz.",
+    text: "Ma'lumotlarni to'ldiring — o'ng tomonda jonli ko'rinish darhol yangilanadi. Buyurtma yuborgach, to'lovni Telegram orqali amalga oshirasiz.",
     noTemplateWarning: "Shablon tanlanmagan. Iltimos,",
     noTemplateWarningLink: "shablonlar sahifasidan",
     noTemplateWarningEnd: "birini tanlang.",
@@ -326,9 +326,9 @@ export const uz = {
     messagePlaceholder: "Sizni to'yimizda ko'rishdan baxtiyor bo'lamiz!",
     submit: "Buyurtmani yuborish",
     submitting: "Yuborilmoqda...",
-    noPaymentTitle: "To'lash shart emas",
-    noPaymentText: "Buyurtma yuboring — operator Telegram orqali bog'lanadi, tafsilotlarni kelishib, keyin davom etamiz.",
-    telegramBtn: "Telegram: {label}",
+    noPaymentTitle: "To'lovni amalga oshirish uchun Telegram orqali yozing",
+    noPaymentText: "Buyurtmani yuboring, so'ng to'lov uchun operatorga Telegram orqali yozing — to'lov ma'lumotlarini beramiz va taklifnomangizni tayyorlaymiz.",
+    telegramBtn: "Telegram orqali yozish — {label}",
     livePreview: "Jonli ko'rinish",
     genericError: "Xatolik yuz berdi",
     colorPresets: "Tayyor uyg'unliklar",
@@ -418,9 +418,9 @@ export const uz = {
     openInvitation: "Taklifnomani ochish →",
     pendingTitle: "Buyurtmangiz qabul qilindi!",
     orderNumber: "Buyurtma raqami:",
-    telegramBoxTitle: "Endi Telegram orqali bog'lanamiz",
+    telegramBoxTitle: "To'lov uchun Telegram orqali yozing",
     telegramBoxText:
-      "Onlayn to'lov talab qilinmaydi. Operator siz bilan Telegram'da bog'lanib, tafsilotlarni aniqlashtiradi va to'lovni kelishadi — keyin taklifnomani tayyorlab beramiz.",
+      "Buyurtmangiz qabul qilindi. To'lovni amalga oshirish uchun operatorga Telegram orqali yozing — to'lov ma'lumotlarini beramiz, to'lovdan so'ng taklifnoma havolasi faollashadi.",
     telegramBoxBtn: "Telegram'da yozish — {label}",
     telegramBoxHint: "Xabar matni va buyurtma raqami avtomatik qo'shiladi.",
     priceLabel: "Narx",

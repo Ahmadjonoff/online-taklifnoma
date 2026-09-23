@@ -65,6 +65,9 @@ export function OrderForm({
   const step: Step = STEPS[stepIndex];
   const stepBoxRef = useRef<HTMLDivElement>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
+  // Buyurtma yuborilgach preview'ni yopamiz: iframe ichidagi yuklanishlar
+  // (shablon, shriftlar) keyingi sahifaga o'tishga xalaqit bermasin
+  const [leaving, setLeaving] = useState(false);
 
   // --- Taklifnoma ma'lumotlari
   const [partner1, setPartner1] = useState("");
@@ -262,6 +265,8 @@ export function OrderForm({
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? o.genericError);
+      audioRef.current?.pause();
+      setLeaving(true);
       router.push(`/buyurtma/${data.orderToken}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : o.genericError);
@@ -865,7 +870,8 @@ export function OrderForm({
                     required
                     type="tel"
                     inputMode="tel"
-                    pattern="^(\+?998)?[\s-]?\d{2}[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}$"
+                    // Chrome pattern'ni "v" rejimida tekshiradi: sinf ichida "-" ekranlanishi shart
+                    pattern="^(\+?998)?[\s\-]?\d{2}[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}$"
                     title="Masalan: +998 90 123 45 67"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
@@ -943,7 +949,7 @@ export function OrderForm({
       <div className="hidden lg:sticky lg:top-6 lg:block lg:self-start">
         <p className="mb-3 text-center text-sm font-medium text-stone-500">{o.livePreview}</p>
         <div className="overflow-hidden rounded-[2rem] border-8 border-stone-800 bg-stone-800 shadow-2xl">
-          {!previewOpen && preview}
+          {!previewOpen && !leaving && preview}
         </div>
       </div>
 
@@ -955,7 +961,7 @@ export function OrderForm({
       >
         {o.showPreview}
       </button>
-      {previewOpen && (
+      {previewOpen && !leaving && (
         <div className="fixed inset-0 z-50 flex flex-col bg-stone-950/90 p-3 lg:hidden" role="dialog" aria-modal="true">
           <div className="mb-2 flex justify-end">
             <button
