@@ -1,5 +1,6 @@
 import type { TimelineItem } from "./eventDefaults";
 import { isOwnMusicUrl, MUSIC_CUSTOM, MUSIC_NONE, MUSIC_TRACKS } from "./music";
+import type { MainColors } from "./palettes";
 
 /**
  * Mijoz buyurtmada tanlaydigan sozlamalar (`Invitation.options` JSON).
@@ -10,8 +11,11 @@ import { isOwnMusicUrl, MUSIC_CUSTOM, MUSIC_NONE, MUSIC_TRACKS } from "./music";
 export type Customization = {
   /** Palitra id'si (`src/lib/palettes.ts`); "" — shablonning o'z ranglari */
   palette: string;
-  /** Mijozning o'z urg'u rangi ("#rrggbb") — palitraning oltin rangi o'rniga; "" — yo'q */
-  accent: string;
+  /**
+   * Mijoz tanlagan 3 ta asosiy rang ("#rrggbb"): fon, asosiy va qo'shimcha
+   * urg'u. "" — palitraning o'z rangi. Qolgan tuslar shulardan hisoblanadi.
+   */
+  colors: MainColors;
   /** Tadbir turi slug'i — standart eslatmalar shu bo'yicha olinadi */
   eventType: string;
   /** Ismlar ustidagi kichik yozuv ("Nikoh to'yi", "Kelin salom" ...) */
@@ -32,7 +36,7 @@ export type Customization = {
 
 export const DEFAULT_CUSTOMIZATION: Customization = {
   palette: "",
-  accent: "",
+  colors: { paper: "", gold: "", wine: "" },
   eventType: "",
   kicker: "",
   timeline: null,
@@ -128,7 +132,17 @@ export function sanitizeCustomization(input: unknown, ctx: Ctx, strict = true): 
     if (strict) return { ok: false, error: "Yuklangan musiqa topilmadi — qaytadan yuklang" };
     music = d.music;
   }
-  const accent = str(o.accent, 7).toLowerCase();
+  const rawColors = (o.colors ?? {}) as Record<string, unknown>;
+  const hex = (v: unknown) => {
+    const c = str(v, 7).toLowerCase();
+    return /^#[0-9a-f]{6}$/.test(c) ? c : "";
+  };
+  const mainColors: MainColors = {
+    paper: hex(rawColors.paper),
+    // `accent` — oldingi versiyadagi yagona urg'u rangi
+    gold: hex(rawColors.gold) || hex(o.accent),
+    wine: hex(rawColors.wine),
+  };
 
   const dc = (o.dressCode ?? {}) as Record<string, unknown>;
   const colors = (Array.isArray(dc.colors) ? dc.colors : [])
@@ -146,7 +160,7 @@ export function sanitizeCustomization(input: unknown, ctx: Ctx, strict = true): 
     ok: true,
     value: {
       palette: ctx.paletteIds.includes(palette) ? palette : "",
-      accent: /^#[0-9a-f]{6}$/.test(accent) ? accent : "",
+      colors: mainColors,
       eventType: ctx.eventTypeSlugs.includes(eventType) ? eventType : "",
       kicker: str(o.kicker, LIMITS.kicker),
       timeline: timeline(o.timeline),
@@ -175,11 +189,12 @@ export function parseStoredCustomization(json: string | null | undefined): Custo
   try {
     raw = JSON.parse(json || "{}");
   } catch {}
-  const o = (raw && typeof raw === "object" ? raw : {}) as Partial<Customization>;
+  const o = (raw && typeof raw === "object" ? raw : {}) as Partial<Customization> & { accent?: string };
   const d = DEFAULT_CUSTOMIZATION;
   return {
     ...d,
     ...o,
+    colors: { ...d.colors, ...(o.accent ? { gold: o.accent } : {}), ...(o.colors ?? {}) },
     timeline: Array.isArray(o.timeline) ? o.timeline : null,
     dressCode: { ...d.dressCode, ...(o.dressCode ?? {}) },
     gift: { ...d.gift, ...(o.gift ?? {}) },
@@ -194,7 +209,12 @@ export function customizationSummary(
   const lines: string[] = [];
   if (names.eventType) lines.push(`🏷 Tadbir: ${names.eventType}`);
   if (names.palette) lines.push(`🎨 Rang: ${names.palette}`);
-  if (c.accent) lines.push(`🖌 O'z rangi: ${c.accent}`);
+  const picked = [
+    c.colors.paper && `fon ${c.colors.paper}`,
+    c.colors.gold && `asosiy ${c.colors.gold}`,
+    c.colors.wine && `qo'shimcha ${c.colors.wine}`,
+  ].filter(Boolean);
+  if (picked.length) lines.push(`🖌 Ranglar: ${picked.join(", ")}`);
   lines.push(
     `🎵 Musiqa: ${
       c.music === MUSIC_NONE

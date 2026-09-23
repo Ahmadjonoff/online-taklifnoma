@@ -55,7 +55,7 @@ export const ru: Dictionary = {
   },
 
   home: {
-    badge: "{total} премиум-шаблонов · RSVP · QR-код",
+    badge: "{total} уникальных дизайнов · RSVP · QR-код",
     heroTitle: "Цифровое приглашение, которое {highlight} для вашего торжества",
     heroTitleHighlight: "запомнится надолго",
     heroText:
@@ -239,6 +239,7 @@ export const ru: Dictionary = {
     subtitle: "{count} шаблонов — у каждого живое превью. Откройте конверт на карточке, чтобы увидеть анимацию и музыку.",
     searchPlaceholder: "Поиск по названию или описанию шаблона...",
     searchLabel: "Поиск шаблона",
+    tierFilterLabel: "Тариф",
     tierAll: "Все уровни",
     tierPremium: "★ Премиум",
     tierStandard: "Стандарт",
@@ -328,6 +329,12 @@ export const ru: Dictionary = {
     telegramBtn: "Telegram: {label}",
     livePreview: "Живое превью",
     genericError: "Произошла ошибка",
+    colorPresets: "Готовые сочетания",
+    colorPaper: "Цвет фона",
+    colorGold: "Основной цвет",
+    colorWine: "Дополнительный цвет",
+    colorCustom: "Свой цвет",
+    colorsHint: "Выберите 3 основных цвета — из образцов или любой свой через «+». Остальные оттенки подстроятся автоматически.",
     stepDesign: "Дизайн",
     stepDetails: "Данные",
     stepSchedule: "Программа",

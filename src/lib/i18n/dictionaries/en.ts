@@ -55,7 +55,7 @@ export const en: Dictionary = {
   },
 
   home: {
-    badge: "{total} premium templates · RSVP · QR code",
+    badge: "{total} unique designs · RSVP · QR code",
     heroTitle: "A digital invitation your event will be {highlight} for",
     heroTitleHighlight: "remembered",
     heroText:
@@ -239,6 +239,7 @@ export const en: Dictionary = {
     subtitle: "{count} templates — each with a live preview. Open the envelope on a card to see the animation and music.",
     searchPlaceholder: "Search by template name or description...",
     searchLabel: "Search templates",
+    tierFilterLabel: "Plan",
     tierAll: "All tiers",
     tierPremium: "★ Premium",
     tierStandard: "Standard",
@@ -328,6 +329,12 @@ export const en: Dictionary = {
     telegramBtn: "Telegram: {label}",
     livePreview: "Live preview",
     genericError: "Something went wrong",
+    colorPresets: "Ready-made combinations",
+    colorPaper: "Background",
+    colorGold: "Main colour",
+    colorWine: "Secondary colour",
+    colorCustom: "Your own colour",
+    colorsHint: "Choose 3 main colours — each from the samples or any colour via “+”. The other shades adjust automatically.",
     stepDesign: "Design",
     stepDetails: "Details",
     stepSchedule: "Schedule",

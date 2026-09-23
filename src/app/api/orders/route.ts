@@ -2,7 +2,9 @@ import { after, NextResponse } from "next/server";
 import { customizationSummary, sanitizeCustomization } from "@/lib/customization";
 import { musicTrack } from "@/lib/music";
 import { findPalette, getPalettes } from "@/lib/palettes";
-import { formatPrice, orderPrice } from "@/lib/pricing";
+import { tierLabel } from "@/lib/catalog";
+import { getDictionary } from "@/lib/i18n/dictionary";
+import { formatPrice, orderPrice, tierOf } from "@/lib/pricing";
 import { prisma } from "@/lib/prisma";
 import { notifyAdminNewOrder } from "@/lib/telegramBot";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
@@ -107,7 +109,8 @@ export async function POST(req: Request) {
     }
 
     // Narx serverda hisoblanadi (mijoz yuborgan summaga ishonilmaydi)
-    const price = orderPrice(template.price, custom.value).total;
+    const priced = orderPrice(template.price, custom.value);
+    const price = priced.total;
 
     const slug = makeSlug(partner1 && partner2 ? `${partner1}-va-${partner2}` : title);
 
@@ -147,7 +150,14 @@ export async function POST(req: Request) {
         customerName: order.customerName,
         phone: order.phone,
         templateName: template.name,
-        price: `${formatPrice(price)} so'm`,
+        // Operator uchun: qaysi tarif, qo'shimchalar va jami summa
+        priceLines: [
+          `💎 Tarif: ${tierLabel(tierOf(template.price), getDictionary("uz").common)} — ${formatPrice(template.price)} so'm`,
+          ...priced.lines
+            .filter((l) => l.key === "customMusic")
+            .map((l) => `➕ O'z musiqasi — ${formatPrice(l.amount)} so'm`),
+          `💰 Jami: ${formatPrice(price)} so'm`,
+        ],
         title,
         eventDate: `${eventDate.split("-").reverse().join(".")} ${eventTime || "18:00"}`,
         venueName,

@@ -113,7 +113,7 @@ export async function GET(
     const draft = await buildDraft(theme, draftParam);
     if (draft) {
       config = draft.config;
-      paletteStyle = paletteStyleTag(theme, draft.palette, draft.accent);
+      paletteStyle = paletteStyleTag(theme, draft.palette, draft.colors);
     }
   } else if (url.searchParams.get("thumb") === "1") {
     // Katalog kartasidagi kichik ko'rinish: gulbarg animatsiyasi o'chiriladi
@@ -189,5 +189,5 @@ async function buildDraft(theme: string, raw: string) {
     template,
     options.value
   );
-  return { config, palette: options.value.palette, accent: options.value.accent };
+  return { config, palette: options.value.palette, colors: options.value.colors };
 }

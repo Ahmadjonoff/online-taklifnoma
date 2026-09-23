@@ -3,7 +3,10 @@ import { prisma } from "@/lib/prisma";
 import { OrderActions } from "@/components/OrderActions";
 import { customizationSummary, parseStoredCustomization } from "@/lib/customization";
 import { musicTrack } from "@/lib/music";
-import { formatPrice } from "@/lib/pricing";
+import { tierLabel } from "@/lib/catalog";
+import { formatPrice, tierOf } from "@/lib/pricing";
+
+const TIER_NAMES = { tierLight: "Yengil", tierStandard: "Standart", tierPremium: "Premium" };
 import { findPalette } from "@/lib/palettes";
 
 export const dynamic = "force-dynamic";
@@ -111,7 +114,7 @@ export default async function AdminPage() {
                     <strong>{order.customerName}</strong> • {order.phone}
                   </p>
                   <p className="text-sm text-stone-500">
-                    {order.template.name} — narx:{" "}
+                    {order.template.name} — {tierLabel(tierOf(order.template.price), TIER_NAMES)} tarif, narx:{" "}
                     {formatPrice(order.price || order.template.price)} so&apos;m
                   </p>
                   {order.invitation && (

@@ -16,9 +16,11 @@ import {
   MUSIC_NONE,
   type MusicTrack,
 } from "@/lib/music";
+import type { ColorRole, MainColors } from "@/lib/palettes";
 import { CUSTOM_MUSIC_PRICE, formatPrice, orderPrice } from "@/lib/pricing";
 
-export type OrderPalette = { id: string; name: string; colors: string[] };
+/** `strip` — kartadagi 5 rangli chiziq, `main` — shu palitraning 3 ta asosiy rangi */
+export type OrderPalette = { id: string; name: string; strip: string[]; main: MainColors };
 export type OrderCategory = { slug: string; name: string; timeline: TimelineItem[] };
 
 // Jonli preview har harf bosilganda emas, yozish to'xtagach yangilanadi —
@@ -34,6 +36,7 @@ export function OrderForm({
   templateTheme,
   templatePrice,
   palettes,
+  swatches,
   categories,
   defaultEventType,
   musicTracks,
@@ -44,6 +47,8 @@ export function OrderForm({
   templateTheme: string;
   templatePrice: number;
   palettes: OrderPalette[];
+  /** Har bir asosiy rang uchun namunalar */
+  swatches: Record<ColorRole, string[]>;
   categories: OrderCategory[];
   defaultEventType: string;
   musicTracks: MusicTrack[];
@@ -75,7 +80,7 @@ export function OrderForm({
   // --- Mijoz sozlamalari (Invitation.options)
   const initialCategory = categories.find((c) => c.slug === defaultEventType) ?? categories[0];
   const [palette, setPalette] = useState(palettes[0]?.id ?? "");
-  const [accent, setAccent] = useState("");
+  const [colors, setColors] = useState<MainColors>(palettes[0]?.main ?? { paper: "", gold: "", wine: "" });
   const [eventType, setEventType] = useState(initialCategory?.slug ?? "");
   const [kicker, setKicker] = useState(initialCategory?.name ?? "");
   const [timeline, setTimeline] = useState<TimelineItem[]>(initialCategory?.timeline ?? []);
@@ -122,7 +127,7 @@ export function OrderForm({
   const options: Customization = useMemo(
     () => ({
       palette,
-      accent,
+      colors,
       eventType,
       kicker,
       timeline,
@@ -136,7 +141,7 @@ export function OrderForm({
       wishes,
       petals,
     }),
-    [palette, accent, eventType, kicker, timeline, googleMapsUrl, yandexMapsUrl, music, customMusic, dressText, dressColors, giftCard, giftHolder, rsvp, wishes, petals]
+    [palette, colors, eventType, kicker, timeline, googleMapsUrl, yandexMapsUrl, music, customMusic, dressText, dressColors, giftCard, giftHolder, rsvp, wishes, petals]
   );
 
   const price = orderPrice(templatePrice, options);
@@ -352,64 +357,113 @@ export function OrderForm({
           {/* ------------------------------------------------ 1. Dizayn */}
           {step === "design" && (
             <div className="space-y-6">
-              {palettes.length > 0 && (
+              {palettes.length > 1 && (
                 <fieldset>
-                  <legend className={labelClass}>{o.colors}</legend>
+                  <legend className={labelClass}>{o.colorPresets}</legend>
                   <div className="mt-1 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-                    {palettes.map((p) => (
-                      <button
-                        key={p.id}
-                        type="button"
-                        onClick={() => setPalette(p.id)}
-                        aria-pressed={palette === p.id}
-                        className={selectable(palette === p.id)}
-                      >
-                        <span className="flex h-10 overflow-hidden rounded-xl border border-stone-200">
-                          {p.colors.map((c, i) => (
-                            <span key={i} className="flex-1" style={{ background: c }} />
-                          ))}
-                        </span>
-                        <span className="mt-2 block truncate text-xs font-medium text-stone-700">{p.name}</span>
-                      </button>
-                    ))}
+                    {palettes.map((p) => {
+                      const active =
+                        palette === p.id &&
+                        colors.paper === p.main.paper &&
+                        colors.gold === p.main.gold &&
+                        colors.wine === p.main.wine;
+                      return (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onClick={() => {
+                            setPalette(p.id);
+                            setColors(p.main);
+                          }}
+                          aria-pressed={active}
+                          className={selectable(active)}
+                        >
+                          <span className="flex h-8 overflow-hidden rounded-lg border border-stone-200">
+                            {p.strip.map((c, i) => (
+                              <span key={i} className="flex-1" style={{ background: c }} />
+                            ))}
+                          </span>
+                          <span className="mt-1.5 block truncate text-xs font-medium text-stone-700">{p.name}</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </fieldset>
               )}
 
-              <div>
-                <p className={labelClass}>{o.customColor}</p>
-                <div className="flex flex-wrap items-center gap-3">
-                  <label className="relative flex h-11 w-11 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-stone-300 shadow-sm">
-                    <span
-                      className="absolute inset-0"
-                      style={{
-                        background:
-                          accent ||
-                          "conic-gradient(from 0deg, #e11d48, #f59e0b, #84cc16, #06b6d4, #6366f1, #d946ef, #e11d48)",
-                      }}
-                    />
-                    <input
-                      type="color"
-                      value={accent || "#c9a96e"}
-                      onChange={(e) => setAccent(e.target.value)}
-                      className="absolute inset-0 cursor-pointer opacity-0"
-                      aria-label={o.customColor}
-                    />
-                  </label>
-                  {accent && (
-                    <>
-                      <code className="text-sm text-stone-600">{accent}</code>
-                      <button
-                        type="button"
-                        onClick={() => setAccent("")}
-                        className="text-sm font-medium text-rose-700 hover:text-rose-800"
-                      >
-                        {o.customColorReset}
-                      </button>
-                    </>
-                  )}
-                </div>
-                <p className="mt-2 text-xs text-stone-500">{o.customColorHint}</p>
+              {/* 3 ta asosiy rang: har biri namunadan yoki o'zi tanlagan rang */}
+              <div className="space-y-4">
+                <p className="text-xs text-stone-500">{o.colorsHint}</p>
+                {(
+                  [
+                    ["paper", o.colorPaper],
+                    ["gold", o.colorGold],
+                    ["wine", o.colorWine],
+                  ] as Array<[ColorRole, string]>
+                ).map(([role, label]) => {
+                  const value = colors[role];
+                  const custom = value !== "" && !swatches[role].includes(value);
+                  const setRole = (v: string) => setColors((c) => ({ ...c, [role]: v.toLowerCase() }));
+                  return (
+                    <fieldset key={role}>
+                      <legend className="mb-1.5 flex items-center gap-2 text-sm font-medium text-stone-700">
+                        <span
+                          className="inline-block h-4 w-4 rounded-full border border-stone-300"
+                          style={{ background: value }}
+                        />
+                        {label}
+                        <code className="text-xs font-normal text-stone-400">{value}</code>
+                      </legend>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {swatches[role].map((c) => (
+                          <button
+                            key={c}
+                            type="button"
+                            onClick={() => setRole(c)}
+                            aria-pressed={value === c}
+                            aria-label={`${label} ${c}`}
+                            title={c}
+                            className={`h-9 w-9 rounded-full border shadow-sm transition ${
+                              value === c
+                                ? "border-stone-900 ring-2 ring-stone-900/25 ring-offset-2"
+                                : "border-stone-300 hover:scale-110"
+                            }`}
+                            style={{ background: c }}
+                          />
+                        ))}
+                        <label
+                          title={o.colorCustom}
+                          className={`relative h-9 w-9 cursor-pointer overflow-hidden rounded-full border shadow-sm transition ${
+                            custom
+                              ? "border-stone-900 ring-2 ring-stone-900/25 ring-offset-2"
+                              : "border-stone-300 hover:scale-110"
+                          }`}
+                        >
+                          <span
+                            className="absolute inset-0"
+                            style={{
+                              background: custom
+                                ? value
+                                : "conic-gradient(from 0deg, #e11d48, #f59e0b, #84cc16, #06b6d4, #6366f1, #d946ef, #e11d48)",
+                            }}
+                          />
+                          {!custom && (
+                            <span className="absolute inset-0 flex items-center justify-center text-base font-bold text-white drop-shadow">
+                              +
+                            </span>
+                          )}
+                          <input
+                            type="color"
+                            value={value || "#c9a96e"}
+                            onChange={(e) => setRole(e.target.value)}
+                            className="absolute inset-0 cursor-pointer opacity-0"
+                            aria-label={`${label}: ${o.colorCustom}`}
+                          />
+                        </label>
+                      </div>
+                    </fieldset>
+                  );
+                })}
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">

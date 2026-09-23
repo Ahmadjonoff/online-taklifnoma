@@ -61,7 +61,7 @@ export const uz = {
   },
 
   home: {
-    badge: "{total} ta premium shablon · RSVP · QR kod",
+    badge: "{total} ta noyob dizayn · RSVP · QR kod",
     heroTitle: "Tadbiringiz uchun {highlight} raqamli taklifnoma",
     heroTitleHighlight: "esda qoladigan",
     heroText:
@@ -245,6 +245,7 @@ export const uz = {
     subtitle: "{count} ta shablon — har biri jonli namuna bilan. Kartadagi konvertni bosib ochib, animatsiya va musiqani ko'ring.",
     searchPlaceholder: "Shablon nomi yoki tavsifi bo'yicha qidiring...",
     searchLabel: "Shablon qidirish",
+    tierFilterLabel: "Tarif",
     tierAll: "Barcha darajalar",
     tierPremium: "★ Premium",
     tierStandard: "Standart",
@@ -334,6 +335,12 @@ export const uz = {
     telegramBtn: "Telegram: {label}",
     livePreview: "Jonli ko'rinish",
     genericError: "Xatolik yuz berdi",
+    colorPresets: "Tayyor uyg'unliklar",
+    colorPaper: "Fon rangi",
+    colorGold: "Asosiy rang",
+    colorWine: "Qo'shimcha rang",
+    colorCustom: "O'z rangingiz",
+    colorsHint: "3 ta asosiy rangni tanlang — har birini namunadan yoki «+» orqali o'zingiz xohlagan rangdan. Qolgan tuslar avtomatik moslashadi.",
     stepDesign: "Dizayn",
     stepDetails: "Ma'lumotlar",
     stepSchedule: "Kun tartibi",

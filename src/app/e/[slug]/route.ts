@@ -119,7 +119,7 @@ export async function GET(
 <meta property="og:title" content="${pageTitle}">
 <meta property="og:description" content="${pageDescription}">
 <script>window.__INV_CONFIG__=${JSON.stringify(invConfig).replace(/<\/script/gi, "<\\/script")};</script>
-${paletteStyleTag(invitation.template.theme, options.palette, options.accent)}`;
+${paletteStyleTag(invitation.template.theme, options.palette, options.colors)}`;
   html = html.replace("<head>", `<head>${inject}`);
 
   return new Response(html, {

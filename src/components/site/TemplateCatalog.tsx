@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { TemplateCard, type CardTemplate } from "./TemplateCard";
-import { tierOf, type Tier } from "@/lib/catalog";
-import type { Dictionary } from "@/lib/i18n/dictionary";
+import { formatPrice, tierOf, type Tier } from "@/lib/catalog";
+import { TIER_PRICE } from "@/lib/pricing";
+import { t, type Dictionary } from "@/lib/i18n/dictionary";
 
 /** `categories` — shablon ko'rinadigan barcha tadbir turlari (bitta dizayn bir nechta tadbirga mos) */
 export type CatalogTemplate = CardTemplate & { categories: { slug: string; name: string }[] };
@@ -17,7 +18,7 @@ type EventTypeOption = { slug: string; name: string; emoji: string; count: numbe
  * Narx bo'yicha tartiblash — narxlar ochiq (src/lib/pricing.ts).
  */
 type SortKey = "featured" | "priceAsc" | "priceDesc" | "name";
-type TierFilter = "all" | Tier;
+export type TierFilter = "all" | Tier;
 
 /**
  * Katalog — qidiruv, tadbir turi, daraja va tartiblash.
@@ -30,11 +31,14 @@ export function TemplateCatalog({
   templates,
   eventTypes,
   initialEvent = "",
+  initialTier = "all",
   dict,
 }: {
   templates: CatalogTemplate[];
   eventTypes: EventTypeOption[];
   initialEvent?: string;
+  /** ?tarif= — bosh sahifadagi tarif kartasidan kelinganda */
+  initialTier?: TierFilter;
   dict: Dictionary;
 }) {
   const SORT_LABEL: Record<SortKey, string> = {
@@ -44,19 +48,20 @@ export function TemplateCatalog({
     name: dict.catalog.sortName,
   };
 
-  const TIER_OPTIONS: Array<{ value: TierFilter; label: string }> = [
+  // Tarif tugmalari arzonidan qimmatiga: narxi bilan birga ko'rinadi
+  const TIER_OPTIONS: Array<{ value: TierFilter; label: string; price?: number }> = [
     { value: "all", label: dict.catalog.tierAll },
-    { value: "premium", label: dict.catalog.tierPremium },
-    { value: "standard", label: dict.catalog.tierStandard },
-    { value: "light", label: dict.catalog.tierLight },
+    { value: "light", label: dict.catalog.tierLight, price: TIER_PRICE.light },
+    { value: "standard", label: dict.catalog.tierStandard, price: TIER_PRICE.standard },
+    { value: "premium", label: dict.catalog.tierPremium, price: TIER_PRICE.premium },
   ];
 
   const [query, setQuery] = useState("");
   const [event, setEvent] = useState(initialEvent);
-  const [tier, setTier] = useState<TierFilter>("all");
+  const [tier, setTier] = useState<TierFilter>(initialTier);
   const [sort, setSort] = useState<SortKey>("featured");
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const activeExtraFilters = (tier !== "all" ? 1 : 0) + (sort !== "featured" ? 1 : 0);
+  const activeExtraFilters = sort !== "featured" ? 1 : 0;
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -133,18 +138,6 @@ export function TemplateCatalog({
 
           <div className={`${filtersOpen ? "flex" : "hidden"} flex-wrap items-center gap-2.5 lg:flex`}>
             <select
-              value={tier}
-              onChange={(e) => setTier(e.target.value as TierFilter)}
-              className="rounded-full border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-700 outline-none transition focus:border-rose-400"
-            >
-              {TIER_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-
-            <select
               value={sort}
               onChange={(e) => setSort(e.target.value as SortKey)}
               className="rounded-full border border-stone-300 bg-white px-4 py-2.5 text-sm text-stone-700 outline-none transition focus:border-rose-400"
@@ -155,6 +148,41 @@ export function TemplateCatalog({
                 </option>
               ))}
             </select>
+          </div>
+        </div>
+
+        {/* Tarif (narx) filtri — doim ko'rinib turadi */}
+        <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
+          <span className="shrink-0 text-xs font-semibold uppercase tracking-widest text-stone-500">
+            {dict.catalog.tierFilterLabel}
+          </span>
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+            {TIER_OPTIONS.map((o) => {
+              const count =
+                o.value === "all" ? templates.length : templates.filter((t) => tierOf(t.price) === o.value).length;
+              const active = tier === o.value;
+              return (
+                <button
+                  key={o.value}
+                  type="button"
+                  onClick={() => setTier(o.value)}
+                  aria-pressed={active}
+                  className={`rounded-2xl border px-4 py-2 text-left text-sm transition ${
+                    active
+                      ? "border-amber-500 bg-amber-50 text-stone-900 ring-2 ring-amber-400/30"
+                      : "border-stone-300 bg-white/70 text-stone-700 hover:border-stone-400 hover:bg-white"
+                  }`}
+                >
+                  <span className="font-semibold">{o.label.replace(/^★\s*/, "")}</span>
+                  <span className="ml-1.5 text-xs opacity-70">{count}</span>
+                  {o.price !== undefined && (
+                    <span className="block text-xs text-stone-500">
+                      {t(dict.common.priceShort, { price: formatPrice(o.price) })}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
 

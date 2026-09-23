@@ -18,9 +18,10 @@ export const metadata = {
 export default async function TemplatesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tadbir?: string }>;
+  searchParams: Promise<{ tadbir?: string; tarif?: string }>;
 }) {
-  const { tadbir } = await searchParams;
+  const { tadbir, tarif } = await searchParams;
+  const initialTier = tarif === "light" || tarif === "standard" || tarif === "premium" ? tarif : "all";
   const locale = await getLocale();
   const dict = getDictionary(locale);
 
@@ -84,6 +85,7 @@ export default async function TemplatesPage({
                 count: et._count.templates,
               }))}
               initialEvent={tadbir && activeType ? tadbir : ""}
+              initialTier={initialTier}
               dict={dict}
             />
           </div>

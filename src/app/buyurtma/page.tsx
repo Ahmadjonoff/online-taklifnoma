@@ -7,7 +7,7 @@ import { defaultTimeline } from "@/lib/eventDefaults";
 import { getDictionary } from "@/lib/i18n/dictionary";
 import { getLocale } from "@/lib/i18n/server";
 import { MUSIC_TRACKS } from "@/lib/music";
-import { getPalettes } from "@/lib/palettes";
+import { getPalettes, mainColors, roleSwatches } from "@/lib/palettes";
 
 export const dynamic = "force-dynamic";
 
@@ -29,9 +29,10 @@ export default async function OrderPage({
         id: p.id,
         name: p.name,
         // Palitra kartasidagi chiziq: fon → ikkinchi fon → urg'u → ikkinchi urg'u → matn
-        colors: ["--color-paper", "--color-paper-3", "--color-gold", "--color-wine", "--color-ink"]
+        strip: ["--color-paper", "--color-paper-3", "--color-gold", "--color-wine", "--color-ink"]
           .map((k) => p.vars[k])
           .filter(Boolean),
+        main: mainColors(p),
       }))
     : [];
   const categories = (template?.categories ?? []).map((c) => ({
@@ -84,6 +85,7 @@ export default async function OrderPage({
             templateTheme={template?.theme ?? ""}
             templatePrice={template?.price ?? 0}
             palettes={palettes}
+            swatches={template ? roleSwatches(template.theme) : { paper: [], gold: [], wine: [] }}
             categories={categories}
             defaultEventType={defaultEventType}
             musicTracks={MUSIC_TRACKS}

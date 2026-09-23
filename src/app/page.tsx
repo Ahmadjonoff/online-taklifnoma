@@ -15,6 +15,8 @@ import { getLocale } from "@/lib/i18n/server";
 
 export const dynamic = "force-dynamic";
 
+const HERO_TEMPLATE = "nikoh-imperial";
+
 export default async function HomePage() {
   const locale = await getLocale();
   const dict = getDictionary(locale);
@@ -24,7 +26,8 @@ export default async function HomePage() {
   const featured = templates.slice(0, 6);
   const total = templates.length;
 
-  const hero = featured[0];
+  // Bosh sahifadagi jonli namuna — eng chiroyli ko'rinadigan Imperial
+  const hero = templates.find((tpl) => tpl.slug === HERO_TEMPLATE) ?? featured[0];
 
   const [heroTitleBefore, heroTitleAfter] = home.heroTitle.split("{highlight}");
 
@@ -329,7 +332,7 @@ export default async function HomePage() {
                   </ul>
 
                   <Link
-                    href="/shablonlar"
+                    href={`/shablonlar?tarif=${p.key}`}
                     className={`mt-8 rounded-full py-3.5 text-center text-sm font-semibold transition ${
                       p.badge
                         ? "bg-stone-900 text-white hover:bg-rose-700"
