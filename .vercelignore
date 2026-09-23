@@ -7,13 +7,18 @@
 dev.db
 prisma/dev.db
 
-# Shablonlarni build qilish uchun manba (runtime `public/t/*` statik
-# fayllarini o'qiydi, bu papkani emas — next.config.ts'dagi izohga qarang).
-templates-src
+# Maxfiy qiymatlar — .vercelignore mavjud bo'lsa CLI .gitignore'ni
+# ishlatmaydi, shuning uchun bu yerda ham aniq ko'rsatilishi SHART.
+# Production qiymatlari Vercel Environment Variables'dan olinadi.
+.env*
+
+# Shablonlar Vercel build'ida `templates-src` + `scripts`dan qayta
+# yig'iladi (package.json → vercel-build), tayyor natijani yuklamaymiz.
+public/t
+tsconfig.tsbuildinfo
 
 # Faqat lokal ishlab chiqish/hujjatlar uchun, deploy uchun kerak emas.
 docs
-scripts
 .agents
 .claude
 .windsurf
