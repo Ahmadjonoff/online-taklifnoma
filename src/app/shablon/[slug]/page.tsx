@@ -195,8 +195,10 @@ export default async function TemplatePage({
               )}
             </div>
 
-            {/* ------------------------------------------------- O'ng panel */}
-            <div className="lg:order-1">
+            {/* ------------------------------------------------- O'ng panel
+                Telefonda jonli namuna birinchi ko'rinadi (order-first),
+                kompyuterda — chapda, ma'lumot paneli o'ngda. */}
+            <div className="order-first lg:order-1">
               <p className="mb-4 text-center text-sm font-medium text-stone-500">{td.livePreviewHint}</p>
 
               <Reveal>
