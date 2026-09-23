@@ -233,8 +233,10 @@ function dictFor(lang: "ru" | "en"): Dict {
 
 /** Brauzerda ishlaydigan qism (matn ko'rinishida sahifaga qo'yiladi) */
 const RUNTIME = String.raw`
-(function (L, D, P, KEEP) {
+(function (LANGS, DICTS, PATS, KEEP) {
   var APOS = /[‘’ʻʼ\x60]/g;
+  var LABEL = { uz: "UZ", "uz-cyrl": "ЎЗ", ru: "RU", en: "EN" };
+  var HTML_LANG = { uz: "uz", "uz-cyrl": "uz-Cyrl", ru: "ru", en: "en" };
   function norm(s) { return s.replace(APOS, "'").replace(/\s+/g, " ").trim(); }
   var LAT = { a:"а",b:"б",d:"д",f:"ф",g:"г",h:"ҳ",i:"и",j:"ж",k:"к",l:"л",m:"м",n:"н",o:"о",p:"п",q:"қ",r:"р",s:"с",t:"т",u:"у",v:"в",x:"х",y:"й",z:"з",c:"с",w:"в" };
   function word(w) {
@@ -260,44 +262,101 @@ const RUNTIME = String.raw`
     if (/https?:|www\.|@/.test(text)) return text;
     return text.replace(/[A-Za-z][A-Za-z‘’ʻʼ\x60']*/g, word);
   }
-  function tr(text) {
-    if (!text || !/[A-Za-z]/.test(text)) return text;
+  function tr(text, L) {
+    if (L === "uz" || !text || !/[A-Za-z]/.test(text)) return text;
     if (L === "uz-cyrl") return cyr(text);
-    var k = norm(text);
+    var D = DICTS[L] || {}, k = norm(text);
     if (Object.prototype.hasOwnProperty.call(D, k)) {
-      var lead = text.match(/^\s*/)[0], tail = text.match(/\s*$/)[0];
-      return lead + D[k] + tail;
+      return text.match(/^\s*/)[0] + D[k] + text.match(/\s*$/)[0];
     }
+    var P = PATS[L] || [];
     for (var i = 0; i < P.length; i++) {
       var re = new RegExp(P[i][0]);
       if (re.test(k)) return k.replace(re, P[i][1]);
     }
     return text;
   }
+
+  var cur = LANGS[0];
+  try {
+    var q = new URLSearchParams(location.search).get("lang");
+    var saved = localStorage.getItem("inv-lang");
+    if (q && LANGS.indexOf(q) >= 0) cur = q;
+    else if (saved && LANGS.indexOf(saved) >= 0) cur = saved;
+  } catch (e) {}
+
+  // Har bir matnning asl (o'zbekcha) nusxasi saqlanadi — tillar orasida
+  // qayta-qayta almashtirilsa ham matn buzilmaydi. React matnni o'zgartirsa
+  // (masalan sanoq), yangi qiymat asl nusxa bo'ladi.
   var ATTRS = ["placeholder", "aria-label", "title", "alt"];
+  function textNode(n) {
+    if (n.__invLast === undefined || n.nodeValue !== n.__invLast) n.__invOrig = n.nodeValue;
+    var v = tr(n.__invOrig, cur);
+    n.__invLast = v;
+    if (n.nodeValue !== v) n.nodeValue = v;
+  }
+  function attr(el, a) {
+    var val = el.getAttribute(a);
+    if (val == null) return;
+    var st = el.__invAttr || (el.__invAttr = {});
+    var rec = st[a];
+    if (!rec || val !== rec.last) rec = st[a] = { orig: val };
+    var v = tr(rec.orig, cur);
+    rec.last = v;
+    if (val !== v) el.setAttribute(a, v);
+  }
+  // Til tugmalari (va boshqa [data-inv-skip]) hech qachon o'girilmaydi —
+  // kuzatuvchi ichki tugunlarni alohida ham tekshiradi
+  function skipped(el) { return !!(el && el.closest && el.closest("[data-inv-skip]")); }
   function walk(n) {
-    if (n.nodeType === 3) {
-      var v = tr(n.nodeValue);
-      if (v !== n.nodeValue) n.nodeValue = v;
-      return;
-    }
+    if (n.nodeType === 3) return skipped(n.parentElement) ? undefined : textNode(n);
     if (n.nodeType !== 1) return;
     var tag = n.tagName;
-    if (tag === "SCRIPT" || tag === "STYLE" || tag === "TEXTAREA") return;
-    for (var a = 0; a < ATTRS.length; a++) {
-      var val = n.getAttribute(ATTRS[a]);
-      if (val) { var t = tr(val); if (t !== val) n.setAttribute(ATTRS[a], t); }
-    }
+    if (tag === "SCRIPT" || tag === "STYLE" || tag === "TEXTAREA" || skipped(n)) return;
+    for (var a = 0; a < ATTRS.length; a++) attr(n, ATTRS[a]);
     for (var c = n.firstChild; c; c = c.nextSibling) walk(c);
   }
-  function start() {
-    document.documentElement.lang = L === "uz-cyrl" ? "uz-Cyrl" : L;
+
+  var bar;
+  function renderBar() {
+    if (LANGS.length < 2) return;
+    if (!bar) {
+      bar = document.createElement("div");
+      bar.setAttribute("data-inv-skip", "");
+      bar.setAttribute("role", "group");
+      bar.setAttribute("aria-label", "Language");
+      // O'ng chetda ixcham vertikal ustun — markazdagi sarlavhalarga tegmaydi
+      bar.style.cssText = "position:fixed;top:10px;right:8px;z-index:2147483000;display:flex;flex-direction:column;gap:2px;padding:3px;border-radius:14px;background:rgba(20,16,12,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 6px 20px -8px rgba(0,0,0,.5);font:600 11px/1 system-ui,-apple-system,sans-serif;letter-spacing:.06em";
+      document.body.appendChild(bar);
+    }
+    bar.innerHTML = "";
+    LANGS.forEach(function (l) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = LABEL[l] || l;
+      b.setAttribute("aria-pressed", String(l === cur));
+      b.style.cssText = "border:0;cursor:pointer;min-width:34px;padding:7px 6px;border-radius:11px;font:inherit;letter-spacing:inherit;" +
+        (l === cur ? "background:#fff;color:#1c1917" : "background:transparent;color:rgba(255,255,255,.85)");
+      b.addEventListener("click", function (e) {
+        e.stopPropagation(); // konvert ochilib ketmasin
+        setLang(l);
+      });
+      bar.appendChild(b);
+    });
+  }
+  function setLang(l) {
+    cur = l;
+    try { localStorage.setItem("inv-lang", l); } catch (e) {}
+    document.documentElement.lang = HTML_LANG[l] || l;
     walk(document.body);
+    renderBar();
+  }
+  function start() {
+    setLang(cur);
     new MutationObserver(function (list) {
       for (var i = 0; i < list.length; i++) {
         var m = list[i];
-        if (m.type === "characterData") walk(m.target);
-        else if (m.type === "attributes") walk(m.target);
+        if (m.type === "characterData" || m.type === "attributes") walk(m.target);
         else for (var j = 0; j < m.addedNodes.length; j++) walk(m.addedNodes[j]);
       }
     }).observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ATTRS });
@@ -306,13 +365,24 @@ const RUNTIME = String.raw`
 })`;
 
 /**
- * Taklifnomaga qo'yiladigan `<script>`. O'zbek (lotin) — standart, skript kerak emas.
+ * Taklifnomaga qo'yiladigan `<script>`: mehmon tanlangan tillar orasida
+ * almashtiradi. Faqat o'zbek (lotin) bo'lsa — skript kerak emas.
+ *
+ * `overrides` — mijozning o'z matnlari tarjimasi ({ ru: { asl: tarjima } }).
  */
-export function i18nScriptTag(lang: InvitationLang): string {
-  if (lang === "uz") return "";
-  const dict = lang === "ru" || lang === "en" ? dictFor(lang) : {};
-  const patterns = lang === "ru" || lang === "en" ? PATTERNS.map(([re, ru, en]) => [re, lang === "ru" ? ru : en]) : [];
-  const args = [lang, dict, patterns, KEEP_LATIN].map((a) => JSON.stringify(a)).join(",");
+export function i18nScriptTag(langs: InvitationLang[], overrides: Record<string, Dict> = {}): string {
+  if (!langs.length || (langs.length === 1 && langs[0] === "uz")) return "";
+  const dicts: Record<string, Dict> = {};
+  const pats: Record<string, string[][]> = {};
+  for (const l of ["ru", "en"] as const) {
+    if (!langs.includes(l)) continue;
+    const custom: Dict = {};
+    for (const [k, v] of Object.entries(overrides[l] ?? {})) custom[norm(k)] = v;
+    // Mijoz matni lug'atdagi standart tarjimadan ustun
+    dicts[l] = { ...dictFor(l), ...custom };
+    pats[l] = PATTERNS.map(([re, ru, en]) => [re, l === "ru" ? ru : en]);
+  }
+  const args = [langs, dicts, pats, KEEP_LATIN].map((a) => JSON.stringify(a)).join(",");
   const code = `${RUNTIME}(${args});`.replace(/<\/script/gi, "<\\/script");
   return `<script>${code}</script>`;
 }

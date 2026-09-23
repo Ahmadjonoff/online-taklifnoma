@@ -26,6 +26,6 @@ export async function shareDataFor(token: string, origin: string): Promise<Share
     venueName: inv.venueName,
     url: `${origin}/e/${inv.slug}`,
     colors: resolvedColors(order.template.theme, c.palette, c.colors),
-    lang: c.lang,
+    lang: c.langs[0],
   };
 }

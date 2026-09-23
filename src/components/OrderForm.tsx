@@ -11,8 +11,11 @@ import {
   LANG_LABEL,
   LIMITS,
   tierFeatures,
+  TRANSLATED_LANGS,
   type Customization,
   type InvitationLang,
+  type TextTranslation,
+  type TranslatedLang,
 } from "@/lib/customization";
 import type { TimelineItem } from "@/lib/eventDefaults";
 import { t, type Dictionary } from "@/lib/i18n/dictionary";
@@ -114,7 +117,24 @@ export function OrderForm({
   const [wishes, setWishes] = useState(true);
   const [petals, setPetals] = useState(true);
   // Premium/Luxury
-  const [lang, setLang] = useState<InvitationLang>("uz");
+  // Tillar: birinchisi — ochilganda ko'rinadigan til
+  const [langs, setLangs] = useState<InvitationLang[]>(["uz"]);
+  const [translations, setTranslations] = useState<Customization["translations"]>({});
+  function toggleLang(l: InvitationLang) {
+    setLangs((cur) => {
+      if (cur.includes(l)) return cur.length > 1 ? cur.filter((x) => x !== l) : cur; // kamida bitta til
+      return [...cur, l];
+    });
+  }
+  function setDefaultLang(l: InvitationLang) {
+    setLangs((cur) => [l, ...cur.filter((x) => x !== l)]);
+  }
+  function setTr(l: TranslatedLang, key: keyof TextTranslation, value: string) {
+    setTranslations((cur) => ({
+      ...cur,
+      [l]: { kicker: "", message: "", storyTitle: "", storyText: "", ...cur[l], [key]: value },
+    }));
+  }
   const [storyTitle, setStoryTitle] = useState("");
   const [storyText, setStoryText] = useState("");
   const [storyPhoto, setStoryPhoto] = useState("");
@@ -183,12 +203,13 @@ export function OrderForm({
       rsvp,
       wishes,
       petals,
-      lang,
+      langs,
+      translations,
       story: { title: storyTitle, text: storyText, photo: storyPhoto },
       gallery,
       calendar,
     }),
-    [palette, colors, eventType, kicker, timeline, googleMapsUrl, yandexMapsUrl, music, customMusic, dressText, dressColors, giftCard, giftHolder, rsvp, wishes, petals, lang, storyTitle, storyText, storyPhoto, gallery, calendar]
+    [palette, colors, eventType, kicker, timeline, googleMapsUrl, yandexMapsUrl, music, customMusic, dressText, dressColors, giftCard, giftHolder, rsvp, wishes, petals, langs, translations, storyTitle, storyText, storyPhoto, gallery, calendar]
   );
 
   const price = orderPrice(templatePrice, options);
@@ -564,24 +585,44 @@ export function OrderForm({
 
               {features.languages ? (
                 <div>
-                  <label className={labelClass}>{o.langLabel}</label>
+                  <p className={labelClass}>{o.langLabel}</p>
                   <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                    {INVITATION_LANGS.map((l) => (
-                      <button
-                        key={l}
-                        type="button"
-                        onClick={() => setLang(l)}
-                        aria-pressed={lang === l}
-                        className={`rounded-xl border px-3 py-2.5 text-sm transition ${
-                          lang === l
-                            ? "border-stone-900 bg-stone-900 text-white"
-                            : "border-stone-300 bg-white text-stone-700 hover:border-stone-400"
-                        }`}
-                      >
-                        {LANG_LABEL[l]}
-                      </button>
-                    ))}
+                    {INVITATION_LANGS.map((l) => {
+                      const on = langs.includes(l);
+                      return (
+                        <button
+                          key={l}
+                          type="button"
+                          onClick={() => toggleLang(l)}
+                          aria-pressed={on}
+                          className={`flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2.5 text-sm transition ${
+                            on
+                              ? "border-stone-900 bg-stone-900 text-white"
+                              : "border-stone-300 bg-white text-stone-700 hover:border-stone-400"
+                          }`}
+                        >
+                          <span aria-hidden="true">{on ? "✓" : "+"}</span>
+                          {LANG_LABEL[l]}
+                        </button>
+                      );
+                    })}
                   </div>
+                  {langs.length > 1 && (
+                    <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+                      <span className="text-stone-600">{o.langDefault}:</span>
+                      <select
+                        value={langs[0]}
+                        onChange={(e) => setDefaultLang(e.target.value as InvitationLang)}
+                        className={`${rowInputClass} w-auto py-1.5`}
+                      >
+                        {langs.map((l) => (
+                          <option key={l} value={l}>
+                            {LANG_LABEL[l]}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                   <p className="mt-2 text-xs text-stone-500">{o.langHint}</p>
                 </div>
               ) : (
@@ -752,6 +793,61 @@ export function OrderForm({
               ) : (
                 <p className="mt-6 rounded-xl bg-stone-50 px-4 py-3 text-xs text-stone-500">{o.lockedStory}</p>
               )}
+
+              {features.languages &&
+                TRANSLATED_LANGS.filter((l) => langs.includes(l)).map((l) => (
+                  <div key={l} className="mt-6 rounded-2xl border border-sky-200 bg-sky-50/40 p-4">
+                    <p className="text-sm font-semibold text-stone-800">🌐 {t(o.trTitle, { lang: LANG_LABEL[l] })}</p>
+                    <p className="mt-0.5 text-xs text-stone-500">{o.trHint}</p>
+                    <div className="mt-3 grid gap-3">
+                      <div>
+                        <label className={labelClass}>{o.kicker}</label>
+                        <input
+                          value={translations[l]?.kicker ?? ""}
+                          maxLength={LIMITS.kicker}
+                          onChange={(e) => setTr(l, "kicker", e.target.value)}
+                          className={inputClass}
+                          placeholder={kicker}
+                        />
+                      </div>
+                      <div>
+                        <label className={labelClass}>{o.message}</label>
+                        <textarea
+                          value={translations[l]?.message ?? ""}
+                          onChange={(e) => setTr(l, "message", e.target.value)}
+                          rows={3}
+                          className={inputClass}
+                          placeholder={message || o.messagePlaceholder}
+                        />
+                      </div>
+                      {features.story && storyText && (
+                        <>
+                          <div>
+                            <label className={labelClass}>{o.storyTitleLabel}</label>
+                            <input
+                              value={translations[l]?.storyTitle ?? ""}
+                              maxLength={LIMITS.storyTitle}
+                              onChange={(e) => setTr(l, "storyTitle", e.target.value)}
+                              className={inputClass}
+                              placeholder={storyTitle || o.storyTitlePlaceholder}
+                            />
+                          </div>
+                          <div>
+                            <label className={labelClass}>{o.storyTextLabel}</label>
+                            <textarea
+                              value={translations[l]?.storyText ?? ""}
+                              maxLength={LIMITS.storyText}
+                              onChange={(e) => setTr(l, "storyText", e.target.value)}
+                              rows={4}
+                              className={inputClass}
+                              placeholder={storyText}
+                            />
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ))}
             </div>
           )}
 

@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { parseStoredCustomization } from "@/lib/customization";
-import { buildInvitationConfig } from "@/lib/invitationConfig";
+import { buildInvitationConfig, textOverrides } from "@/lib/invitationConfig";
 import { i18nScriptTag } from "@/lib/invitationI18n";
 import { paletteStyleTag } from "@/lib/palettes";
 import { prisma } from "@/lib/prisma";
@@ -141,7 +141,7 @@ export async function GET(
 <meta property="og:description" content="${pageDescription}">
 <script>window.__INV_CONFIG__=${JSON.stringify(invConfig).replace(/<\/script/gi, "<\\/script")};</script>
 ${paletteStyleTag(invitation.template.theme, options.palette, options.colors)}
-${i18nScriptTag(options.lang)}`;
+${i18nScriptTag(options.langs, textOverrides(invitation.template, options, invitation.message, guest?.name))}`;
   html = html.replace("<head>", `<head>${inject}`);
 
   return new Response(html, {

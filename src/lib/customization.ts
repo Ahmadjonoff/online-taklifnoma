@@ -7,6 +7,10 @@ import type { Tier } from "./pricing";
 /** Taklifnoma tili (Premium/Luxury): lotin, kirill, rus, ingliz */
 export const INVITATION_LANGS = ["uz", "uz-cyrl", "ru", "en"] as const;
 export type InvitationLang = (typeof INVITATION_LANGS)[number];
+/** Mijoz matnini qo'lda tarjima qiladigan tillar (kirill — transliteratsiya) */
+export const TRANSLATED_LANGS = ["ru", "en"] as const;
+export type TranslatedLang = (typeof TRANSLATED_LANGS)[number];
+export type TextTranslation = { kicker: string; message: string; storyTitle: string; storyText: string };
 
 /** Buyurtma formasidagi tanlov uchun nomlar (har biri o'z tilida) */
 export const LANG_LABEL: Record<InvitationLang, string> = {
@@ -59,8 +63,16 @@ export type Customization = {
   rsvp: boolean;
   wishes: boolean;
   petals: boolean;
-  /** Premium/Luxury */
-  lang: InvitationLang;
+  /**
+   * Premium/Luxury: taklifnoma tillari — mehmon taklifnomada ular orasida
+   * almashtiradi. Birinchisi — ochilgandagi (standart) til.
+   */
+  langs: InvitationLang[];
+  /**
+   * Mijozning o'z matni boshqa tillarda (kirill avtomatik — shart emas).
+   * Bo'sh qolsa, o'sha tilda asl (o'zbekcha) matn ko'rinadi.
+   */
+  translations: Partial<Record<TranslatedLang, TextTranslation>>;
   /** Premium/Luxury: «Bizning hikoyamiz» */
   story: { title: string; text: string; photo: string };
   /** Luxury: galereya suratlari (bizning Blob'dagi photos/) */
@@ -84,7 +96,8 @@ export const DEFAULT_CUSTOMIZATION: Customization = {
   rsvp: true,
   wishes: true,
   petals: true,
-  lang: "uz",
+  langs: ["uz"],
+  translations: {},
   story: { title: "", text: "", photo: "" },
   gallery: [],
   calendar: true,
@@ -195,7 +208,23 @@ export function sanitizeCustomization(input: unknown, ctx: Ctx, strict = true): 
   // Tarifga kirmaydigan imkoniyatlar jimgina o'chiriladi (forma ularni
   // ko'rsatmaydi; bu — qo'lda yuborilgan so'rovlardan himoya)
   const f = tierFeatures(ctx.tier);
-  const lang = str(o.lang, 10);
+  // Tillar: takrorlanmas, ruxsat etilganlari; eski buyurtmalarda yagona `lang`
+  const rawLangs = Array.isArray(o.langs) ? o.langs : typeof o.lang === "string" ? [o.lang] : [];
+  const langs = [...new Set(rawLangs.map((l) => str(l, 10)))].filter((l): l is InvitationLang =>
+    (INVITATION_LANGS as readonly string[]).includes(l)
+  );
+  const rawTr = (o.translations ?? {}) as Record<string, Record<string, unknown>>;
+  const translations: Customization["translations"] = {};
+  for (const l of TRANSLATED_LANGS) {
+    const t = rawTr[l];
+    if (!t || !langs.includes(l)) continue;
+    translations[l] = {
+      kicker: str(t.kicker, LIMITS.kicker),
+      message: typeof t.message === "string" ? t.message.replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g, " ").trim().slice(0, 1000) : "",
+      storyTitle: str(t.storyTitle, LIMITS.storyTitle),
+      storyText: typeof t.storyText === "string" ? t.storyText.replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g, " ").trim().slice(0, LIMITS.storyText) : "",
+    };
+  }
   const st = (o.story ?? {}) as Record<string, unknown>;
   const storyPhoto = str(st.photo, 500);
   const gallery = (Array.isArray(o.gallery) ? o.gallery : [])
@@ -232,7 +261,8 @@ export function sanitizeCustomization(input: unknown, ctx: Ctx, strict = true): 
       rsvp: bool(o.rsvp, d.rsvp),
       wishes: bool(o.wishes, d.wishes),
       petals: bool(o.petals, d.petals),
-      lang: f.languages && (INVITATION_LANGS as readonly string[]).includes(lang) ? (lang as InvitationLang) : "uz",
+      langs: f.languages && langs.length ? langs : ["uz"],
+      translations: f.languages ? translations : {},
       story: f.story
         ? {
             title: str(st.title, LIMITS.storyTitle),
@@ -253,7 +283,10 @@ export function parseStoredCustomization(json: string | null | undefined): Custo
   try {
     raw = JSON.parse(json || "{}");
   } catch {}
-  const o = (raw && typeof raw === "object" ? raw : {}) as Partial<Customization> & { accent?: string };
+  const o = (raw && typeof raw === "object" ? raw : {}) as Partial<Customization> & {
+    accent?: string;
+    lang?: InvitationLang;
+  };
   const d = DEFAULT_CUSTOMIZATION;
   return {
     ...d,
@@ -263,6 +296,9 @@ export function parseStoredCustomization(json: string | null | undefined): Custo
     dressCode: { ...d.dressCode, ...(o.dressCode ?? {}) },
     gift: { ...d.gift, ...(o.gift ?? {}) },
     story: { ...d.story, ...(o.story ?? {}) },
+    // Eski buyurtmalar: yagona `lang` maydoni
+    langs: Array.isArray(o.langs) && o.langs.length ? o.langs : o.lang ? [o.lang] : ["uz"],
+    translations: o.translations ?? {},
     gallery: Array.isArray(o.gallery) ? o.gallery : [],
     // Eski buyurtmalarda maydon yo'q — kalendar faqat yangi Luxury buyurtmalarda
     calendar: typeof o.calendar === "boolean" ? o.calendar : false,
@@ -297,7 +333,8 @@ export function customizationSummary(
   if (maps.length) lines.push(`🗺 Xarita: ${maps.join(", ")}`);
   if (c.dressCode.text) lines.push(`👗 Dress-kod: ${c.dressCode.text}`);
   if (c.gift.cardNumber) lines.push(`💳 Sovg'a kartasi: bor`);
-  if (c.lang !== "uz") lines.push(`🌐 Til: ${{ "uz-cyrl": "o'zbek (kirill)", ru: "rus", en: "ingliz", uz: "o'zbek" }[c.lang]}`);
+  const LN = { uz: "o'zbek", "uz-cyrl": "kirill", ru: "rus", en: "ingliz" } as const;
+  if (c.langs.join() !== "uz") lines.push(`🌐 Tillar: ${c.langs.map((l) => LN[l]).join(", ")}`);
   if (c.story.text) lines.push(`📖 Hikoya: bor${c.story.photo ? " (surat bilan)" : ""}`);
   if (c.gallery.length) lines.push(`🖼 Galereya: ${c.gallery.length} ta surat`);
   const off = [!c.rsvp && "RSVP", !c.wishes && "tilaklar", !c.petals && "gulbarglar"].filter(Boolean);

@@ -3,7 +3,7 @@ import path from "node:path";
 import { getCatalog } from "@/lib/catalogData";
 import { INVITATION_PROMO } from "@/lib/contact";
 import { sanitizeCustomization } from "@/lib/customization";
-import { buildInvitationConfig, calendarTitle, icsContent } from "@/lib/invitationConfig";
+import { buildInvitationConfig, calendarTitle, icsContent, textOverrides } from "@/lib/invitationConfig";
 import { i18nScriptTag } from "@/lib/invitationI18n";
 import { getPalettes, paletteStyleTag } from "@/lib/palettes";
 import { tierOf } from "@/lib/pricing";
@@ -118,7 +118,7 @@ export async function GET(
     if (draft) {
       config = draft.config;
       paletteStyle =
-        paletteStyleTag(theme, draft.palette, draft.colors) + i18nScriptTag(draft.lang);
+        paletteStyleTag(theme, draft.palette, draft.colors) + i18nScriptTag(draft.langs, draft.overrides);
     }
   } else if (url.searchParams.get("thumb") === "1") {
     // Katalog kartasidagi kichik ko'rinish: gulbarg animatsiyasi o'chiriladi
@@ -196,5 +196,11 @@ async function buildDraft(theme: string, raw: string) {
   const config = buildInvitationConfig(content, template, options.value, {
     icsUrl: `data:text/calendar;charset=utf-8,${encodeURIComponent(ics)}`,
   });
-  return { config, palette: options.value.palette, colors: options.value.colors, lang: options.value.lang };
+  return {
+    config,
+    palette: options.value.palette,
+    colors: options.value.colors,
+    langs: options.value.langs,
+    overrides: textOverrides(template, options.value, content.message),
+  };
 }

@@ -76,11 +76,12 @@ export function icsContent(inv: InvitationContent, title: string, details: strin
   ].join("\r\n");
 }
 
-const GUEST_GREETING: Record<string, (name: string) => string> = {
-  uz: (n) => `Hurmatli ${n}!`,
-  "uz-cyrl": (n) => `Hurmatli ${n}!`, // kirillga sahifada o'giriladi
-  ru: (n) => `${n}, вы приглашены!`,
-  en: (n) => `Dear ${n}!`,
+// Shaxsiy murojaat: sahifada o'zbekcha, boshqa tillarga textOverrides() o'giradi
+// (kirillga — transliteratsiya)
+const GUEST_GREETING = {
+  uz: (n: string) => `Hurmatli ${n}!`,
+  ru: (n: string) => `${n}, вы приглашены!`,
+  en: (n: string) => `Dear ${n}!`,
 };
 
 export type InvitationExtras = {
@@ -195,15 +196,15 @@ export function buildInvitationConfig(
     },
     promo: INVITATION_PROMO,
     /** Sahifadagi tarjima skripti o'qiydi (src/lib/invitationI18n.ts) */
-    lang: c.lang,
+    langs: c.langs,
     story: c.story.text
       ? { enabled: true, kicker: "", title: c.story.title || "Bizning hikoyamiz", text: c.story.text, photo: c.story.photo }
       : { enabled: false },
     ...(extras.guestName
       ? {
           guest: { name: extras.guestName },
-          envelope: { kicker: (GUEST_GREETING[c.lang] ?? GUEST_GREETING.uz)(extras.guestName) },
-          dearGuests: { enabled: true, greeting: (GUEST_GREETING[c.lang] ?? GUEST_GREETING.uz)(extras.guestName) },
+          envelope: { kicker: GUEST_GREETING.uz(extras.guestName) },
+          dearGuests: { enabled: true, greeting: GUEST_GREETING.uz(extras.guestName) },
         }
       : {}),
     addToCalendar: c.calendar
@@ -218,4 +219,33 @@ export function buildInvitationConfig(
 
 export function calendarTitle(groom: string, bride: string): string {
   return bride ? `${groom} va ${bride} — taklifnoma` : `${groom} — taklifnoma`;
+}
+
+/**
+ * Mijozning o'z matnlari boshqa tillarda: { til: { "o'zbekcha asl matn": tarjima } }.
+ * Sahifadagi tarjima skripti (src/lib/invitationI18n.ts) lug'atga qo'shadi —
+ * mehmon tilni almashtirganda aynan shu matnlar almashadi.
+ */
+export function textOverrides(
+  template: TemplateDefaults,
+  c: Customization,
+  message: string,
+  guestName?: string
+): Record<string, Record<string, string>> {
+  const out: Record<string, Record<string, string>> = {};
+  for (const lang of ["ru", "en"] as const) {
+    if (!c.langs.includes(lang)) continue;
+    const t = c.translations[lang];
+    const map: Record<string, string> = {};
+    const put = (from: string, to: string | undefined) => {
+      if (from && to) map[from] = to;
+    };
+    put(c.kicker || template.kicker, t?.kicker);
+    put(c.story.title || "Bizning hikoyamiz", t?.storyTitle);
+    put(c.story.text, t?.storyText);
+    put(message, t?.message);
+    if (guestName) put(GUEST_GREETING.uz(guestName), GUEST_GREETING[lang](guestName));
+    out[lang] = map;
+  }
+  return out;
 }
