@@ -78,7 +78,9 @@ export function PreviewFrame({ src, title, className, style, mode }: Props) {
           ref={iframeRef}
           src={frameSrc}
           title={title}
-          loading="lazy"
+          // loading="lazy" YO'Q: Chrome qayta yaratilgan (key o'zgargan)
+          // iframe'ni yuklamay qo'yardi — preview kulrang bo'lib qolardi.
+          // Katalogda iframe baribir faqat ekranga yaqinlashganda qo'yiladi.
           className={`${className ?? ""} ${interactive ? "" : "pointer-events-none"}`}
           style={style}
           sandbox="allow-scripts allow-same-origin"

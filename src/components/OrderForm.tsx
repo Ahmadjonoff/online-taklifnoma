@@ -164,15 +164,26 @@ export function OrderForm({
   // --- Musiqani tinglab ko'rish
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState<string | null>(null);
+  // Fayl yuklanib, tovush haqiqatan boshlanguncha — "yuklanmoqda" belgisi
+  // (sekin internetda bir necha soniya jimlik bo'lib, ishlamayapti deb o'ylanmasin)
+  const [buffering, setBuffering] = useState(false);
   function togglePlay(id: string, src: string) {
     audioRef.current?.pause();
     if (playing === id) {
       setPlaying(null);
+      setBuffering(false);
       return;
     }
     const audio = new Audio(src);
+    audio.preload = "auto";
     audio.onended = () => setPlaying(null);
-    audio.play().catch(() => setPlaying(null));
+    audio.onwaiting = () => setBuffering(true);
+    audio.onplaying = () => setBuffering(false);
+    setBuffering(true);
+    audio.play().catch(() => {
+      setPlaying(null);
+      setBuffering(false);
+    });
     audioRef.current = audio;
     setPlaying(id);
   }
@@ -670,7 +681,7 @@ export function OrderForm({
                     className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-stone-900 text-sm text-white transition hover:bg-rose-700"
                     aria-label={playing === track.id ? o.musicStop : o.musicPlay}
                   >
-                    {playing === track.id ? "❚❚" : "▶"}
+                    {playing === track.id ? (buffering ? <Spinner /> : "❚❚") : "▶"}
                   </button>
                   <button
                     type="button"
@@ -694,7 +705,7 @@ export function OrderForm({
                       className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-stone-900 text-sm text-white transition hover:bg-rose-700"
                       aria-label={playing === MUSIC_CUSTOM ? o.musicStop : o.musicPlay}
                     >
-                      {playing === MUSIC_CUSTOM ? "❚❚" : "▶"}
+                      {playing === MUSIC_CUSTOM ? (buffering ? <Spinner /> : "❚❚") : "▶"}
                     </button>
                   ) : (
                     <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rose-100 text-rose-700">
@@ -978,5 +989,14 @@ export function OrderForm({
         </div>
       )}
     </div>
+  );
+}
+
+function Spinner() {
+  return (
+    <span
+      className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+      aria-hidden="true"
+    />
   );
 }
