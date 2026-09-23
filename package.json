@@ -5,33 +5,36 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "vercel-build": "prisma generate --config prisma7.config.ts && npm run templates:build && prisma migrate deploy --config prisma7.config.ts && SEED_IF_EMPTY=1 tsx prisma/seed.ts && next build",
     "start": "next start",
-    "db:migrate": "prisma migrate dev",
+    "db:migrate": "prisma migrate dev --config prisma7.config.ts",
     "db:seed": "tsx prisma/seed.ts",
-    "db:studio": "prisma studio",
+    "db:studio": "prisma studio --config prisma7.config.ts",
     "templates:prepare": "bash scripts/prepare-templates.sh",
     "templates:build": "bash scripts/build-templates.sh",
     "templates:taklif": "node scripts/generate-taklif-templates.mjs",
     "templates:build:taklif": "bash scripts/build-taklif-templates.sh",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "postinstall": "prisma generate --config prisma7.config.ts"
   },
   "dependencies": {
-    "@prisma/adapter-better-sqlite3": "^7.10.0",
+    "@neondatabase/serverless": "^1.1.0",
+    "@prisma/adapter-neon": "^7.10.0",
     "@prisma/client": "^7.10.0",
-    "better-sqlite3": "^13.0.3",
     "next": "16.3.5",
     "qrcode": "^1.5.4",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "ws": "^8.21.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/vite": "^4.3.3",
-    "@types/better-sqlite3": "^9.6.0",
     "@types/node": "^20",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "^6.1.1",
     "prisma": "^7.10.0",
     "tailwindcss": "^4.3.3",

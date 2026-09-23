@@ -1,17 +1,21 @@
-import "dotenv/config";
 import path from "node:path";
 import fs from "node:fs";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { loadEnvConfig } from "@next/env";
+import { neonConfig } from "@neondatabase/serverless";
+import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient } from "../src/generated/prisma/client";
+import ws from "ws";
 
-const dbUrl = process.env.DATABASE_URL ?? "file:./dev.db";
-const resolved = dbUrl.replace("file:", "");
-const absolutePath = path.isAbsolute(resolved)
-  ? resolved
-  : path.join(process.cwd(), resolved);
+// Next.js bilan bir xil tartibda: .env.local → .env (mavjud process.env
+// qiymatlari, masalan Vercel build'dagilar, ustun turadi).
+loadEnvConfig(process.cwd());
+neonConfig.webSocketConstructor = ws;
 
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL environment o'zgaruvchisi sozlanmagan.");
+}
 const prisma = new PrismaClient({
-  adapter: new PrismaBetterSqlite3({ url: `file:${absolutePath}` }),
+  adapter: new PrismaNeon({ connectionString: process.env.DATABASE_URL }),
 });
 
 type Plan = {
@@ -153,6 +157,15 @@ function defaultNotes(eventType: string): Array<{ title: string; text: string }>
 }
 
 async function main() {
+  // Vercel build'da `SEED_IF_EMPTY=1` bilan chaqiriladi: baza allaqachon
+  // to'ldirilgan bo'lsa, hech narsaga tegmaymiz — aks holda har deploy
+  // admin paneldan o'zgartirilgan narx/nomlarni plan qiymatlariga qaytarib
+  // yuboradi.
+  if (process.env.SEED_IF_EMPTY === "1" && (await prisma.eventType.count()) > 0) {
+    console.log("Seed o'tkazib yuborildi: baza allaqachon to'ldirilgan.");
+    return;
+  }
+
   console.log("Seed boshlandi...");
 
   // Shablon papkalarining mavjudligini tekshirish

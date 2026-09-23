@@ -3,8 +3,11 @@ generator client {
   output   = "../src/generated/prisma"
 }
 
+// Prisma 7: ulanish manzillari bu yerda emas, `prisma7.config.ts`da
+// (`datasource.url` / `datasource.directUrl`) beriladi — schema faylida
+// `url`/`directUrl` endi qo'llab-quvvatlanmaydi.
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 model EventType {

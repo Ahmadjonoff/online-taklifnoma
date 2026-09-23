@@ -25,8 +25,6 @@ for name in $SLUGS; do
   rm -rf "$OUT/$name"
   TPL_SLUG="$name" TPL_OUT="$(pwd)/$OUT/$name" \
     npx vite build --config scripts/vite.template.config.ts 2>&1 | tail -2
-  # Musiqa fayli (mavjud bo'lsa)
-  cp ../invitations/public/music.mp3 "$OUT/$name/music.mp3" 2>/dev/null || true
   count=$((count+1))
 done
 

@@ -1,17 +1,20 @@
-import path from "node:path";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { neonConfig } from "@neondatabase/serverless";
+import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient } from "@/generated/prisma/client";
+import ws from "ws";
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
+// Node.js muhitida (Vercel Functions) WebSocket global bo'lmagani uchun
+// Neon'ning serverless drayveri buni talab qiladi.
+neonConfig.webSocketConstructor = ws;
+
 function createClient(): PrismaClient {
-  const dbUrl = process.env.DATABASE_URL ?? "file:./prisma/dev.db";
-  // SQLite uchun nisbiy yo'l loyiha ildiziga nisbatan bo'lishi kerak
-  const resolved = dbUrl.replace("file:", "");
-  const absolutePath = path.isAbsolute(resolved)
-    ? resolved
-    : path.join(process.cwd(), resolved);
-  const adapter = new PrismaBetterSqlite3({ url: `file:${absolutePath}` });
+  const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) {
+    throw new Error("DATABASE_URL environment o'zgaruvchisi sozlanmagan.");
+  }
+  const adapter = new PrismaNeon({ connectionString });
   return new PrismaClient({ adapter });
 }
 

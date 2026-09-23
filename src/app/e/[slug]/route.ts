@@ -118,7 +118,7 @@ function buildInvConfig(inv: {
     gift: { enabled: false },
     gallery: { enabled: false, photos: [] },
     petals: { enabled: true, count: 14 },
-    music: { enabled: true, src: `/t/${inv.template.theme}/music.mp3` },
+    music: { enabled: true, src: "/music.mp3" },
     specialOffer: { enabled: false, title: "", text: "", badge: "" },
     speakers: { enabled: false, title: "", people: [] },
     sponsors: { enabled: false, title: "", names: [] },

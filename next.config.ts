@@ -9,6 +9,13 @@ import type { NextConfig } from "next";
 // edi — olib tashlandi).
 const nextConfig: NextConfig = {
   outputFileTracingRoot: __dirname,
+  // Route handler'lar shablon HTML'ini `fs` bilan o'qiydi — Vercel
+  // function bundle'iga bu fayllar aniq kiritilishi shart (public/ odatda
+  // faqat CDN orqali beriladi).
+  outputFileTracingIncludes: {
+    "/e/[slug]": ["./public/t/*/index.html"],
+    "/preview/[theme]": ["./public/t/*/index.html"],
+  },
 };
 
 export default nextConfig;
