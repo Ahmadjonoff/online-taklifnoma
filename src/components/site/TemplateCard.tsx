@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PreviewFrame } from "./PreviewFrame";
-import { TIER_STYLE, tierOf } from "@/lib/catalog";
+import { formatPrice, TIER_STYLE, tierLabel as labelOf, tierOf } from "@/lib/catalog";
+import { t } from "@/lib/i18n/dictionary";
 import type { Dictionary } from "@/lib/i18n/dictionary";
 
 export type CardTemplate = {
@@ -21,7 +22,7 @@ export type CardTemplate = {
  */
 export function TemplateCard({ template, dict }: { template: CardTemplate; dict: Dictionary }) {
   const tier = tierOf(template.price);
-  const tierLabel = tier === "premium" ? dict.common.tierPremium : dict.common.tierStandard;
+  const tierLabel = labelOf(tier, dict.common);
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-3xl border border-stone-200/80 bg-white shadow-sm transition duration-500 hover:-translate-y-1.5 hover:border-amber-200 hover:shadow-[0_28px_60px_-30px_rgba(60,45,20,0.4)]">
@@ -59,7 +60,7 @@ export function TemplateCard({ template, dict }: { template: CardTemplate; dict:
 
         <div className="mt-auto flex items-center justify-between border-t border-stone-100 pt-5">
           <span className="text-sm font-semibold text-amber-800">
-            {dict.common.priceShort}
+            {t(dict.common.priceShort, { price: formatPrice(template.price) })}
           </span>
           <Link
             href={`/shablon/${template.slug}`}

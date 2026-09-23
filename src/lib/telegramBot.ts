@@ -21,6 +21,7 @@ export type NewOrderNotice = {
   customerName: string;
   phone: string;
   templateName: string;
+  price: string;
   title: string;
   eventDate: string; // "25.12.2026 18:00"
   venueName: string;
@@ -60,6 +61,7 @@ export async function notifyAdminNewOrder(order: NewOrderNotice): Promise<boolea
   const text = [
     "🆕 Yangi buyurtma!",
     `№${order.id} — ${order.templateName}`,
+    `💰 ${order.price}`,
     "",
     `👤 ${order.customerName}`,
     `📞 ${order.phone}`,

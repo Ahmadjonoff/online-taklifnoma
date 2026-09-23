@@ -34,12 +34,23 @@ export function paletteSwatch(p: Palette): string[] {
  * id) bo'lsa — bo'sh satr. Qiymatlar faqat bizning JSON'dan olinadi, mijoz
  * kiritgan matn CSS'ga tushmaydi.
  */
-export function paletteStyleTag(theme: string, id: string): string {
+export function paletteStyleTag(theme: string, id: string, accent = ""): string {
   const list = getPalettes(theme);
   const p = list.find((x) => x.id === id);
-  if (!p || p === list[0]) return "";
-  const decl = Object.entries(p.vars)
+  const vars: Record<string, string> = p && p !== list[0] ? { ...p.vars } : {};
+
+  // Mijozning o'z urg'u rangi: oltin rang o'rniga, och/to'q tuslari undan
+  // hosil qilinadi. Faqat "#rrggbb" (customization.ts tekshiradi) — CSS'ga
+  // boshqa narsa tushmaydi.
+  if (/^#[0-9a-f]{6}$/i.test(accent)) {
+    vars["--color-gold"] = accent;
+    vars["--color-gold-light"] = `color-mix(in oklab, ${accent} 55%, white)`;
+    vars["--color-gold-dark"] = `color-mix(in oklab, ${accent} 70%, black)`;
+    vars["--tpl-accent"] = accent;
+  }
+
+  const decl = Object.entries(vars)
     .map(([k, v]) => `${k}:${v}`)
     .join(";");
-  return `<style id="tpl-palette">:root,:host{${decl}}</style>`;
+  return decl ? `<style id="tpl-palette">:root,:host{${decl}}</style>` : "";
 }

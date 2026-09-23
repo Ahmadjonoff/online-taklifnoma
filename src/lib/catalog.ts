@@ -1,31 +1,27 @@
 /**
  * Katalog uchun yordamchi funksiyalar.
  *
- * Daraja (tier) narxdan kelib chiqib aniqlanadi — sxemani o'zgartirmasdan
- * «Premium» va «Standart» shablonlarni ajratish uchun. Generator ham xuddi shu
- * chegarani ishlatadi (scripts/generate-taklif-templates.mjs).
+ * Daraja (tier) narxdan kelib chiqib aniqlanadi — chegaralar va narxlar
+ * `@/lib/pricing` da. Bu yerda — faqat ko'rinish (badge uslubi).
  */
+import type { Tier } from "./pricing";
 
-/** Shu narxdan boshlab shablon «Premium» hisoblanadi (so'mda). */
-export const PREMIUM_FROM = 99_000
-
-export type Tier = "premium" | "standard"
-
-export function tierOf(price: number): Tier {
-  return price >= PREMIUM_FROM ? "premium" : "standard"
-}
+export { formatPrice, tierOf, type Tier } from "./pricing";
 
 export const TIER_STYLE: Record<Tier, string> = {
   premium:
     "border-amber-300/70 bg-gradient-to-r from-amber-50 to-amber-100/70 text-amber-800",
-  standard: "border-stone-300/80 bg-white/85 text-stone-600",
-}
+  standard: "border-stone-300/80 bg-white/85 text-stone-700",
+  light: "border-sky-200/80 bg-sky-50/85 text-sky-800",
+};
 
-// DIQQAT: daraja nomi ("Premium"/"Standart") va narx matni endi
-// @/lib/i18n/dictionary (dict.common.tierPremium/tierStandard/priceShort/
-// priceNote) orqali til bo'yicha beriladi — bu yerda emas.
+// DIQQAT: daraja nomi va narx matni @/lib/i18n/dictionary orqali til bo'yicha
+// beriladi (dict.common.tierLight/tierStandard/tierPremium, priceShort).
 
-/** Admin panel uchun: summani o'qishga qulay ko'rinishda chiqaradi. */
-export function formatPrice(price: number): string {
-  return price.toLocaleString("uz-UZ")
+/** Daraja nomi joriy tilda (dict.common yoki dict.catalog). */
+export function tierLabel(
+  tier: Tier,
+  labels: { tierPremium: string; tierStandard: string; tierLight: string }
+): string {
+  return tier === "premium" ? labels.tierPremium : tier === "light" ? labels.tierLight : labels.tierStandard;
 }

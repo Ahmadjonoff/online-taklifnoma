@@ -7,7 +7,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { TemplateCard } from "@/components/site/TemplateCard";
 import { TelegramIcon } from "@/components/site/TelegramIcon";
-import { TIER_STYLE, tierOf } from "@/lib/catalog";
+import { formatPrice, TIER_STYLE, tierLabel as labelOf, tierOf } from "@/lib/catalog";
 import { telegramUrl } from "@/lib/contact";
 import { getDictionary, t } from "@/lib/i18n/dictionary";
 import { getLocale } from "@/lib/i18n/server";
@@ -48,7 +48,7 @@ export default async function TemplatePage({
   if (!template) notFound();
 
   const tier = tierOf(template.price);
-  const tierLabel = tier === "premium" ? dict.common.tierPremium : dict.common.tierStandard;
+  const tierLabel = labelOf(tier, dict.common);
   const tierFeatures = tier === "premium" ? td.featuresPremium : td.featuresStandard;
 
   // `templates` allaqachon narx↓, id↑ tartibida
@@ -120,7 +120,7 @@ export default async function TemplatePage({
                 <div className="flex items-baseline justify-between gap-3">
                   <span className="text-sm text-stone-500">{td.paymentLabel}</span>
                   <span className="font-serif text-2xl font-bold text-stone-900">
-                    {dict.common.priceShort}
+                    {t(dict.common.priceShort, { price: formatPrice(template.price) })}
                   </span>
                 </div>
                 <p className="mt-2 text-xs leading-relaxed text-stone-500">{dict.common.priceNote}</p>

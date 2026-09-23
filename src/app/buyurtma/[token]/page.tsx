@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { ShareCard } from "@/components/ShareCard";
 import { BrandMark } from "@/components/site/BrandMark";
 import { TelegramIcon } from "@/components/site/TelegramIcon";
+import { formatPrice } from "@/lib/catalog";
 import { telegramUrl } from "@/lib/contact";
 import { getDictionary, t } from "@/lib/i18n/dictionary";
 import { getLocale } from "@/lib/i18n/server";
@@ -102,7 +103,12 @@ export default async function OrderStatusPage({
               <div className="mt-6 rounded-2xl border border-stone-200 bg-stone-50 p-5 text-left">
                 <div className="flex items-center justify-between gap-3">
                   <span className="text-sm text-stone-500">{os.priceLabel}</span>
-                  <span className="font-semibold text-stone-800">{dict.common.priceShort}</span>
+                  <span className="font-semibold text-stone-800">
+                    {t(dict.common.priceShort, {
+                      // 0 — narxlar ochiq bo'lishidan oldingi buyurtma: shablon narxi
+                      price: formatPrice(order.price || order.template.price),
+                    })}
+                  </span>
                 </div>
                 <p className="mt-1.5 text-xs leading-relaxed text-stone-500">{dict.common.priceNote}</p>
               </div>

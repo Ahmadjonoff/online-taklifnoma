@@ -1,6 +1,6 @@
 import type { Customization } from "./customization";
 import { defaultNotes, type NoteItem, type TimelineItem } from "./eventDefaults";
-import { MUSIC_NONE, musicTrack } from "./music";
+import { MUSIC_CUSTOM, MUSIC_NONE, musicTrack } from "./music";
 
 /**
  * Shablonga beriladigan `window.__INV_CONFIG__`.
@@ -54,7 +54,12 @@ export function buildInvitationConfig(
     ? defaultNotes(c.eventType)
     : parseJson(template.notes, []);
 
-  const track = c.music === MUSIC_NONE ? null : musicTrack(c.music);
+  const musicSrc =
+    c.music === MUSIC_NONE
+      ? ""
+      : c.music === MUSIC_CUSTOM
+        ? c.customMusicUrl
+        : (musicTrack(c.music)?.src ?? "");
 
   return {
     couple: {
@@ -104,7 +109,7 @@ export function buildInvitationConfig(
       : { enabled: false },
     gallery: { enabled: false, photos: [] },
     petals: { enabled: c.petals, count: 14 },
-    music: track ? { enabled: true, src: track.src } : { enabled: false, src: "" },
+    music: { enabled: Boolean(musicSrc), src: musicSrc },
     specialOffer: { enabled: false, title: "", text: "", badge: "" },
     speakers: { enabled: false, title: "", people: [] },
     sponsors: { enabled: false, title: "", names: [] },

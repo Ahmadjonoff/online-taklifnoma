@@ -1,5 +1,5 @@
 import type { TimelineItem } from "./eventDefaults";
-import { MUSIC_NONE, MUSIC_TRACKS } from "./music";
+import { isOwnMusicUrl, MUSIC_CUSTOM, MUSIC_NONE, MUSIC_TRACKS } from "./music";
 
 /**
  * Mijoz buyurtmada tanlaydigan sozlamalar (`Invitation.options` JSON).
@@ -10,6 +10,8 @@ import { MUSIC_NONE, MUSIC_TRACKS } from "./music";
 export type Customization = {
   /** Palitra id'si (`src/lib/palettes.ts`); "" — shablonning o'z ranglari */
   palette: string;
+  /** Mijozning o'z urg'u rangi ("#rrggbb") — palitraning oltin rangi o'rniga; "" — yo'q */
+  accent: string;
   /** Tadbir turi slug'i — standart eslatmalar shu bo'yicha olinadi */
   eventType: string;
   /** Ismlar ustidagi kichik yozuv ("Nikoh to'yi", "Kelin salom" ...) */
@@ -18,8 +20,9 @@ export type Customization = {
   timeline: TimelineItem[] | null;
   googleMapsUrl: string;
   yandexMapsUrl: string;
-  /** Musiqa id'si yoki "none" */
+  /** Musiqa id'si, "none" yoki "custom" (mijoz yuklagan — `customMusicUrl`) */
   music: string;
+  customMusicUrl: string;
   dressCode: { text: string; colors: string[] };
   gift: { cardNumber: string; cardHolder: string };
   rsvp: boolean;
@@ -29,12 +32,14 @@ export type Customization = {
 
 export const DEFAULT_CUSTOMIZATION: Customization = {
   palette: "",
+  accent: "",
   eventType: "",
   kicker: "",
   timeline: null,
   googleMapsUrl: "",
   yandexMapsUrl: "",
   music: MUSIC_TRACKS[0].id,
+  customMusicUrl: "",
   dressCode: { text: "", colors: [] },
   gift: { cardNumber: "", cardHolder: "" },
   rsvp: true,
@@ -117,7 +122,13 @@ export function sanitizeCustomization(input: unknown, ctx: Ctx, strict = true): 
   if (strict && google === null) return { ok: false, error: "Google Maps havolasi noto'g'ri" };
   if (strict && yandex === null) return { ok: false, error: "Yandex Maps havolasi noto'g'ri" };
 
-  const music = str(o.music, 40);
+  let music = str(o.music, 40);
+  const customMusicUrl = str(o.customMusicUrl, 500);
+  if (music === MUSIC_CUSTOM && !isOwnMusicUrl(customMusicUrl)) {
+    if (strict) return { ok: false, error: "Yuklangan musiqa topilmadi — qaytadan yuklang" };
+    music = d.music;
+  }
+  const accent = str(o.accent, 7).toLowerCase();
 
   const dc = (o.dressCode ?? {}) as Record<string, unknown>;
   const colors = (Array.isArray(dc.colors) ? dc.colors : [])
@@ -135,12 +146,17 @@ export function sanitizeCustomization(input: unknown, ctx: Ctx, strict = true): 
     ok: true,
     value: {
       palette: ctx.paletteIds.includes(palette) ? palette : "",
+      accent: /^#[0-9a-f]{6}$/.test(accent) ? accent : "",
       eventType: ctx.eventTypeSlugs.includes(eventType) ? eventType : "",
       kicker: str(o.kicker, LIMITS.kicker),
       timeline: timeline(o.timeline),
       googleMapsUrl: google ?? "",
       yandexMapsUrl: yandex ?? "",
-      music: music === MUSIC_NONE || MUSIC_TRACKS.some((t) => t.id === music) ? music : d.music,
+      music:
+        music === MUSIC_NONE || music === MUSIC_CUSTOM || MUSIC_TRACKS.some((t) => t.id === music)
+          ? music
+          : d.music,
+      customMusicUrl: music === MUSIC_CUSTOM ? customMusicUrl : "",
       dressCode: { text: str(dc.text, LIMITS.dressCodeText), colors },
       gift: {
         cardNumber: cardDigits.length === 16 ? cardDigits.replace(/(\d{4})(?=\d)/g, "$1 ") : "",
@@ -178,7 +194,16 @@ export function customizationSummary(
   const lines: string[] = [];
   if (names.eventType) lines.push(`🏷 Tadbir: ${names.eventType}`);
   if (names.palette) lines.push(`🎨 Rang: ${names.palette}`);
-  lines.push(`🎵 Musiqa: ${c.music === MUSIC_NONE ? "yo'q" : names.music ?? c.music}`);
+  if (c.accent) lines.push(`🖌 O'z rangi: ${c.accent}`);
+  lines.push(
+    `🎵 Musiqa: ${
+      c.music === MUSIC_NONE
+        ? "yo'q"
+        : c.music === MUSIC_CUSTOM
+          ? `mijozniki — ${c.customMusicUrl}`
+          : (names.music ?? c.music)
+    }`
+  );
   if (c.timeline) lines.push(`🗓 Kun tartibi: ${c.timeline.length ? `${c.timeline.length} ta band` : "ko'rsatilmaydi"}`);
   const maps = [c.googleMapsUrl && "Google", c.yandexMapsUrl && "Yandex"].filter(Boolean);
   if (maps.length) lines.push(`🗺 Xarita: ${maps.join(", ")}`);

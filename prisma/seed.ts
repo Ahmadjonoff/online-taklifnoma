@@ -32,7 +32,7 @@ type Plan = {
     price: number;
     emoji: string;
     kicker: string;
-    tier?: 'premium' | 'standard';
+    tier?: 'premium' | 'standard' | 'light';
     // Katalogda ko'rinadigan tadbir turlari (birinchisi — asosiy `eventType`)
     categories?: string[];
   }[];

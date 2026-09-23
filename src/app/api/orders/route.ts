@@ -2,6 +2,7 @@ import { after, NextResponse } from "next/server";
 import { customizationSummary, sanitizeCustomization } from "@/lib/customization";
 import { musicTrack } from "@/lib/music";
 import { findPalette, getPalettes } from "@/lib/palettes";
+import { formatPrice, orderPrice } from "@/lib/pricing";
 import { prisma } from "@/lib/prisma";
 import { notifyAdminNewOrder } from "@/lib/telegramBot";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
@@ -105,6 +106,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: custom.error }, { status: 400 });
     }
 
+    // Narx serverda hisoblanadi (mijoz yuborgan summaga ishonilmaydi)
+    const price = orderPrice(template.price, custom.value).total;
+
     const slug = makeSlug(partner1 && partner2 ? `${partner1}-va-${partner2}` : title);
 
     const order = await prisma.order.create({
@@ -113,6 +117,7 @@ export async function POST(req: Request) {
         phone,
         templateId: template.id,
         status: "PENDING",
+        price,
         invitation: {
           create: {
             slug,
@@ -142,6 +147,7 @@ export async function POST(req: Request) {
         customerName: order.customerName,
         phone: order.phone,
         templateName: template.name,
+        price: `${formatPrice(price)} so'm`,
         title,
         eventDate: `${eventDate.split("-").reverse().join(".")} ${eventTime || "18:00"}`,
         venueName,

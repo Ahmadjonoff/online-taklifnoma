@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { OrderActions } from "@/components/OrderActions";
 import { customizationSummary, parseStoredCustomization } from "@/lib/customization";
 import { musicTrack } from "@/lib/music";
+import { formatPrice } from "@/lib/pricing";
 import { findPalette } from "@/lib/palettes";
 
 export const dynamic = "force-dynamic";
@@ -22,7 +23,7 @@ export default async function AdminPage() {
     paid: orders.filter((o) => o.status === "PAID").length,
     revenue: orders
       .filter((o) => o.status === "PAID")
-      .reduce((sum, o) => sum + o.template.price, 0),
+      .reduce((sum, o) => sum + (o.price || o.template.price), 0),
   };
 
   return (
@@ -54,8 +55,8 @@ export default async function AdminPage() {
             { label: "Kutilmoqda", value: String(stats.pending), emoji: "⏳" },
             { label: "Tasdiqlangan", value: String(stats.paid), emoji: "✅" },
             {
-              label: "Kelishilgan summa",
-              value: `${stats.revenue.toLocaleString("uz-UZ")} so'm`,
+              label: "To'langan buyurtmalar summasi",
+              value: `${formatPrice(stats.revenue)} so'm`,
               emoji: "💰",
             },
           ].map((s) => (
@@ -110,8 +111,8 @@ export default async function AdminPage() {
                     <strong>{order.customerName}</strong> • {order.phone}
                   </p>
                   <p className="text-sm text-stone-500">
-                    {order.template.name} — kelishuv asosidagi baho:{" "}
-                    {order.template.price.toLocaleString("uz-UZ")} so&apos;m
+                    {order.template.name} — narx:{" "}
+                    {formatPrice(order.price || order.template.price)} so&apos;m
                   </p>
                   {order.invitation && (
                     <p className="mt-1 text-xs text-stone-400">

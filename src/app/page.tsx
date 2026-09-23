@@ -7,7 +7,8 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { TelegramIcon } from "@/components/site/TelegramIcon";
 import { TemplateCard } from "@/components/site/TemplateCard";
-import { tierOf } from "@/lib/catalog";
+import { formatPrice, tierOf } from "@/lib/catalog";
+import { CUSTOM_MUSIC_PRICE, TIER_PRICE, type Tier } from "@/lib/pricing";
 import { telegramUrl } from "@/lib/contact";
 import { getDictionary, t } from "@/lib/i18n/dictionary";
 import { getLocale } from "@/lib/i18n/server";
@@ -24,7 +25,6 @@ export default async function HomePage() {
   const total = templates.length;
 
   const hero = featured[0];
-  const premiumCount = featured.filter((tpl) => tierOf(tpl.price) === "premium").length;
 
   const [heroTitleBefore, heroTitleAfter] = home.heroTitle.split("{highlight}");
 
@@ -313,7 +313,9 @@ export default async function HomePage() {
                   <h3 className="font-serif text-xl font-bold text-stone-900">{p.name}</h3>
                   <p className="mt-1.5 text-sm text-stone-500">{p.text}</p>
 
-                  <p className="mt-6 font-serif text-3xl font-bold text-stone-900">{dict.common.priceShort}</p>
+                  <p className="mt-6 font-serif text-3xl font-bold text-stone-900">
+                    {t(dict.common.priceShort, { price: formatPrice(TIER_PRICE[p.key as Tier]) })}
+                  </p>
 
                   <ul className="mt-6 space-y-3 text-sm text-stone-600">
                     {p.items.map((item) => (
@@ -342,7 +344,7 @@ export default async function HomePage() {
           </div>
 
           <p className="mt-6 text-center text-sm text-stone-500">
-            {t(home.pricingFooterNote, { total, premium: premiumCount, tier: dict.common.tierPremium })}
+            {t(home.pricingFooterNote, { music: formatPrice(CUSTOM_MUSIC_PRICE) })}
           </p>
 
           <Reveal>

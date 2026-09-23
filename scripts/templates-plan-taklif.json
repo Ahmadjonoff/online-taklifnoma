@@ -16,7 +16,7 @@
       "palette": "nikoh-imperial",
       "typo": "classic",
       "desc": "Fil suyagi fonda oltin naqsh, muqaddas duo va tantanali kun tartibi",
-      "price": 129000,
+      "price": 279000,
       "emoji": "✨",
       "kicker": "Tantanali marosim",
       "tier": "premium",
@@ -35,10 +35,10 @@
       "palette": "nikoh-floral",
       "typo": "script",
       "desc": "Akvarel gullar, nozik yashil bog‘ uslubi",
-      "price": 89000,
+      "price": 279000,
       "emoji": "💐",
       "kicker": "Nikoh to‘yi",
-      "tier": "standard",
+      "tier": "premium",
       "categories": [
         "nikoh-toyi",
         "fotiha-toyi"
@@ -52,10 +52,10 @@
       "palette": "nikoh-aurora",
       "typo": "classic",
       "desc": "Sirli va romantik muhit yaratuvchi noyob gradient dizayn",
-      "price": 89000,
+      "price": 279000,
       "emoji": "🌌",
       "kicker": "Visol oqshomi",
-      "tier": "standard",
+      "tier": "premium",
       "categories": [
         "nikoh-toyi"
       ]

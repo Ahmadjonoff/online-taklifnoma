@@ -2,7 +2,7 @@
  * Aloqa kanali — Telegram.
  *
  * NEGA SHUNDAY: buyurtma jarayonida onlayn to'lov yo'q. Mijoz formani
- * to'ldiradi, operator Telegram orqali bog'lanadi va narx kelishiladi. Shu
+ * to'ldiradi, operator Telegram orqali bog'lanadi va to'lov kelishiladi. Shu
  * sababli saytning bir necha joyida (bosh sahifa, shablon, buyurtma sahifasi)
  * aynan shu kanalga havola kerak bo'ladi — manzil bitta joyda turishi kerak.
  */

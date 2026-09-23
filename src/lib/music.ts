@@ -9,10 +9,43 @@ export type MusicTrack = { id: string; name: string; src: string };
 
 export const MUSIC_TRACKS: MusicTrack[] = [
   { id: "classic", name: "Nafis kuy", src: "/music.mp3" },
+  // Quyidagilar — public domain / CC0 yozuvlar, manbalar: public/music/CREDITS.md
+  { id: "wedding-march", name: "Mendelson — To'y marshi", src: "/music/wedding-march.mp3" },
+  { id: "waltz-of-flowers", name: "Chaykovskiy — Gullar valsi", src: "/music/waltz-of-flowers.mp3" },
+  { id: "blue-danube", name: "Shtraus — Moviy Dunay", src: "/music/blue-danube.mp3" },
+  { id: "bach-air", name: "Bax — Air", src: "/music/bach-air.mp3" },
+  { id: "ave-maria", name: "Shubert — Ave Maria", src: "/music/ave-maria.mp3" },
 ];
 
 export const MUSIC_NONE = "none";
+/** Mijoz o'zi yuklagan musiqa (`Customization.customMusicUrl`) */
+export const MUSIC_CUSTOM = "custom";
 export const DEFAULT_MUSIC = MUSIC_TRACKS[0].id;
+
+// Mijoz yuklaydigan musiqa: MP3/M4A/AAC/OGG, 15 MB gacha (≈ 10 daqiqa MP3)
+export const CUSTOM_MUSIC_TYPES = ["audio/mpeg", "audio/mp3", "audio/mp4", "audio/x-m4a", "audio/aac", "audio/ogg"];
+export const CUSTOM_MUSIC_MAX_BYTES = 15 * 1024 * 1024;
+
+/**
+ * Yuklangan musiqa havolasi haqiqatan bizning Blob store'imizdagi `music/`
+ * papkasidanmi — ixtiyoriy tashqi havolani taklifnomaga qo'yib bo'lmasin.
+ */
+export function isOwnMusicUrl(url: string): boolean {
+  // Store ID tokendan olinadi: vercel_blob_rw_<storeId>_<secret>. Faqat
+  // serverda chaqiriladi (token brauzerga chiqmaydi).
+  const storeId = process.env.BLOB_READ_WRITE_TOKEN?.split("_")[3]?.toLowerCase();
+  if (!storeId) return false;
+  try {
+    const u = new URL(url);
+    return (
+      u.protocol === "https:" &&
+      u.hostname === `${storeId}.public.blob.vercel-storage.com` &&
+      u.pathname.startsWith("/music/")
+    );
+  } catch {
+    return false;
+  }
+}
 
 export function musicTrack(id: string): MusicTrack | null {
   return MUSIC_TRACKS.find((t) => t.id === id) ?? null;

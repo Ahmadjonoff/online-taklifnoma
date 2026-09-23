@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { TemplateCard, type CardTemplate } from "./TemplateCard";
-import { tierOf } from "@/lib/catalog";
+import { tierOf, type Tier } from "@/lib/catalog";
 import type { Dictionary } from "@/lib/i18n/dictionary";
 
 /** `categories` — shablon ko'rinadigan barcha tadbir turlari (bitta dizayn bir nechta tadbirga mos) */
@@ -14,11 +14,10 @@ type EventTypeOption = { slug: string; name: string; emoji: string; count: numbe
 /**
  * Tartiblash.
  *
- * DIQQAT: narx bo'yicha tartiblash yo'q — narxlar kelishuv asosida, ya'ni
- * foydalanuvchiga ko'rinadigan summa mavjud emas. O'rniga daraja bo'yicha.
+ * Narx bo'yicha tartiblash — narxlar ochiq (src/lib/pricing.ts).
  */
-type SortKey = "featured" | "premium" | "standard" | "name";
-type TierFilter = "all" | "premium" | "standard";
+type SortKey = "featured" | "priceAsc" | "priceDesc" | "name";
+type TierFilter = "all" | Tier;
 
 /**
  * Katalog — qidiruv, tadbir turi, daraja va tartiblash.
@@ -40,8 +39,8 @@ export function TemplateCatalog({
 }) {
   const SORT_LABEL: Record<SortKey, string> = {
     featured: dict.catalog.sortFeatured,
-    premium: dict.catalog.sortPremiumFirst,
-    standard: dict.catalog.sortStandardFirst,
+    priceAsc: dict.catalog.sortPriceAsc,
+    priceDesc: dict.catalog.sortPriceDesc,
     name: dict.catalog.sortName,
   };
 
@@ -49,6 +48,7 @@ export function TemplateCatalog({
     { value: "all", label: dict.catalog.tierAll },
     { value: "premium", label: dict.catalog.tierPremium },
     { value: "standard", label: dict.catalog.tierStandard },
+    { value: "light", label: dict.catalog.tierLight },
   ];
 
   const [query, setQuery] = useState("");
@@ -73,10 +73,10 @@ export function TemplateCatalog({
     });
 
     const sorted = [...list];
-    if (sort === "premium") {
-      sorted.sort((a, b) => (tierOf(b.price) === "premium" ? 1 : 0) - (tierOf(a.price) === "premium" ? 1 : 0));
-    } else if (sort === "standard") {
-      sorted.sort((a, b) => (tierOf(b.price) === "standard" ? 1 : 0) - (tierOf(a.price) === "standard" ? 1 : 0));
+    if (sort === "priceAsc") {
+      sorted.sort((a, b) => a.price - b.price);
+    } else if (sort === "priceDesc") {
+      sorted.sort((a, b) => b.price - a.price);
     } else if (sort === "name") sorted.sort((a, b) => a.name.localeCompare(b.name, "uz"));
     return sorted;
   }, [templates, query, event, tier, sort]);
