@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Story, storyEnabled } from '@core/components/Story'
 import { AchievementBadge } from '@core/components/AchievementBadge'
 import { Blessing } from '@core/components/Blessing'
 import { Countdown } from '@core/components/Countdown'
@@ -23,6 +24,7 @@ function sectionList(): SectionDef[] {
     { key: 'hero', bg: 'paper', Comp: Hero },
     config.achievement.enabled && { key: 'achievement', bg: 'paper-2' as Bg, Comp: AchievementBadge },
     { key: 'blessing', bg: 'paper-2', Comp: Blessing },
+    storyEnabled() && { key: 'story', bg: 'paper-3' as Bg, Comp: Story },
     config.gallery.enabled && { key: 'gallery', bg: 'paper' as Bg, Comp: Gallery },
     { key: 'timeline', bg: 'paper-3', Comp: Timeline },
     { key: 'countdown', bg: 'paper', Comp: Countdown },

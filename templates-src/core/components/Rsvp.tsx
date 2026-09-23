@@ -14,7 +14,10 @@ export function Rsvp(skin: Skin) {
   const [open, setOpen] = useState(false)
   const [status, setStatus] = useState<Status>('idle')
 
-  const [name, setName] = useState('')
+  // Shaxsiy mehmon havolasida ism oldindan to'ldiriladi (Luxury)
+  const [name, setName] = useState(
+    () => (config as unknown as { guest?: { name?: string } }).guest?.name ?? ''
+  )
   const [nameError, setNameError] = useState(false)
   const [attending, setAttending] = useState<'keladi' | 'kelolmaydi'>('keladi')
   const [guests, setGuests] = useState(1)

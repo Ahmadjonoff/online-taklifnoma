@@ -5,6 +5,8 @@
  * yozing (`id` o'zgarmas bo'lsin — buyurtmalarda shu saqlanadi). Faqat
  * foydalanish huquqi bor musiqalarni qo'shing.
  */
+import { isOwnBlobUrl } from "./blob";
+
 export type MusicTrack = { id: string; name: string; src: string };
 
 export const MUSIC_TRACKS: MusicTrack[] = [
@@ -28,25 +30,9 @@ export const DEFAULT_MUSIC = MUSIC_TRACKS[0].id;
 export const CUSTOM_MUSIC_TYPES = ["audio/mpeg", "audio/mp3", "audio/mp4", "audio/x-m4a", "audio/aac", "audio/ogg"];
 export const CUSTOM_MUSIC_MAX_BYTES = 15 * 1024 * 1024;
 
-/**
- * Yuklangan musiqa havolasi haqiqatan bizning Blob store'imizdagi `music/`
- * papkasidanmi — ixtiyoriy tashqi havolani taklifnomaga qo'yib bo'lmasin.
- */
+/** Yuklangan musiqa havolasi haqiqatan bizning Blob store'dagi `music/` papkasidanmi */
 export function isOwnMusicUrl(url: string): boolean {
-  // Store ID tokendan olinadi: vercel_blob_rw_<storeId>_<secret>. Faqat
-  // serverda chaqiriladi (token brauzerga chiqmaydi).
-  const storeId = process.env.BLOB_READ_WRITE_TOKEN?.split("_")[3]?.toLowerCase();
-  if (!storeId) return false;
-  try {
-    const u = new URL(url);
-    return (
-      u.protocol === "https:" &&
-      u.hostname === `${storeId}.public.blob.vercel-storage.com` &&
-      u.pathname.startsWith("/music/")
-    );
-  } catch {
-    return false;
-  }
+  return isOwnBlobUrl(url, "/music/");
 }
 
 export function musicTrack(id: string): MusicTrack | null {

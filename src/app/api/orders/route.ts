@@ -103,6 +103,7 @@ export async function POST(req: Request) {
     const custom = sanitizeCustomization(options, {
       paletteIds: getPalettes(template.theme).map((p) => p.id),
       eventTypeSlugs: template.categories.map((e) => e.slug),
+      tier: tierOf(template.price),
     });
     if (!custom.ok) {
       return NextResponse.json({ error: custom.error }, { status: 400 });

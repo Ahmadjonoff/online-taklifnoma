@@ -3,8 +3,10 @@ import path from "node:path";
 import { getCatalog } from "@/lib/catalogData";
 import { INVITATION_PROMO } from "@/lib/contact";
 import { sanitizeCustomization } from "@/lib/customization";
-import { buildInvitationConfig } from "@/lib/invitationConfig";
+import { buildInvitationConfig, calendarTitle, icsContent } from "@/lib/invitationConfig";
+import { i18nScriptTag } from "@/lib/invitationI18n";
 import { getPalettes, paletteStyleTag } from "@/lib/palettes";
+import { tierOf } from "@/lib/pricing";
 
 /** Bu route Next.js sahifasi emas (iframe uchun statik HTML) — o'zining 404'ini beradi. */
 function notFoundHtml(): string {
@@ -115,7 +117,8 @@ export async function GET(
     const draft = await buildDraft(theme, draftParam);
     if (draft) {
       config = draft.config;
-      paletteStyle = paletteStyleTag(theme, draft.palette, draft.colors);
+      paletteStyle =
+        paletteStyleTag(theme, draft.palette, draft.colors) + i18nScriptTag(draft.lang);
     }
   } else if (url.searchParams.get("thumb") === "1") {
     // Katalog kartasidagi kichik ko'rinish: gulbarg animatsiyasi o'chiriladi
@@ -171,13 +174,13 @@ async function buildDraft(theme: string, raw: string) {
     {
       paletteIds: getPalettes(theme).map((p) => p.id),
       eventTypeSlugs: template.categories.map((e) => e.slug),
+      tier: tierOf(template.price),
     },
     false
   );
   if (!options.ok) return null;
 
-  const config = buildInvitationConfig(
-    {
+  const content = {
       title: text(c.title, 120),
       // Bo'sh maydonlar o'rniga namuna — shablon bo'sh ko'rinmasin
       partner1: partner1 || "Ismingiz",
@@ -187,9 +190,11 @@ async function buildDraft(theme: string, raw: string) {
       venueName: text(c.venueName, 120) || "To'yxona nomi",
       venueAddress: text(c.venueAddress, 200),
       message: text(c.message, 1000) || "Sizni tadbirimizda ko'rishdan baxtiyor bo'lamiz!",
-    },
-    template,
-    options.value
-  );
-  return { config, palette: options.value.palette, colors: options.value.colors };
+  };
+  // Preview'da .ics fayl data: URI sifatida (alohida route shart emas)
+  const ics = icsContent(content, calendarTitle(content.partner1, content.partner2), "", "preview@taklifnoma");
+  const config = buildInvitationConfig(content, template, options.value, {
+    icsUrl: `data:text/calendar;charset=utf-8,${encodeURIComponent(ics)}`,
+  });
+  return { config, palette: options.value.palette, colors: options.value.colors, lang: options.value.lang };
 }

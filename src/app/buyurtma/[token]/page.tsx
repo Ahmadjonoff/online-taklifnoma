@@ -1,5 +1,10 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
+import { GuestLinks } from "@/components/GuestLinks";
+import { tierFeatures } from "@/lib/customization";
+import { listGuests } from "@/lib/guests";
+import { tierOf } from "@/lib/pricing";
 import { prisma } from "@/lib/prisma";
 import { ShareCard } from "@/components/ShareCard";
 import { BrandMark } from "@/components/site/BrandMark";
@@ -50,6 +55,10 @@ export default async function OrderStatusPage({
   if (!order) notFound();
 
   const confirmed = order.status === "PAID";
+  const luxury = tierFeatures(tierOf(order.template.price)).guestLinks;
+  const h = await headers();
+  const origin = `${h.get("x-forwarded-proto") ?? "https"}://${h.get("host")}`;
+  const guests = confirmed && luxury && order.invitation ? await listGuests(order.invitation.id) : [];
   const tgText = t(os.telegramMsg, {
     template: order.template.name,
     orderId: order.id,
@@ -79,7 +88,7 @@ export default async function OrderStatusPage({
 
               {order.invitation && (
                 <div className="mt-8">
-                  <ShareCard slug={order.invitation.slug} dict={dict} />
+                  <ShareCard slug={order.invitation.slug} link={`${origin}/e/${order.invitation.slug}`} dict={dict} />
                 </div>
               )}
 
@@ -141,6 +150,35 @@ export default async function OrderStatusPage({
             </>
           )}
         </div>
+
+        {confirmed && luxury && order.invitation && (
+          <>
+            <GuestLinks
+              token={token}
+              invitationUrl={`${origin}/e/${order.invitation.slug}`}
+              initial={guests}
+              os={os}
+            />
+            <section className="mt-8 rounded-3xl border border-amber-200 bg-white p-6 shadow-xl shadow-stone-200/60 sm:p-8">
+              <h2 className="font-serif text-2xl font-bold">🖼 {os.shareImagesTitle}</h2>
+              <p className="mt-2 text-sm text-stone-500">{os.shareImagesHint}</p>
+              <div className="mt-5 flex flex-wrap gap-3">
+                {[
+                  { href: `/buyurtma/${token}/story.png`, label: os.storyImage },
+                  { href: `/buyurtma/${token}/postcard.png`, label: os.postcardImage },
+                ].map((l) => (
+                  <a
+                    key={l.href}
+                    href={l.href}
+                    className="rounded-full bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-rose-700"
+                  >
+                    ⬇ {l.label}
+                  </a>
+                ))}
+              </div>
+            </section>
+          </>
+        )}
 
         {confirmed && order.invitation && (
           <GuestResponses

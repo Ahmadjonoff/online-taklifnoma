@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Story, storyEnabled } from '@core/components/Story'
 import { Blessing } from '@core/components/Blessing'
 import { Countdown } from '@core/components/Countdown'
 import { Envelope } from './components/Envelope'
@@ -21,6 +22,7 @@ function sectionList(): SectionDef[] {
   const all: Array<SectionDef | false> = [
     { key: 'hero', bg: 'paper', Comp: Hero },
     { key: 'blessing', bg: 'paper-2', Comp: Blessing },
+    storyEnabled() && { key: 'story', bg: 'paper-3' as Bg, Comp: Story },
     config.specialOffer.enabled && { key: 'special-offer', bg: 'paper' as Bg, Comp: SpecialOffer },
     config.gallery.enabled && { key: 'gallery', bg: 'paper-2' as Bg, Comp: Gallery },
     { key: 'timeline', bg: 'paper-3', Comp: Timeline },

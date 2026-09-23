@@ -26,6 +26,8 @@ export function EnvelopeRise({ onOpen }: { onOpen: () => void }) {
 
   const opening = phase === 'opening'
   const { couple, event } = config
+  // Shaxsiy mehmon havolasida: "Hurmatli Aziz aka!" (Luxury)
+  const personal = (config as unknown as { envelope?: { kicker?: string } }).envelope?.kicker
 
   return (
     <div
@@ -66,7 +68,7 @@ export function EnvelopeRise({ onOpen }: { onOpen: () => void }) {
             ))}
 
             <p className="tracking-wider-caps font-body text-[0.64rem] text-gold-dark/85">
-              {event.kicker || 'Sizga taklifnoma keldi'}
+              {personal || event.kicker || 'Sizga taklifnoma keldi'}
             </p>
             <Divider />
 

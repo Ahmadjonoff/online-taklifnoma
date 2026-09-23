@@ -27,6 +27,12 @@ function invitationSlug(): string {
   return m ? decodeURIComponent(m[1]) : "";
 }
 
+/** Shaxsiy mehmon havolasi kodi (/e/<slug>?g=<kod>) — javob shu mehmonga bog'lanadi */
+function guestCode(): string {
+  if (typeof window === "undefined") return "";
+  return new URLSearchParams(window.location.search).get("g") ?? "";
+}
+
 /**
  * `true` bo'lsa — bu sahifa haqiqiy taklifnoma emas (namuna/preview), RSVP va
  * tilaklar hech qachon saqlanmaydi, chunki biriktiriladigan haqiqiy buyurtma
@@ -40,7 +46,7 @@ export async function submit(payload: Payload): Promise<void> {
   const res = await fetch(ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ...payload, slug: invitationSlug() }),
+    body: JSON.stringify({ ...payload, slug: invitationSlug(), guest: guestCode() }),
   });
   if (!res.ok) {
     throw new Error(`Forma xatosi: ${res.status}`);

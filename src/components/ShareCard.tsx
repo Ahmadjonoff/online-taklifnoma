@@ -3,14 +3,14 @@
 import { useState } from "react";
 import type { Dictionary } from "@/lib/i18n/dictionary";
 
-export function ShareCard({ slug, dict }: { slug: string; dict: Dictionary }) {
+/**
+ * `link` serverdan tayyor keladi: avval brauzerda `window.location.origin`
+ * bilan yig'ilardi va serverdagi nisbiy havoladan farq qilib, gidratsiya
+ * xatosini berardi.
+ */
+export function ShareCard({ slug, link, dict }: { slug: string; link: string; dict: Dictionary }) {
   const [copied, setCopied] = useState(false);
   const [showQr, setShowQr] = useState(false);
-
-  const link =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/e/${slug}`
-      : `/e/${slug}`;
 
   const text = encodeURIComponent(dict.shareCard.shareText);
   const tg = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${text}`;

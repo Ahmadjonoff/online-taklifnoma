@@ -1,6 +1,33 @@
 import type { TimelineItem } from "./eventDefaults";
 import { isOwnMusicUrl, MUSIC_CUSTOM, MUSIC_NONE, MUSIC_TRACKS } from "./music";
+import { isOwnBlobUrl } from "./blob";
 import type { MainColors } from "./palettes";
+import type { Tier } from "./pricing";
+
+/** Taklifnoma tili (Premium/Luxury): lotin, kirill, rus, ingliz */
+export const INVITATION_LANGS = ["uz", "uz-cyrl", "ru", "en"] as const;
+export type InvitationLang = (typeof INVITATION_LANGS)[number];
+
+/** Buyurtma formasidagi tanlov uchun nomlar (har biri o'z tilida) */
+export const LANG_LABEL: Record<InvitationLang, string> = {
+  uz: "O'zbekcha (lotin)",
+  "uz-cyrl": "Ўзбекча (кирилл)",
+  ru: "Русский",
+  en: "English",
+};
+
+/** Qaysi tarifda qaysi imkoniyat bor — forma ham, server ham shundan foydalanadi */
+export function tierFeatures(tier: Tier) {
+  const premiumPlus = tier === "premium" || tier === "luxury";
+  return {
+    story: premiumPlus,
+    languages: premiumPlus,
+    gallery: tier === "luxury",
+    calendar: tier === "luxury",
+    guestLinks: tier === "luxury",
+    shareImages: tier === "luxury",
+  };
+}
 
 /**
  * Mijoz buyurtmada tanlaydigan sozlamalar (`Invitation.options` JSON).
@@ -32,6 +59,14 @@ export type Customization = {
   rsvp: boolean;
   wishes: boolean;
   petals: boolean;
+  /** Premium/Luxury */
+  lang: InvitationLang;
+  /** Premium/Luxury: «Bizning hikoyamiz» */
+  story: { title: string; text: string; photo: string };
+  /** Luxury: galereya suratlari (bizning Blob'dagi photos/) */
+  gallery: string[];
+  /** Luxury: «Kalendarga qo'shish» tugmalari */
+  calendar: boolean;
 };
 
 export const DEFAULT_CUSTOMIZATION: Customization = {
@@ -49,6 +84,10 @@ export const DEFAULT_CUSTOMIZATION: Customization = {
   rsvp: true,
   wishes: true,
   petals: true,
+  lang: "uz",
+  story: { title: "", text: "", photo: "" },
+  gallery: [],
+  calendar: true,
 };
 
 export const LIMITS = {
@@ -58,6 +97,9 @@ export const LIMITS = {
   dressCodeText: 200,
   dressCodeColors: 6,
   cardHolder: 60,
+  storyTitle: 60,
+  storyText: 1200,
+  galleryPhotos: 10,
 } as const;
 
 // Xarita havolalari: faqat Google / Yandex domenlari (ixtiyoriy saytga
@@ -65,7 +107,7 @@ export const LIMITS = {
 const GOOGLE_HOST = /(^|\.)(google\.[a-z.]+|goo\.gl|g\.co)$/i;
 const YANDEX_HOST = /(^|\.)(yandex\.[a-z.]+|ya\.ru)$/i;
 
-type Ctx = { paletteIds: string[]; eventTypeSlugs: string[] };
+type Ctx = { paletteIds: string[]; eventTypeSlugs: string[]; tier: Tier };
 type Result = { ok: true; value: Customization } | { ok: false; error: string };
 
 function str(v: unknown, max: number): string {
@@ -150,6 +192,17 @@ export function sanitizeCustomization(input: unknown, ctx: Ctx, strict = true): 
     .filter((c) => /^#[0-9a-f]{6}$/.test(c))
     .slice(0, LIMITS.dressCodeColors);
 
+  // Tarifga kirmaydigan imkoniyatlar jimgina o'chiriladi (forma ularni
+  // ko'rsatmaydi; bu — qo'lda yuborilgan so'rovlardan himoya)
+  const f = tierFeatures(ctx.tier);
+  const lang = str(o.lang, 10);
+  const st = (o.story ?? {}) as Record<string, unknown>;
+  const storyPhoto = str(st.photo, 500);
+  const gallery = (Array.isArray(o.gallery) ? o.gallery : [])
+    .map((u) => str(u, 500))
+    .filter((u) => isOwnBlobUrl(u, "/photos/"))
+    .slice(0, LIMITS.galleryPhotos);
+
   const gift = (o.gift ?? {}) as Record<string, unknown>;
   const cardDigits = str(gift.cardNumber, 40).replace(/\D/g, "");
   if (strict && cardDigits && cardDigits.length !== 16) {
@@ -179,6 +232,17 @@ export function sanitizeCustomization(input: unknown, ctx: Ctx, strict = true): 
       rsvp: bool(o.rsvp, d.rsvp),
       wishes: bool(o.wishes, d.wishes),
       petals: bool(o.petals, d.petals),
+      lang: f.languages && (INVITATION_LANGS as readonly string[]).includes(lang) ? (lang as InvitationLang) : "uz",
+      story: f.story
+        ? {
+            title: str(st.title, LIMITS.storyTitle),
+            // Hikoya matnida qator ko'chirish saqlanadi
+            text: typeof st.text === "string" ? st.text.replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g, " ").trim().slice(0, LIMITS.storyText) : "",
+            photo: isOwnBlobUrl(storyPhoto, "/photos/") ? storyPhoto : "",
+          }
+        : d.story,
+      gallery: f.gallery ? gallery : [],
+      calendar: f.calendar ? bool(o.calendar, d.calendar) : false,
     },
   };
 }
@@ -198,6 +262,10 @@ export function parseStoredCustomization(json: string | null | undefined): Custo
     timeline: Array.isArray(o.timeline) ? o.timeline : null,
     dressCode: { ...d.dressCode, ...(o.dressCode ?? {}) },
     gift: { ...d.gift, ...(o.gift ?? {}) },
+    story: { ...d.story, ...(o.story ?? {}) },
+    gallery: Array.isArray(o.gallery) ? o.gallery : [],
+    // Eski buyurtmalarda maydon yo'q — kalendar faqat yangi Luxury buyurtmalarda
+    calendar: typeof o.calendar === "boolean" ? o.calendar : false,
   };
 }
 
@@ -229,6 +297,9 @@ export function customizationSummary(
   if (maps.length) lines.push(`🗺 Xarita: ${maps.join(", ")}`);
   if (c.dressCode.text) lines.push(`👗 Dress-kod: ${c.dressCode.text}`);
   if (c.gift.cardNumber) lines.push(`💳 Sovg'a kartasi: bor`);
+  if (c.lang !== "uz") lines.push(`🌐 Til: ${{ "uz-cyrl": "o'zbek (kirill)", ru: "rus", en: "ingliz", uz: "o'zbek" }[c.lang]}`);
+  if (c.story.text) lines.push(`📖 Hikoya: bor${c.story.photo ? " (surat bilan)" : ""}`);
+  if (c.gallery.length) lines.push(`🖼 Galereya: ${c.gallery.length} ta surat`);
   const off = [!c.rsvp && "RSVP", !c.wishes && "tilaklar", !c.petals && "gulbarglar"].filter(Boolean);
   if (off.length) lines.push(`⛔ O'chirilgan: ${off.join(", ")}`);
   return lines;

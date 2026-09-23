@@ -41,6 +41,8 @@ type Body = {
   guests?: number;
   comment?: string;
   message?: string;
+  /** Shaxsiy mehmon havolasi kodi (?g=) — javob shu mehmonga bog'lanadi */
+  guest?: string;
 };
 
 // DB'ni cheksiz uzun matn bilan to'ldirishning oldini olish.
@@ -80,9 +82,18 @@ export async function POST(req: Request) {
     }
 
     if (kind === "rsvp") {
+      // Faqat shu taklifnomaning mehmoni bo'lsa bog'lanadi
+      const guest =
+        typeof body.guest === "string" && /^[a-z0-9]{6,16}$/i.test(body.guest)
+          ? await prisma.guest.findFirst({
+              where: { code: body.guest, invitationId: invitation.id },
+              select: { id: true },
+            })
+          : null;
       await prisma.rsvpResponse.create({
         data: {
           invitationId: invitation.id,
+          guestId: guest?.id ?? null,
           guestName: name,
           attending: body.attending === "keladi",
           guestsCount:

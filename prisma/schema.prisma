@@ -87,6 +87,7 @@ model Invitation {
   views        Int            @default(0)
   rsvps        RsvpResponse[]
   wishes       Wish[]
+  guests       Guest[]
   createdAt    DateTime       @default(now())
 }
 
@@ -98,6 +99,9 @@ model RsvpResponse {
   attending    Boolean // true = kelaman, false = kelolmayman
   guestsCount  Int        @default(1)
   comment      String     @default("")
+  // Shaxsiy havola orqali kelgan javob — qaysi mehmonga tegishli (Luxury)
+  guestId      Int?
+  guest        Guest?     @relation(fields: [guestId], references: [id], onDelete: SetNull)
   createdAt    DateTime   @default(now())
 }
 
@@ -108,4 +112,20 @@ model Wish {
   guestName    String
   message      String
   createdAt    DateTime   @default(now())
+}
+
+/// Shaxsiy mehmon havolasi (Luxury): /e/<slug>?g=<code> — taklifnoma
+/// "Hurmatli <ism>!" deb ochiladi, mijoz kim ochgani va javob berganini ko'radi.
+model Guest {
+  id           Int            @id @default(autoincrement())
+  invitationId Int
+  invitation   Invitation     @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  name         String
+  code         String         @unique
+  views        Int            @default(0)
+  openedAt     DateTime?
+  rsvps        RsvpResponse[]
+  createdAt    DateTime       @default(now())
+
+  @@index([invitationId])
 }

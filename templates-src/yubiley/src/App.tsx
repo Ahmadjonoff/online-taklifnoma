@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Story, storyEnabled } from '@core/components/Story'
 import { BigNumber } from '@core/components/BigNumber'
 import { Blessing } from '@core/components/Blessing'
 import { Countdown } from '@core/components/Countdown'
@@ -24,6 +25,7 @@ function sectionList(): SectionDef[] {
     { key: 'hero', bg: 'paper', Comp: Hero },
     config.bigNumber.enabled && { key: 'big-number', bg: 'paper-2' as Bg, Comp: BigNumber },
     { key: 'blessing', bg: 'paper-2', Comp: Blessing },
+    storyEnabled() && { key: 'story', bg: 'paper-3' as Bg, Comp: Story },
     config.gallery.enabled && { key: 'gallery', bg: 'paper-3' as Bg, Comp: Gallery },
     { key: 'countdown', bg: 'paper', Comp: Countdown },
     { key: 'timeline', bg: 'paper-3', Comp: Timeline },

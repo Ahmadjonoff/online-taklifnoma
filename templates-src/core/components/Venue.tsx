@@ -38,7 +38,52 @@ export function Venue(skin: Skin) {
 
         <Ornament className="mx-auto mt-6 text-gold/40" width={160} />
       </Reveal>
+
+      <AddToCalendar />
     </Section>
+  )
+}
+
+type CalendarConfig = { enabled?: boolean; googleUrl?: string; icsUrl?: string }
+
+/** «Kalendarga qo'shish» — Google Calendar va Apple/Outlook (.ics). Luxury. */
+function AddToCalendar() {
+  const c = (config as unknown as { addToCalendar?: CalendarConfig }).addToCalendar
+  if (!c?.enabled) return null
+  return (
+    <Reveal delay={420}>
+      <p className="tracking-wider-caps mt-10 font-body text-xs text-gold-dark/80">Kalendarga qo'shish</p>
+      <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+        {c.googleUrl && (
+          <a
+            href={c.googleUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 px-4 py-2 font-body text-sm text-gold transition hover:bg-gold hover:text-paper"
+          >
+            <CalendarIcon /> Google Calendar
+          </a>
+        )}
+        {c.icsUrl && (
+          <a
+            href={c.icsUrl}
+            download="taklifnoma.ics"
+            className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 px-4 py-2 font-body text-sm text-gold transition hover:bg-gold hover:text-paper"
+          >
+            <CalendarIcon /> Apple / Outlook
+          </a>
+        )}
+      </div>
+    </Reveal>
+  )
+}
+
+function CalendarIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <rect x="2" y="3" width="12" height="11" rx="2" stroke="currentColor" strokeWidth="1.2" />
+      <path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
   )
 }
 

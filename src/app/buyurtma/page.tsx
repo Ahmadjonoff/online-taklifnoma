@@ -8,6 +8,7 @@ import { getDictionary } from "@/lib/i18n/dictionary";
 import { getLocale } from "@/lib/i18n/server";
 import { MUSIC_TRACKS } from "@/lib/music";
 import { getPalettes, mainColors, roleSwatches } from "@/lib/palettes";
+import { tierOf } from "@/lib/pricing";
 
 export const dynamic = "force-dynamic";
 
@@ -84,6 +85,7 @@ export default async function OrderPage({
             templateName={template?.name ?? dict.order.title}
             templateTheme={template?.theme ?? ""}
             templatePrice={template?.price ?? 0}
+            tier={tierOf(template?.price ?? 0)}
             palettes={palettes}
             swatches={template ? roleSwatches(template.theme) : { paper: [], gold: [], wine: [] }}
             categories={categories}

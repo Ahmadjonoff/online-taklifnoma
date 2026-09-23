@@ -6,7 +6,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { PreviewFrame } from "@/components/site/PreviewFrame";
 import { TelegramIcon } from "@/components/site/TelegramIcon";
 import { telegramUrl } from "@/lib/contact";
-import { LIMITS, type Customization } from "@/lib/customization";
+import {
+  INVITATION_LANGS,
+  LANG_LABEL,
+  LIMITS,
+  tierFeatures,
+  type Customization,
+  type InvitationLang,
+} from "@/lib/customization";
 import type { TimelineItem } from "@/lib/eventDefaults";
 import { t, type Dictionary } from "@/lib/i18n/dictionary";
 import {
@@ -17,7 +24,8 @@ import {
   type MusicTrack,
 } from "@/lib/music";
 import type { ColorRole, MainColors } from "@/lib/palettes";
-import { CUSTOM_MUSIC_PRICE, formatPrice, orderPrice } from "@/lib/pricing";
+import { uploadPhoto } from "@/lib/photoUpload";
+import { CUSTOM_MUSIC_PRICE, formatPrice, orderPrice, type Tier } from "@/lib/pricing";
 
 /** `strip` — kartadagi 5 rangli chiziq, `main` — shu palitraning 3 ta asosiy rangi */
 export type OrderPalette = { id: string; name: string; strip: string[]; main: MainColors };
@@ -35,6 +43,7 @@ export function OrderForm({
   templateName,
   templateTheme,
   templatePrice,
+  tier,
   palettes,
   swatches,
   categories,
@@ -46,6 +55,7 @@ export function OrderForm({
   templateName: string;
   templateTheme: string;
   templatePrice: number;
+  tier: Tier;
   palettes: OrderPalette[];
   /** Har bir asosiy rang uchun namunalar */
   swatches: Record<ColorRole, string[]>;
@@ -103,6 +113,36 @@ export function OrderForm({
   const [rsvp, setRsvp] = useState(true);
   const [wishes, setWishes] = useState(true);
   const [petals, setPetals] = useState(true);
+  // Premium/Luxury
+  const [lang, setLang] = useState<InvitationLang>("uz");
+  const [storyTitle, setStoryTitle] = useState("");
+  const [storyText, setStoryText] = useState("");
+  const [storyPhoto, setStoryPhoto] = useState("");
+  // Luxury
+  const [gallery, setGallery] = useState<string[]>([]);
+  const [calendar, setCalendar] = useState(true);
+  const features = tierFeatures(tier);
+  // Surat yuklash holati: qaysi joy (hikoya / galereya) va foiz
+  const [photoBusy, setPhotoBusy] = useState<{ target: "story" | "gallery"; pct: number } | null>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+
+  async function addPhotos(files: File[], target: "story" | "gallery") {
+    setPhotoError(null);
+    for (const file of files) {
+      if (target === "gallery" && galleryRef.current.length >= LIMITS.galleryPhotos) break;
+      setPhotoBusy({ target, pct: 0 });
+      try {
+        const url = await uploadPhoto(file, (pct) => setPhotoBusy({ target, pct }));
+        if (target === "story") setStoryPhoto(url);
+        else setGallery((g) => (g.length < LIMITS.galleryPhotos ? [...g, url] : g));
+      } catch (e) {
+        setPhotoError(t(o.photoError, { error: e instanceof Error ? e.message : "" }));
+      }
+    }
+    setPhotoBusy(null);
+  }
+  const galleryRef = useRef(gallery);
+  galleryRef.current = gallery;
 
   const { minDate, maxDate } = useMemo(() => {
     const toIso = (d: Date) => d.toISOString().slice(0, 10);
@@ -143,8 +183,12 @@ export function OrderForm({
       rsvp,
       wishes,
       petals,
+      lang,
+      story: { title: storyTitle, text: storyText, photo: storyPhoto },
+      gallery,
+      calendar,
     }),
-    [palette, colors, eventType, kicker, timeline, googleMapsUrl, yandexMapsUrl, music, customMusic, dressText, dressColors, giftCard, giftHolder, rsvp, wishes, petals]
+    [palette, colors, eventType, kicker, timeline, googleMapsUrl, yandexMapsUrl, music, customMusic, dressText, dressColors, giftCard, giftHolder, rsvp, wishes, petals, lang, storyTitle, storyText, storyPhoto, gallery, calendar]
   );
 
   const price = orderPrice(templatePrice, options);
@@ -517,6 +561,32 @@ export function OrderForm({
                   />
                 </div>
               </div>
+
+              {features.languages ? (
+                <div>
+                  <label className={labelClass}>{o.langLabel}</label>
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    {INVITATION_LANGS.map((l) => (
+                      <button
+                        key={l}
+                        type="button"
+                        onClick={() => setLang(l)}
+                        aria-pressed={lang === l}
+                        className={`rounded-xl border px-3 py-2.5 text-sm transition ${
+                          lang === l
+                            ? "border-stone-900 bg-stone-900 text-white"
+                            : "border-stone-300 bg-white text-stone-700 hover:border-stone-400"
+                        }`}
+                      >
+                        {LANG_LABEL[l]}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="mt-2 text-xs text-stone-500">{o.langHint}</p>
+                </div>
+              ) : (
+                <p className="rounded-xl bg-stone-50 px-4 py-3 text-xs text-stone-500">{o.lockedLang}</p>
+              )}
             </div>
           )}
 
@@ -621,6 +691,67 @@ export function OrderForm({
                   placeholder={o.messagePlaceholder}
                 />
               </div>
+
+              {features.story ? (
+                <div className="mt-6 rounded-2xl border border-stone-200 bg-stone-50/60 p-4">
+                  <p className="text-sm font-semibold text-stone-800">{o.storySection}</p>
+                  <p className="mt-0.5 text-xs text-stone-500">{o.storyHint}</p>
+                  <div className="mt-3">
+                    <label className={labelClass}>{o.storyTitleLabel}</label>
+                    <input
+                      value={storyTitle}
+                      maxLength={LIMITS.storyTitle}
+                      onChange={(e) => setStoryTitle(e.target.value)}
+                      className={inputClass}
+                      placeholder={o.storyTitlePlaceholder}
+                    />
+                  </div>
+                  <div className="mt-3">
+                    <label className={labelClass}>{o.storyTextLabel}</label>
+                    <textarea
+                      value={storyText}
+                      maxLength={LIMITS.storyText}
+                      onChange={(e) => setStoryText(e.target.value)}
+                      rows={4}
+                      className={inputClass}
+                      placeholder={o.storyTextPlaceholder}
+                    />
+                  </div>
+                  <div className="mt-3">
+                    <p className={labelClass}>{o.storyPhoto}</p>
+                    <div className="flex items-center gap-3">
+                      {storyPhoto && (
+                        <img src={storyPhoto} alt="" className="h-20 w-16 rounded-lg object-cover" />
+                      )}
+                      <label className="cursor-pointer rounded-full border border-stone-300 bg-white px-4 py-2 text-xs font-semibold text-stone-700 transition hover:border-stone-400">
+                        {o.photoChoose}
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp"
+                          className="sr-only"
+                          disabled={photoBusy !== null}
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) addPhotos([f], "story");
+                            e.target.value = "";
+                          }}
+                        />
+                      </label>
+                      {storyPhoto && (
+                        <button type="button" onClick={() => setStoryPhoto("")} className="text-xs font-medium text-rose-700">
+                          {o.photoRemove}
+                        </button>
+                      )}
+                      {photoBusy?.target === "story" && (
+                        <span className="text-xs text-stone-500">{t(o.photoUploading, { pct: photoBusy.pct })}</span>
+                      )}
+                    </div>
+                  </div>
+                  {photoError && <p className="mt-2 text-xs text-red-600">{photoError}</p>}
+                </div>
+              ) : (
+                <p className="mt-6 rounded-xl bg-stone-50 px-4 py-3 text-xs text-stone-500">{o.lockedStory}</p>
+              )}
             </div>
           )}
 
@@ -842,6 +973,46 @@ export function OrderForm({
                 <p className="mt-2 text-xs text-stone-500">{o.giftHint}</p>
               </div>
 
+              {features.gallery && (
+                <div className="mt-6">
+                  <p className={labelClass}>{o.gallerySection}</p>
+                  <p className="-mt-0.5 mb-2 text-xs text-stone-500">{o.galleryHint}</p>
+                  <div className="grid grid-cols-4 gap-2 sm:grid-cols-5">
+                    {gallery.map((url) => (
+                      <div key={url} className="relative">
+                        <img src={url} alt="" className="aspect-square w-full rounded-lg object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => setGallery((g) => g.filter((x) => x !== url))}
+                          className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-stone-900 text-[10px] text-white"
+                          aria-label={o.photoRemove}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                    {gallery.length < LIMITS.galleryPhotos && (
+                      <label className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-stone-300 text-center text-[11px] font-semibold text-stone-600 transition hover:border-stone-400">
+                        {photoBusy?.target === "gallery" ? `${photoBusy.pct}%` : o.galleryAdd}
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp"
+                          multiple
+                          className="sr-only"
+                          disabled={photoBusy !== null}
+                          onChange={(e) => {
+                            const files = Array.from(e.target.files ?? []);
+                            if (files.length) addPhotos(files, "gallery");
+                            e.target.value = "";
+                          }}
+                        />
+                      </label>
+                    )}
+                  </div>
+                  {photoError && <p className="mt-2 text-xs text-red-600">{photoError}</p>}
+                </div>
+              )}
+
               <fieldset className="mt-6">
                 <legend className={labelClass}>{o.sectionsTitle}</legend>
                 <div className="mt-1 space-y-2">
@@ -849,6 +1020,7 @@ export function OrderForm({
                     { label: o.toggleRsvp, value: rsvp, set: setRsvp },
                     { label: o.toggleWishes, value: wishes, set: setWishes },
                     { label: o.togglePetals, value: petals, set: setPetals },
+                    ...(features.calendar ? [{ label: o.toggleCalendar, value: calendar, set: setCalendar }] : []),
                   ].map((x) => (
                     <label key={x.label} className="flex cursor-pointer items-center gap-3 text-sm text-stone-700">
                       <input
@@ -862,6 +1034,10 @@ export function OrderForm({
                   ))}
                 </div>
               </fieldset>
+
+              <p className="mt-6 rounded-xl bg-stone-50 px-4 py-3 text-xs leading-relaxed text-stone-500">
+                {features.guestLinks ? `✨ ${o.luxuryAfterOrder}` : o.lockedLuxury}
+              </p>
             </div>
           )}
 

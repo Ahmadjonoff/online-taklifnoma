@@ -156,3 +156,19 @@ export function paletteStyleTag(theme: string, paletteId: string, colors?: Parti
     .join(";");
   return decl ? `<style id="tpl-palette">:root,:host{${decl}}</style>` : "";
 }
+
+/**
+ * Tayyor rasmlar (story, postkart) uchun: taklifnomaning haqiqiy fon, urg'u
+ * va matn ranglari (hex). Mijoz foni tanlagan bo'lsa, matn rangi taklifnomadagi
+ * kabi kontrastga qarab tanlanadi.
+ */
+export function resolvedColors(theme: string, paletteId: string, colors?: Partial<MainColors>) {
+  const base = basePalette(theme, paletteId);
+  const v = base?.vars ?? {};
+  const pick = (c: string | undefined, fallback: string) => (c && HEX.test(c) ? c.toLowerCase() : fallback);
+  const paper = pick(colors?.paper, pick(v["--color-paper"], "#fbf8f2"));
+  const gold = pick(colors?.gold, pick(v["--color-gold"], "#b08d3c"));
+  let ink = pick(v["--color-ink"], "#1f1a17");
+  if ((luminance(paper) < 0.3) === (luminance(ink) < 0.3)) ink = luminance(paper) < 0.3 ? "#f5efe6" : "#1f1a17";
+  return { paper, gold, ink };
+}

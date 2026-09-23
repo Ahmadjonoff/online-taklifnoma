@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { parseStoredCustomization } from "@/lib/customization";
 import { buildInvitationConfig } from "@/lib/invitationConfig";
+import { i18nScriptTag } from "@/lib/invitationI18n";
 import { paletteStyleTag } from "@/lib/palettes";
 import { prisma } from "@/lib/prisma";
 
@@ -69,6 +70,16 @@ export async function GET(
   // Faqat to'langan taklifnomalar ko'rinadi
   if (!invitation || invitation.order.status !== "PAID") return notFoundResponse();
 
+  const options = parseStoredCustomization(invitation.options);
+  const url = new URL(req.url);
+
+  // Shaxsiy mehmon havolasi (?g=<kod>, Luxury): faqat shu taklifnomaning mehmoni
+  const code = url.searchParams.get("g");
+  const guest =
+    code && /^[a-z0-9]{6,16}$/i.test(code)
+      ? await prisma.guest.findFirst({ where: { code, invitationId: invitation.id } })
+      : null;
+
   // Ko'rishlar sonini oshirish — bot/crawler so'rovlarini hisobga olmaymiz
   const userAgent = req.headers.get("user-agent") ?? "";
   if (!BOT_UA_RE.test(userAgent)) {
@@ -76,6 +87,12 @@ export async function GET(
       where: { id: invitation.id },
       data: { views: { increment: 1 } },
     });
+    if (guest) {
+      await prisma.guest.update({
+        where: { id: guest.id },
+        data: { views: { increment: 1 }, openedAt: guest.openedAt ?? new Date() },
+      });
+    }
   }
 
   // Shablonning statik index.html ni o'qib, config inject qilamiz
@@ -88,7 +105,6 @@ export async function GET(
   );
   let html = fs.readFileSync(htmlPath, "utf8");
 
-  const options = parseStoredCustomization(invitation.options);
   const d = invitation.eventDate;
   const pad = (n: number) => String(n).padStart(2, "0");
   const invConfig = buildInvitationConfig(
@@ -97,7 +113,12 @@ export async function GET(
       eventDate: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`,
     },
     invitation.template,
-    options
+    options,
+    {
+      guestName: guest?.name,
+      icsUrl: `${url.origin}/e/${slug}/kalendar.ics`,
+      invitationUrl: `${url.origin}/e/${slug}`,
+    }
   );
 
   // Sarlavha va Open Graph teglari — ijtimoiy tarmoqlarda (Telegram/WhatsApp)
@@ -119,7 +140,8 @@ export async function GET(
 <meta property="og:title" content="${pageTitle}">
 <meta property="og:description" content="${pageDescription}">
 <script>window.__INV_CONFIG__=${JSON.stringify(invConfig).replace(/<\/script/gi, "<\\/script")};</script>
-${paletteStyleTag(invitation.template.theme, options.palette, options.colors)}`;
+${paletteStyleTag(invitation.template.theme, options.palette, options.colors)}
+${i18nScriptTag(options.lang)}`;
   html = html.replace("<head>", `<head>${inject}`);
 
   return new Response(html, {
