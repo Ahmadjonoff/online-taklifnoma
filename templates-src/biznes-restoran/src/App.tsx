@@ -7,6 +7,7 @@ import { Footer } from '@core/components/Footer'
 import { Gallery } from '@core/components/Gallery'
 import { SpecialOffer } from '@core/components/SpecialOffer'
 import { Venue } from '@core/components/Venue'
+import { Rsvp } from '@core/components/Rsvp'
 import { Hero } from './components/Hero'
 import { MusicToggle } from '@core/components/MusicToggle'
 import { Timeline } from './components/Timeline'
@@ -28,6 +29,7 @@ function sectionList(): SectionDef[] {
     { key: 'timeline', bg: 'paper-3', Comp: Timeline },
     { key: 'countdown', bg: 'paper', Comp: Countdown },
     { key: 'venue', bg: 'paper-2', Comp: Venue },
+    { key: 'rsvp', bg: 'paper-3', Comp: Rsvp },
     { key: 'footer', bg: 'paper', Comp: Footer },
   ]
 

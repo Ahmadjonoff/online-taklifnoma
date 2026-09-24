@@ -46,8 +46,9 @@ export const getCatalog = unstable_cache(
   // unstable_cache deploy'lar orasida saqlanadi, eski kesh aralashmasin.
   // v3: Standart/Premium/Luxury tariflari va yangi kategoriyalar
   ["catalog-v3"],
-  // revalidate: seed qo'lda qayta ishga tushirilsa ham 5 daqiqada yangilanadi
-  { tags: [CATALOG_TAG], revalidate: 300 }
+  // revalidate: katalog faqat seed orqali o'zgaradi — soatiga bir marta
+  // yangilash yetarli (har 5 daqiqada uxlab yotgan Neon'ni uyg'otmaymiz)
+  { tags: [CATALOG_TAG], revalidate: 3600 }
 );
 
 export type CatalogData = Awaited<ReturnType<typeof getCatalog>>;
