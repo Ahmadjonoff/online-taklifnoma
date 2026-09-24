@@ -173,6 +173,11 @@ Neon branch ulangan bo'lsa, Preview muhitiga `MIGRATE_ON_BUILD=1` qo'shing.
 va hech bir taklifnomada ishlatilmagan suratlar va musiqalarni o'chiradi.
 Ishlashi uchun Vercel'da `CRON_SECRET` o'rnatilgan bo'lishi kerak.
 
+**Tezlik sozlamalari:**
+- Vercel: Fluid Compute yoqilgan (`vercel.json` → `fluid`), funksiyalar `fra1` da — Neon bazasi ham `fra1` da.
+- Rasmlar 31 kun keshlanadi (`next.config.ts` → `images.minimumCacheTTL`).
+- Neon Free tarifida baza 5 daqiqa ishlatilmasa uxlaydi (scale-to-zero, o'chirib bo'lmaydi). Uyg'onish birinchi so'rovga taxminan 0,5–1 soniya qo'shadi. To'liq yo'qotish uchun Neon'ning pullik tarifiga o'tib, scale-to-zero'ni o'chirish kerak (Vercel → Storage → taklifnoma-eu → Open in Neon → Branches → production → Compute → Edit).
+
 **Rate-limit:** login, buyurtma, RSVP/tilak, yuklash va mehmon havolalari
 uchun limitlar Postgres'dagi `RateLimit` jadvalida hisoblanadi. Shuning uchun
 ular barcha serverless instance'lar uchun umumiy.

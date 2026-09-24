@@ -5,6 +5,7 @@
   "regions": [
     "fra1"
   ],
+  "fluid": true,
   "crons": [
     {
       "path": "/api/cron/blob-cleanup",
