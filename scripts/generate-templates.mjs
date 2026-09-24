@@ -199,9 +199,7 @@ function defaultNotes(eventType) {
       { title: "Kiyinish uslubi", text: "Zamonaviy yoki milliy liboslar" },
       { title: "Sovg'a haqida", text: "Ezgu duolaringiz eng qimmatli sovg'a" },
     ],
-    "nikoh-toyi": [
-      { title: "Marosim haqida", text: "Nikoh o'qilishi 17:30 da boshlanadi" },
-    ],
+    "nikoh-toyi": [],
     "fotiha-toyi": [
       { title: "Eslatma", text: "Marosimdan so'ng dasturxon ochiladi" },
     ],
