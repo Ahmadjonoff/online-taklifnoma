@@ -42,6 +42,13 @@ export function Hero({ bg }: Skin) {
         <Reveal delay={650}>
           <h1 className="mt-8 flex flex-col items-center leading-[0.95]">
             <span className="font-script text-gilded text-[3.6rem] sm:text-7xl">{couple.groom}</span>
+            {/* Juftlik bo'lsa ikkinchi ism ham (avval faqat birinchisi chiqardi) */}
+            {couple.bride && (
+              <>
+                <span className="my-2 font-display text-2xl text-gold/80">&amp;</span>
+                <span className="font-script text-gilded text-[3.6rem] sm:text-7xl">{couple.bride}</span>
+              </>
+            )}
           </h1>
         </Reveal>
 

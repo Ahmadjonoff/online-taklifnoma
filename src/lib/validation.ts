@@ -55,7 +55,12 @@ type Result<T> = { ok: true; value: T } | { ok: false; error: string };
  * Buyurtma formasidagi asosiy maydonlar.
  * @param now — sinov uchun; sana (Toshkent vaqti bo'yicha) o'tmishda yoki 3 yildan uzoqda bo'lmasin
  */
-export function validateOrderContent(input: unknown, now = new Date()): Result<OrderContent> {
+export function validateOrderContent(
+  input: unknown,
+  now = new Date(),
+  /** Admin tahriri: tadbir o'tib ketgan bo'lishi mumkin — o'tmishdagi sana ham qabul qilinadi */
+  opts: { allowPastDate?: boolean } = {}
+): Result<OrderContent> {
   const o = (input && typeof input === "object" ? input : {}) as Record<string, unknown>;
   const v: OrderContent = {
     customerName: cleanText(o.customerName),
@@ -99,7 +104,11 @@ export function validateOrderContent(input: unknown, now = new Date()): Result<O
   // Sana: haqiqiy kun (31-fevral emas), o'tmishda yoki mazmunsiz uzoq
   // kelajakda emas. ISO satrlarni solishtirish sana tartibiga mos keladi.
   const range = eventDateRange(now);
-  if (!isRealDate(v.eventDate) || v.eventDate < range.min || v.eventDate > range.max) {
+  if (
+    !isRealDate(v.eventDate) ||
+    (!opts.allowPastDate && v.eventDate < range.min) ||
+    v.eventDate > range.max
+  ) {
     return { ok: false, error: "Tadbir sanasi noto'g'ri" };
   }
 

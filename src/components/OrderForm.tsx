@@ -18,6 +18,7 @@ import {
   type TranslatedLang,
 } from "@/lib/customization";
 import { eventDateRange } from "@/lib/dates";
+import { approxMapUrls } from "@/lib/maps";
 import type { TimelineItem } from "@/lib/eventDefaults";
 import { t, type Dictionary } from "@/lib/i18n/dictionary";
 import {
@@ -105,8 +106,12 @@ export function OrderForm({
   // Mijoz o'zi tahrirlagan bo'lsa — tadbir turini almashtirganda ustidan yozmaymiz
   const [kickerTouched, setKickerTouched] = useState(false);
   const [timelineTouched, setTimelineTouched] = useState(false);
+  // Kun tartibi ixtiyoriy: o'chirilsa taklifnomada bu bo'lim umuman bo'lmaydi
+  const [scheduleOn, setScheduleOn] = useState(true);
   const [googleMapsUrl, setGoogleMapsUrl] = useState("");
   const [yandexMapsUrl, setYandexMapsUrl] = useState("");
+  // Havola kiritilmasa — manzil bo'yicha taxminiy joylashuvni mijoz tasdiqlaydi
+  const [mapConfirmed, setMapConfirmed] = useState(false);
   const [music, setMusic] = useState(musicTracks[0]?.id ?? MUSIC_NONE);
   const [customMusic, setCustomMusic] = useState<{ url: string; name: string } | null>(null);
   const [uploadPct, setUploadPct] = useState<number | null>(null);
@@ -186,6 +191,7 @@ export function OrderForm({
   }
 
   const title = partner2 ? `${partner1} & ${partner2}` : partner1;
+  const approxMaps = approxMapUrls(venueName, venueAddress);
 
   const options: Customization = useMemo(
     () => ({
@@ -193,9 +199,10 @@ export function OrderForm({
       colors,
       eventType,
       kicker,
-      timeline,
+      timeline: scheduleOn ? timeline : [],
       googleMapsUrl,
       yandexMapsUrl,
+      mapConfirmed,
       music,
       customMusicUrl: music === MUSIC_CUSTOM ? (customMusic?.url ?? "") : "",
       dressCode: { text: dressText, colors: dressText ? dressColors : [] },
@@ -209,7 +216,7 @@ export function OrderForm({
       gallery,
       calendar,
     }),
-    [palette, colors, eventType, kicker, timeline, googleMapsUrl, yandexMapsUrl, music, customMusic, dressText, dressColors, giftCard, giftHolder, rsvp, wishes, petals, langs, translations, storyTitle, storyText, storyPhoto, gallery, calendar]
+    [palette, colors, eventType, kicker, timeline, scheduleOn, googleMapsUrl, yandexMapsUrl, mapConfirmed, music, customMusic, dressText, dressColors, giftCard, giftHolder, rsvp, wishes, petals, langs, translations, storyTitle, storyText, storyPhoto, gallery, calendar]
   );
 
   const price = orderPrice(templatePrice, options);
@@ -728,6 +735,30 @@ export function OrderForm({
                 </div>
               </div>
               <p className="mt-2 text-xs text-stone-500">{o.venueMapsHint}</p>
+              {!googleMapsUrl.trim() && !yandexMapsUrl.trim() && approxMaps && (
+                <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50/70 px-4 py-3 text-sm text-amber-900">
+                  <p className="font-medium">{o.mapsApproxTitle}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-amber-900/80">{o.mapsApproxHint}</p>
+                  <div className="mt-2 flex flex-wrap gap-3 text-sm font-semibold">
+                    <a href={approxMaps.google} target="_blank" rel="noopener noreferrer" className="underline">
+                      Google Maps ↗
+                    </a>
+                    <a href={approxMaps.yandex} target="_blank" rel="noopener noreferrer" className="underline">
+                      Yandex Maps ↗
+                    </a>
+                  </div>
+                  <label className="mt-3 flex cursor-pointer items-start gap-2.5">
+                    <input
+                      type="checkbox"
+                      required
+                      checked={mapConfirmed}
+                      onChange={(e) => setMapConfirmed(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 shrink-0 accent-rose-600"
+                    />
+                    <span>{o.mapsApproxConfirm}</span>
+                  </label>
+                </div>
+              )}
               <div className="mt-4">
                 <label className={labelClass}>{o.message}</label>
                 <textarea
@@ -863,7 +894,20 @@ export function OrderForm({
           {/* ------------------------------------------------ 3. Kun tartibi */}
           {step === "schedule" && (
             <div>
-              <p className="-mt-2 mb-4 text-sm text-stone-500">{o.scheduleHint}</p>
+              <label className="-mt-1 mb-4 flex cursor-pointer items-center gap-3 rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm font-medium text-stone-800">
+                <input
+                  type="checkbox"
+                  checked={scheduleOn}
+                  onChange={(e) => setScheduleOn(e.target.checked)}
+                  className="h-4 w-4 accent-rose-600"
+                />
+                {o.scheduleToggle}
+              </label>
+              {!scheduleOn ? (
+                <p className="text-sm text-stone-500">{o.scheduleOff}</p>
+              ) : (
+              <>
+              <p className="mb-4 text-sm text-stone-500">{o.scheduleHint}</p>
               <div className="space-y-2.5">
                 {timeline.map((row, i) => (
                   <div key={i} className="flex items-center gap-2">
@@ -906,6 +950,8 @@ export function OrderForm({
                 >
                   {o.scheduleAdd}
                 </button>
+              )}
+              </>
               )}
             </div>
           )}
