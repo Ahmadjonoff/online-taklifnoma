@@ -313,3 +313,11 @@ muammolar va ularning yechimi keltirilgan.
 - **Katalog va bosh sahifa:** endi har bir karta uchun jonli iframe o'rniga oldindan tayyorlangan rasmlar (`public/thumbs`, `npm run thumbs`) ko'rsatiladi. Avval har bir karta to'liq shablonni yuklab, ishga tushirardi.
 - **Shrift:** ishlatilmaydigan `Geist Mono` shrifti olib tashlandi.
 - **Kesh:** katalog keshi 5 daqiqadan 1 soatga uzaytirildi, shuning uchun uxlab yotgan Neon bazasi kamroq uyg'otiladi.
+
+### ✅ 37. Telefonda kun tartibi buzilib ko'rinardi
+- **Muammo:** luxe shablonlarda (imperial, floral, aurora) vaqt va izoh bir qatorga yopishib qolardi ("17:00Mehmonlar…"), romb belgilar esa chiziqdan chetda turardi.
+- **Bajarildi:** umumiy `Schedule` komponentida (`core/taklif/sections.tsx`) telefonda vaqt ustida, izoh ostida turadi; belgilar vertikal chiziqning aynan ustida.
+- **Boshqa shablonlar:** 21 ta faol shablonning barchasi 375px kenglikda tekshirildi, quyidagilar tuzatildi:
+  - `nikoh-crescent` — belgilar vaqt raqamlarini to'sib qo'yardi;
+  - `beshik-kok` — `--color-primary` va boshqa urg'u ranglari aniqlanmagan edi, shuning uchun vaqtlar, sharlar va "Pastga suring" yozuvi qora chiqardi;
+  - `nikoh-amanat`, `nikoh-bog`, `biznes-vechin` — kun tartibi bo'limi umuman yo'q edi (mijoz kiritgan dastur ko'rsatilmasdi), qo'shildi.

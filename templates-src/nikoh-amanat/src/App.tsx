@@ -13,6 +13,7 @@ import { Petals } from './components/decor/Petals'
 import { Rsvp } from '@core/components/Rsvp'
 import { Venue } from '@core/components/Venue'
 import { Wishes } from '@core/components/Wishes'
+import { Timeline } from './components/Timeline'
 import { config } from './config'
 import type { Bg, Skin } from '@core/lib/skin'
 
@@ -32,6 +33,7 @@ function sectionList(): SectionDef[] {
     { key: 'blessing', bg: 'paper-2', Comp: Blessing },
     storyEnabled() && { key: 'story', bg: 'paper-3' as Bg, Comp: Story },
     { key: 'countdown', bg: 'paper', Comp: Countdown },
+    config.timeline?.items?.length > 0 && { key: 'timeline', bg: 'paper-2' as Bg, Comp: Timeline },
     config.gallery.enabled && { key: 'gallery', bg: 'paper-3' as Bg, Comp: Gallery },
     { key: 'venue', bg: 'paper', Comp: Venue },
     config.notes.length > 0 && { key: 'notes', bg: 'paper-3' as Bg, Comp: Notes },

@@ -17,8 +17,10 @@ export function Timeline({ bg, prevBg }: Skin) {
 
         <div className="flex flex-col gap-10">
           {items.map((item, i) => (
-            <Reveal key={i} delay={i * 150} className="relative z-10 flex items-center gap-6 sm:justify-between sm:gap-0 sm:even:flex-row-reverse">
-              <div className="w-[85px] shrink-0 text-left sm:w-[calc(50%-2rem)] sm:text-right sm:even:text-left">
+            // Telefonda: belgi va chiziq chapda (27px), vaqt va izoh ulardan
+            // o'ngda — pl-14 bo'lmasa belgi vaqt raqamlarini to'sib qo'yardi
+            <Reveal key={i} delay={i * 150} className="relative z-10 flex items-center gap-4 pl-14 sm:justify-between sm:gap-0 sm:pl-0 sm:even:flex-row-reverse">
+              <div className="w-[68px] shrink-0 text-left sm:w-[calc(50%-2rem)] sm:text-right sm:even:text-left">
                 <span className="font-display text-2xl text-gold">{item.time}</span>
               </div>
               
