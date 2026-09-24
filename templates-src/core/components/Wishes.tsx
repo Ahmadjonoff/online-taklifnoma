@@ -7,6 +7,15 @@ import { GoldButton, Reveal, ScriptTitle } from '@ui'
 
 type Status = 'idle' | 'sending' | 'done' | 'error'
 
+type WishesConfig = {
+  enabled?: boolean
+  title?: string
+  namePlaceholder?: string
+  messagePlaceholder?: string
+  submitLabel?: string
+  successText?: string
+}
+
 const FALLBACK_WISHES: WishItem[] = [
   { id: -1, guestName: 'Nodira', message: 'Sizlarga katta baxt tilayman! Quvnoq kunlar yetib borsin.', createdAt: '' },
   { id: -2, guestName: 'Jasur', message: 'Muborak bo\'lsin! Umringiz uzun, kunlaringiz quyoshli bo\'lsin.', createdAt: '' },
@@ -22,22 +31,31 @@ export function Wishes(skin: Skin) {
   const [wishes, setWishes] = useState<WishItem[] | null>(null)
   const preview = isPreviewContext()
 
-  const { enabled, title, namePlaceholder, messagePlaceholder, submitLabel, successText } = config.wishes
+  // Ko'p shablonlarning config-default'ida matnlar yo'q (server faqat
+  // `enabled` yuboradi) — standart qiymatlar shu yerda
+  const wc = ((config as unknown as { wishes?: WishesConfig }).wishes ?? {}) as WishesConfig
+  const enabled = wc.enabled !== false
+  const title = wc.title || 'Tilaklar daftari'
+  const namePlaceholder = wc.namePlaceholder || 'Ismingiz'
+  const messagePlaceholder = wc.messagePlaceholder || 'Xabaringizni yozing'
+  const submitLabel = wc.submitLabel || 'Xabar yuborish'
+  const successText = wc.successText || 'Tilagingiz uchun rahmat!'
 
-  if (!enabled) return null
-
-  // Tilaklarni yuklash (faqat /e/<slug> sahifasida ishlaydi; previewda fallback)
+  // Tilaklarni yuklash. Namunaviy tilaklar FAQAT preview'da — haqiqiy
+  // taklifnomada hali tilak bo'lmasa, mehmonlarga soxta tilaklar ko'rsatilmaydi.
   useEffect(() => {
+    if (!enabled) return
     let alive = true
     fetchWishes().then((items) => {
       if (!alive) return
-      // Preview sahifalarida slug bo'lmaydi — fallback kartalar ko'rsatamiz
-      setWishes(items.length > 0 ? items : FALLBACK_WISHES)
+      setWishes(preview && items.length === 0 ? FALLBACK_WISHES : items)
     })
     return () => {
       alive = false
     }
-  }, [])
+  }, [enabled, preview])
+
+  if (!enabled) return null
 
   async function send(e: React.FormEvent) {
     e.preventDefault()
@@ -50,7 +68,7 @@ export function Wishes(skin: Skin) {
       setName('')
       setMessage('')
       // Ro'yxatni yangilash
-      fetchWishes().then((items) => setWishes(items.length > 0 ? items : FALLBACK_WISHES))
+      fetchWishes().then((items) => setWishes(items))
       window.setTimeout(() => setStatus('idle'), 4000)
     } catch {
       setStatus('error')

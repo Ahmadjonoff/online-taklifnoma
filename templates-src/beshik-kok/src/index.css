@@ -24,6 +24,17 @@
   --color-sage: #6d80a8;
   --color-blush: #19233a;
 
+  /* Kun tartibi (sharlar, tort) va Hero ishlatadigan urg'u ranglari — avval
+     aniqlanmagan edi, shuning uchun vaqtlar va sharlar qora chiqardi.
+     Palitraga bog'langan: mijoz rang tanlasa, ular ham o'zgaradi. */
+  --color-primary: var(--color-gold);
+  --color-primary-light: var(--color-gold-light);
+  --color-secondary: var(--color-wine);
+  --color-accent1: var(--color-gold-light);
+  --color-accent2: var(--color-sage);
+  --color-deco-purple: #9d8fd6;
+  --color-deco-orange: #f0a35e;
+
   --font-script: 'Taklif Script', cursive;
   --font-display: 'Taklif Script', cursive;
   --font-body: 'Cormorant Garamond', Georgia, serif;

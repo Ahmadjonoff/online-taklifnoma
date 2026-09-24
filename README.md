@@ -97,6 +97,17 @@ npm run db:seed               # tadbir turlari va shablonlar
 npm run dev                   # http://localhost:3000
 ```
 
+**Shablon rasmlari.** Katalog kartalari va bosh sahifa jonli iframe o'rniga
+`public/thumbs/` dagi rasmlarni ko'rsatadi. Shablon dizayni o'zgarganda yoki
+yangi shablon qo'shilganda rasmlarni qayta yarating:
+
+```bash
+npm run templates:build && npm run build && npm start   # boshqa terminalda
+npm run thumbs                                          # BASE_URL=http://localhost:3000
+```
+
+Rasmi yo'q shablon uchun sayt avvalgidek jonli iframe ko'rsatadi.
+
 Tekshiruvlar:
 
 ```bash

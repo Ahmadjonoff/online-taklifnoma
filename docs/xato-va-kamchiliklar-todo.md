@@ -277,3 +277,47 @@ muammolar va ularning yechimi keltirilgan.
 
 ### ✅ 30. Shablon fayli yo'q bo'lsa 500 xato chiqardi
 - **Bajarildi:** `/e/[slug]` endi xatoni loglaydi va 404 sahifa ko'rsatadi.
+
+---
+
+# 4-bosqich: RSVP, til tanlagich va tezlik (2026-09-24)
+
+### ✅ 31. RSVP formasi doim ochiq
+- **Oldin:** forma muhrni bosgandan keyin modal oynada ochilardi.
+- **Endi:**
+  - forma sahifada doim ochiq turadi (`templates-src/core/components/Rsvp.tsx`);
+  - ranglar shablon mavzusidan olinadi (`paper`, `gold`, `ink`, `wine`), shuning uchun har bir shablonda o'z dizayniga mos ko'rinadi;
+  - muhr endi faqat bezak.
+- `nikoh-sapphire` va `biznes-restoran` shablonlarida RSVP umuman yo'q edi — qo'shildi.
+
+### ✅ 32. 18 ta shablonda RSVP va tilaklar sarlavhalari bo'sh chiqardi
+- **Muammo:** bu shablonlarning `config-default.ts` faylida matnlar yo'q, server esa faqat `enabled` yuboradi.
+- **Bajarildi:** komponentlarga standart matnlar qo'shildi. Ular tarjima lug'atida bor, shuning uchun ru/en tillarida ham ishlaydi.
+
+### ✅ 33. Haqiqiy taklifnomada soxta tilaklar ko'rsatilardi
+- **Muammo:** tilak hali bo'lmasa, mehmonlarga namunaviy tilaklar ("Nodira", "Jasur"…) chiqardi.
+- **Bajarildi:** namunaviy tilaklar endi faqat preview'da ko'rsatiladi. `useEffect` ham shartli `return` dan oldinga ko'chirildi.
+
+### ✅ 34. Til tanlagich
+- **Oldin:** o'ng chetda barcha tillarning vertikal ro'yxati turardi.
+- **Endi:**
+  - joriy tilni ko'rsatadigan bitta tugma (🌐 UZ ▾);
+  - bosilganda to'liq nomlar bilan menyu ochiladi (O'zbekcha, Русский, English, Ўзбекча);
+  - ranglar shablon mavzusidan olinadi;
+  - tashqariga bosilganda yoki Esc bilan menyu yopiladi.
+
+### ✅ 35. Textarea placeholder tarjima qilinmasdi
+- **Bajarildi:** runtime textarea ichidagi mehmon matniga tegmaydi, lekin placeholder'ni tarjima qiladi.
+
+### ✅ 36. Tezlik
+- **Katalog va bosh sahifa:** endi har bir karta uchun jonli iframe o'rniga oldindan tayyorlangan rasmlar (`public/thumbs`, `npm run thumbs`) ko'rsatiladi. Avval har bir karta to'liq shablonni yuklab, ishga tushirardi.
+- **Shrift:** ishlatilmaydigan `Geist Mono` shrifti olib tashlandi.
+- **Kesh:** katalog keshi 5 daqiqadan 1 soatga uzaytirildi, shuning uchun uxlab yotgan Neon bazasi kamroq uyg'otiladi.
+
+### ✅ 37. Telefonda kun tartibi buzilib ko'rinardi
+- **Muammo:** luxe shablonlarda (imperial, floral, aurora) vaqt va izoh bir qatorga yopishib qolardi ("17:00Mehmonlar…"), romb belgilar esa chiziqdan chetda turardi.
+- **Bajarildi:** umumiy `Schedule` komponentida (`core/taklif/sections.tsx`) telefonda vaqt ustida, izoh ostida turadi; belgilar vertikal chiziqning aynan ustida.
+- **Boshqa shablonlar:** 21 ta faol shablonning barchasi 375px kenglikda tekshirildi, quyidagilar tuzatildi:
+  - `nikoh-crescent` — belgilar vaqt raqamlarini to'sib qo'yardi;
+  - `beshik-kok` — `--color-primary` va boshqa urg'u ranglari aniqlanmagan edi, shuning uchun vaqtlar, sharlar va "Pastga suring" yozuvi qora chiqardi;
+  - `nikoh-amanat`, `nikoh-bog`, `biznes-vechin` — kun tartibi bo'limi umuman yo'q edi (mijoz kiritgan dastur ko'rsatilmasdi), qo'shildi.

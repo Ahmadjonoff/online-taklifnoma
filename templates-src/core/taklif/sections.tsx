@@ -213,15 +213,18 @@ export function Schedule(skin: Skin, { variant = 'ornate' as const }: { variant?
                       bo'lib qoladi va toq qatorlardagi vaqt markazdan uzoqlashib,
                       ustun chetiga yopishib qoladi. */}
                   <span
-                    className={`font-display text-[1.6rem] text-gold sm:text-2xl ${
+                    className={`block font-display text-[1.6rem] leading-tight text-gold sm:text-2xl ${
                       i % 2 ? 'sm:order-3 sm:text-left' : 'sm:order-1 sm:text-right'
                     }`}
                   >
                     {item.time}
                   </span>
 
-                  {/* Belgisi */}
-                  <span className="absolute left-0 top-1.5 flex justify-center sm:static sm:order-2">
+                  {/* Belgisi — telefonda vertikal chiziqning aynan ustida, vaqt
+                      qatorining o'rtasida. Joylashuv konteyneri — Reveal
+                      (transform), u li'ning pl-12 (3rem) chekinishidan keyin
+                      boshlanadi; chiziq esa left-4 (1rem) da → -2rem. */}
+                  <span className="absolute -left-8 top-[1.05rem] flex -translate-x-1/2 -translate-y-1/2 justify-center sm:static sm:order-2 sm:translate-x-0 sm:translate-y-0">
                     {variant === 'ornate' && i === middle ? (
                       <Diamond size={16} />
                     ) : (
@@ -231,7 +234,7 @@ export function Schedule(skin: Skin, { variant = 'ornate' as const }: { variant?
 
                   {/* Izoh */}
                   <span
-                    className={`font-body text-[1.05rem] leading-snug text-ink-soft sm:text-lg ${
+                    className={`mt-1 block font-body text-[1.05rem] leading-snug text-ink-soft sm:mt-0 sm:text-lg ${
                       i % 2 ? 'sm:order-1 sm:text-right' : 'sm:order-3'
                     }`}
                   >

@@ -111,6 +111,8 @@ const T: Record<string, [string, string]> = {
   "Izoh (ixtiyoriy)": ["Комментарий (необязательно)", "Comment (optional)"],
   "Qo'shimcha yozmoqchi bo'lsangiz...": ["Если хотите что-то добавить...", "Anything you'd like to add..."],
   "Javobni yuborish": ["Отправить ответ", "Send reply"],
+  Kamaytirish: ["Уменьшить", "Decrease"],
+  "Ko'paytirish": ["Увеличить", "Increase"],
   "Yuborilmoqda...": ["Отправка...", "Sending..."],
   "Yuborishda xatolik. Iltimos, qaytadan urinib ko'ring.": ["Ошибка отправки. Попробуйте ещё раз.", "Couldn't send. Please try again."],
   "Rahmat! Javobingiz qabul qilindi.": ["Спасибо! Ваш ответ принят.", "Thank you! Your reply has been received."],
@@ -313,36 +315,79 @@ const RUNTIME = String.raw`
     if (n.nodeType === 3) return skipped(n.parentElement) ? undefined : textNode(n);
     if (n.nodeType !== 1) return;
     var tag = n.tagName;
-    if (tag === "SCRIPT" || tag === "STYLE" || tag === "TEXTAREA" || skipped(n)) return;
+    if (tag === "SCRIPT" || tag === "STYLE" || skipped(n)) return;
     for (var a = 0; a < ATTRS.length; a++) attr(n, ATTRS[a]);
+    // Textarea ichidagi matn — mehmon yozgani, o'girilmaydi (placeholder esa o'giriladi)
+    if (tag === "TEXTAREA") return;
     for (var c = n.firstChild; c; c = c.nextSibling) walk(c);
   }
 
-  var bar;
+  // Til tanlagich: joriy tilni ko'rsatadigan bitta tugma; bosilganda
+  // tillar ro'yxati ochiladi. Ranglar shablon mavzusidan (CSS o'zgaruvchilari).
+  var NAME = { uz: "O'zbekcha", "uz-cyrl": "Ўзбекча", ru: "Русский", en: "English" };
+  var PAPER = "var(--color-paper, #faf7f2)", INK = "var(--color-ink, #1f1a17)", GOLD = "var(--color-gold, #b08d57)";
+  var box, btn, menu, open = false;
+  function stop(e) { e.stopPropagation(); } // konvert ochilib ketmasin
+  function toggle(v) {
+    open = v;
+    if (!menu) return;
+    menu.style.display = v ? "block" : "none";
+    btn.setAttribute("aria-expanded", String(v));
+  }
   function renderBar() {
     if (LANGS.length < 2) return;
-    if (!bar) {
-      bar = document.createElement("div");
-      bar.setAttribute("data-inv-skip", "");
-      bar.setAttribute("role", "group");
-      bar.setAttribute("aria-label", "Language");
-      // O'ng chetda ixcham vertikal ustun — markazdagi sarlavhalarga tegmaydi
-      bar.style.cssText = "position:fixed;top:10px;right:8px;z-index:2147483000;display:flex;flex-direction:column;gap:2px;padding:3px;border-radius:14px;background:rgba(20,16,12,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 6px 20px -8px rgba(0,0,0,.5);font:600 11px/1 system-ui,-apple-system,sans-serif;letter-spacing:.06em";
-      document.body.appendChild(bar);
+    if (!box) {
+      box = document.createElement("div");
+      box.setAttribute("data-inv-skip", "");
+      box.style.cssText = "position:fixed;top:12px;right:12px;z-index:2147483000;font:600 12px/1 system-ui,-apple-system,sans-serif;letter-spacing:.04em";
+      ["click", "pointerdown", "touchstart"].forEach(function (t) { box.addEventListener(t, stop); });
+
+      btn = document.createElement("button");
+      btn.type = "button";
+      btn.setAttribute("aria-haspopup", "listbox");
+      btn.setAttribute("aria-expanded", "false");
+      btn.setAttribute("aria-label", "Til / Language");
+      btn.style.cssText = "display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px 11px 8px 10px;border-radius:999px;border:1px solid " + GOLD + ";background:" + PAPER + ";color:" + INK + ";font:inherit;letter-spacing:inherit;box-shadow:0 8px 22px -10px rgba(0,0,0,.45)";
+      btn.addEventListener("click", function () { toggle(!open); });
+
+      menu = document.createElement("div");
+      menu.setAttribute("role", "listbox");
+      menu.style.cssText = "display:none;position:absolute;right:0;top:calc(100% + 6px);min-width:150px;padding:5px;border-radius:14px;border:1px solid " + GOLD + ";background:" + PAPER + ";box-shadow:0 16px 36px -14px rgba(0,0,0,.5)";
+
+      box.appendChild(btn);
+      box.appendChild(menu);
+      document.body.appendChild(box);
+      document.addEventListener("click", function () { if (open) toggle(false); });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape" && open) { toggle(false); btn.focus(); } });
     }
-    bar.innerHTML = "";
+
+    // Tugma: globus belgisi + joriy til + strelka
+    btn.innerHTML =
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>' +
+      "<span></span>" +
+      '<svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 3.5l3 3 3-3"/></svg>';
+    btn.querySelector("span").textContent = LABEL[cur] || cur;
+
+    menu.innerHTML = "";
     LANGS.forEach(function (l) {
-      var b = document.createElement("button");
-      b.type = "button";
-      b.textContent = LABEL[l] || l;
-      b.setAttribute("aria-pressed", String(l === cur));
-      b.style.cssText = "border:0;cursor:pointer;min-width:34px;padding:7px 6px;border-radius:11px;font:inherit;letter-spacing:inherit;" +
-        (l === cur ? "background:#fff;color:#1c1917" : "background:transparent;color:rgba(255,255,255,.85)");
-      b.addEventListener("click", function (e) {
-        e.stopPropagation(); // konvert ochilib ketmasin
-        setLang(l);
+      var o = document.createElement("button");
+      o.type = "button";
+      o.setAttribute("role", "option");
+      o.setAttribute("aria-selected", String(l === cur));
+      o.style.cssText = "display:flex;width:100%;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;border:0;padding:9px 11px;border-radius:10px;font:500 14px/1.2 system-ui,-apple-system,sans-serif;text-align:left;color:" + INK + ";background:" +
+        (l === cur ? "color-mix(in srgb, " + GOLD + " 18%, transparent)" : "transparent");
+      var n = document.createElement("span");
+      n.textContent = NAME[l] || l;
+      var c = document.createElement("span");
+      c.textContent = l === cur ? "✓" : LABEL[l] || "";
+      c.style.cssText = "font-size:11px;opacity:.7";
+      o.appendChild(n);
+      o.appendChild(c);
+      o.addEventListener("click", function () {
+        toggle(false);
+        if (l !== cur) setLang(l);
       });
-      bar.appendChild(b);
+      menu.appendChild(o);
     });
   }
   function setLang(l) {

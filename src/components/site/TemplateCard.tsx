@@ -1,7 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 import { PreviewFrame } from "./PreviewFrame";
 import { formatPrice, TIER_STYLE, tierLabel as labelOf, tierOf } from "@/lib/catalog";
 import { t } from "@/lib/i18n/dictionary";
+import { thumbUrl } from "@/lib/thumbs";
 import type { Dictionary } from "@/lib/i18n/dictionary";
 
 export type CardTemplate = {
@@ -15,29 +17,39 @@ export type CardTemplate = {
 };
 
 /**
- * Shablon kartasi — ichida jonli preview (iframe) turadi.
- *
- * MUHIM: iframe `scale` bilan kichraytiriladi va `width: 238%` bilan
- * kengaytiriladi, shu tariqa telefon ekrani karta ichiga sig'adi.
+ * Shablon kartasi — ichida shablon rasmi (public/thumbs). Rasmi yo'q
+ * shablon uchun jonli iframe: u `scale` bilan kichraytiriladi va
+ * `width: 238%` bilan kengaytiriladi, shu tariqa ekran karta ichiga sig'adi.
  */
 export function TemplateCard({ template, dict }: { template: CardTemplate; dict: Dictionary }) {
   const tier = tierOf(template.price);
   const tierLabel = labelOf(tier, dict.common);
+  const thumb = thumbUrl(template.theme);
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-3xl border border-stone-200/80 bg-white shadow-sm transition duration-500 hover:-translate-y-1.5 hover:border-amber-200 hover:shadow-[0_28px_60px_-30px_rgba(60,45,20,0.4)]">
-      {/* Jonli preview */}
+      {/* Shablon rasmi (yoki jonli preview) */}
       <div className="relative h-72 overflow-hidden bg-gradient-to-br from-stone-100 to-stone-50">
         {/* Bu shunchaki karta ichidagi vitrina — scroll doim sahifaga
             o'tadi. Shablonni ko'rish uchun pastdagi "Ko'rish" tugmasi
             bosilib, alohida sahifaga o'tiladi. */}
-        <PreviewFrame
-          mode="thumb"
-          src={`/preview/${template.theme}`}
-          title={template.name}
-          className="h-[640px] w-full scale-[0.42] border-0 transition-transform duration-[900ms] group-hover:scale-[0.45]"
-          style={{ transformOrigin: "top left", width: "238%" }}
-        />
+        {thumb ? (
+          <Image
+            src={thumb}
+            alt={template.name}
+            fill
+            sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
+            className="object-cover object-top transition-transform duration-[900ms] group-hover:scale-[1.06]"
+          />
+        ) : (
+          <PreviewFrame
+            mode="thumb"
+            src={`/preview/${template.theme}`}
+            title={template.name}
+            className="h-[640px] w-full scale-[0.42] border-0 transition-transform duration-[900ms] group-hover:scale-[0.45]"
+            style={{ transformOrigin: "top left", width: "238%" }}
+          />
+        )}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/12 via-transparent to-transparent" />
 
         <span

@@ -1,16 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { Geist, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { LOCALE_HTML_LANG } from "@/lib/i18n/locales";
 import { getLocale } from "@/lib/i18n/server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
-  subsets: ["latin", "latin-ext"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin", "latin-ext"],
 });
 
@@ -66,7 +61,7 @@ export default async function RootLayout({
   return (
     <html lang={LOCALE_HTML_LANG[locale]}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased`}
+        className={`${geistSans.variable} ${playfair.variable} antialiased`}
       >
         {children}
         {/* Birinchi ekrandagi `Reveal` bloklari JS yuklanib, gidratsiya
