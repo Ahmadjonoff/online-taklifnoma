@@ -9,6 +9,7 @@ import { getPalettes, paletteStyleTag } from "@/lib/palettes";
 import { scriptJson } from "@/lib/html";
 import { tierOf } from "@/lib/pricing";
 import { CONTENT_LIMITS, TIME_RE } from "@/lib/validation";
+import { withApproxMaps } from "@/lib/maps";
 
 /** Bu route Next.js sahifasi emas (iframe uchun statik HTML) — o'zining 404'ini beradi. */
 function notFoundHtml(): string {
@@ -201,7 +202,8 @@ async function buildDraft(theme: string, raw: string) {
   };
   // Preview'da .ics fayl data: URI sifatida (alohida route shart emas)
   const ics = icsContent(content, calendarTitle(content.partner1, content.partner2), "", "preview@taklifnoma");
-  const config = buildInvitationConfig(content, template, options.value, {
+  const custom = withApproxMaps(options.value, content.venueName, content.venueAddress);
+  const config = buildInvitationConfig(content, template, custom, {
     icsUrl: `data:text/calendar;charset=utf-8,${encodeURIComponent(ics)}`,
   });
   return {

@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import { notifyAdminNewOrder } from "@/lib/telegramBot";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { validateOrderContent } from "@/lib/validation";
+import { mapsMissing, withApproxMaps } from "@/lib/maps";
 
 // Spamdan himoya: bitta IP uchun 1 daqiqada ko'pi bilan 5 buyurtma.
 const ORDER_LIMIT = 5;
@@ -88,6 +89,14 @@ export async function POST(req: Request) {
     if (!custom.ok) {
       return NextResponse.json({ error: custom.error }, { status: 400 });
     }
+    if (mapsMissing(custom.value)) {
+      return NextResponse.json(
+        { error: "Xarita havolasini kiriting yoki taxminiy joylashuvni tasdiqlang" },
+        { status: 400 }
+      );
+    }
+    // Mijoz tasdiqlagan taxminiy joylashuv — havolalar manzildan yasaladi
+    custom.value = withApproxMaps(custom.value, venueName, venueAddress);
 
     // Narx serverda hisoblanadi (mijoz yuborgan summaga ishonilmaydi)
     const priced = orderPrice(template.price, custom.value);

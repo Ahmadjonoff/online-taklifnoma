@@ -18,6 +18,13 @@ export function Hero({ bg }: Skin) {
         <Reveal delay={350}>
           <h1 className="mt-6 font-display text-[2.8rem] font-semibold leading-[1.05] text-ink sm:text-6xl">
             {couple.groom}
+            {/* Juftlik bo'lsa ikkinchi ism ham (avval faqat birinchisi chiqardi) */}
+            {couple.bride && (
+              <>
+                <span className="my-1 block text-[0.5em] font-normal text-gold">&amp;</span>
+                {couple.bride}
+              </>
+            )}
           </h1>
         </Reveal>
 

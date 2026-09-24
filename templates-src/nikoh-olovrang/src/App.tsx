@@ -28,7 +28,7 @@ function sectionList(): SectionDef[] {
     storyEnabled() && { key: 'story', bg: 'paper-3' as Bg, Comp: Story },
     config.gallery.enabled && { key: 'gallery', bg: 'paper-3' as Bg, Comp: Gallery },
     { key: 'countdown', bg: 'paper', Comp: Countdown },
-    { key: 'timeline', bg: 'paper-3', Comp: Timeline },
+    (config.timeline?.items?.length ?? 0) > 0 && { key: 'timeline', bg: 'paper-3' as Bg, Comp: Timeline },
     { key: 'venue', bg: 'paper', Comp: Venue },
     config.notes.length > 0 && { key: 'notes', bg: 'paper-3' as Bg, Comp: Notes },
     config.rsvp.enabled && { key: 'rsvp', bg: 'paper-2' as Bg, Comp: Rsvp },

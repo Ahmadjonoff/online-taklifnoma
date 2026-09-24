@@ -149,6 +149,11 @@ export default async function AdminPage({
 
                 <div className="flex flex-col items-end gap-2">
                   <OrderActions orderId={order.id} status={order.status} />
+                  {order.invitation && (
+                    <Link href={`/boshqaruv/buyurtma/${order.id}`} className="text-xs font-medium text-stone-600 underline hover:text-stone-900">
+                      ✏️ Tahrirlash
+                    </Link>
+                  )}
                   {order.status === "PAID" && order.invitation && (
                     <div className="flex gap-3 text-xs">
                       <Link
