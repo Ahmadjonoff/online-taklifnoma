@@ -7,7 +7,7 @@ import {
   validateOrderContent,
 } from "../src/lib/validation";
 
-const NOW = new Date("2026-09-24T10:00:00");
+const NOW = new Date("2026-09-24T10:00:00Z"); // Toshkentda 15:00
 
 const order = {
   customerName: "Ali",
@@ -48,6 +48,8 @@ describe("validateOrderContent", () => {
     assert.equal(validateOrderContent({ ...order, eventDate: "2026-01-01" }, NOW).ok, false); // o'tmish
     assert.equal(validateOrderContent({ ...order, eventDate: "2035-01-01" }, NOW).ok, false); // juda uzoq
     assert.equal(validateOrderContent({ ...order, eventDate: "25.12.2026" }, NOW).ok, false);
+    assert.equal(validateOrderContent({ ...order, eventDate: "2026-02-31" }, NOW).ok, false); // mavjud emas
+    assert.equal(validateOrderContent({ ...order, eventDate: "2026-09-24" }, NOW).ok, true); // bugun
   });
 
   it("boshqaruv belgilarini olib tashlaydi", () => {

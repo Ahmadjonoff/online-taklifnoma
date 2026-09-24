@@ -229,3 +229,51 @@ muammolar va ularning yechimi keltirilgan.
 - **Bajarildi:**
   - slug qo'shimchasi endi `crypto.randomBytes` bilan yasaladi;
   - `@unique` to'qnashuvida (P2002) 3 martagacha qayta urinadi.
+
+---
+
+# 3-bosqich: logika va texnik xatolar (2026-09-24)
+
+### ✅ 21. Mavjud bo'lmagan sana qabul qilinardi
+- **Muammo:** `new Date("2026-02-31")` xato bermaydi, jimgina 3-martga aylanadi. Taklifnomada esa "31.02.2026" ko'rinardi.
+- **Bajarildi:** yangi `src/lib/dates.ts` → `isRealDate` sanani qaytarib solishtiradi.
+
+### ✅ 22. Sana server vaqt zonasiga bog'liq edi
+- **Muammo:** `eventDate` UTC yarim tunida saqlanadi, lekin `getDate()`/`getMonth()` bilan o'qilardi. Server UTC bo'lmasa, sana bir kunga siljiydi.
+- **Bajarildi:** `isoDate()` faqat UTC getter'larni ishlatadi. `/e/[slug]`, `kalendar.ics` va ulashish rasmlari shunga o'tkazildi.
+- "Bugun" endi Toshkent vaqti bo'yicha hisoblanadi (`eventDateRange`). Forma va server bir xil oraliqni ishlatadi.
+
+### ✅ 23. Shablon sahifasida Luxury uchun Standart imkoniyatlari ko'rsatilardi
+- **Muammo:**
+  - `tier === "premium" ? … : featuresStandard` sharti Luxury'ni ham Standart deb ko'rsatardi;
+  - ro'yxatlar tariflarga mos emas edi (masalan, galereya Premium'da deb yozilgan, aslida faqat Luxury'da).
+- **Bajarildi:** sahifa bosh sahifadagi tarif kartalaridan (`home.plans`) foydalanadi. Eskirgan ro'yxatlar o'chirildi.
+
+### ✅ 24. O'chirilgan RSVP/tilaklar API orqali ishlayverardi
+- **Bajarildi:** mijoz bo'limni o'chirgan bo'lsa:
+  - POST 403 qaytaradi;
+  - tilaklar GET orqali ko'rsatilmaydi.
+
+### ✅ 25. Bekor qilingan buyurtma mijozga "kutilmoqda" bo'lib ko'rinardi
+- **Bajarildi:** `/buyurtma/[token]` da alohida "Buyurtma bekor qilingan" holati qo'shildi (uz/ru/en).
+
+### ✅ 26. Admin tugmalari xatoni yashirardi
+- **Muammo:** sessiya tugagan bo'lsa ham tugma bosilganda hech narsa bo'lmasdi.
+- **Bajarildi:**
+  - 401 bo'lsa login sahifasiga o'tadi;
+  - boshqa xatolar ko'rsatiladi;
+  - tasdiqlangan taklifnomani bekor qilishdan oldin tasdiq so'raladi.
+
+### ✅ 27. Production'da metadata localhost'ga ishora qilardi
+- **Muammo:** Vercel'da `NEXT_PUBLIC_SITE_URL` yo'q edi, shuning uchun `metadataBase` = `http://localhost:3000` bo'lib qolardi.
+- **Bajarildi:** `VERCEL_PROJECT_PRODUCTION_URL` ga fallback qo'shildi.
+
+### ✅ 28. Script ichidagi JSON faqat `</script` bo'yicha escape qilinardi
+- **Muammo:** `<!--<script>` kabi matn sahifani buzishi mumkin edi.
+- **Bajarildi:** `scriptJson()` har bir `<` ni `<` ga almashtiradi. Taklifnoma, preview va tarjima skriptida ishlatiladi.
+
+### ✅ 29. RSVP limiti CGNAT ortidagi mehmonlarni to'sib qo'yishi mumkin edi
+- **Bajarildi:** IP limiti 20/daqiqaga oshirildi. Taklifnoma boshiga soatlik limit o'zgarmadi.
+
+### ✅ 30. Shablon fayli yo'q bo'lsa 500 xato chiqardi
+- **Bajarildi:** `/e/[slug]` endi xatoni loglaydi va 404 sahifa ko'rsatadi.

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { parseStoredCustomization } from "@/lib/customization";
 import { prisma } from "@/lib/prisma";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
 import { validateGuestSubmission } from "@/lib/validation";
@@ -24,7 +25,12 @@ export async function GET(req: Request) {
       },
     });
 
-    if (!invitation || invitation.order.status !== "PAID") {
+    // Mijoz tilaklarni o'chirgan bo'lsa — ular ochiq ko'rsatilmaydi
+    if (
+      !invitation ||
+      invitation.order.status !== "PAID" ||
+      !parseStoredCustomization(invitation.options).wishes
+    ) {
       return NextResponse.json({ wishes: [] });
     }
 
@@ -36,9 +42,10 @@ export async function GET(req: Request) {
 }
 
 // Spamdan himoya: tilaklar taklifnomada hammaga ko'rinadi — bot bitta
-// taklifnomani to'ldirib tashlamasin. Bir IP uchun daqiqasiga 5 ta, shu
+// taklifnomani to'ldirib tashlamasin. Bir IP uchun daqiqasiga 20 ta (mobil
+// operatorlarda ko'p mehmon bitta IP ortida — CGNAT), shu
 // taklifnomaga esa (IP'dan qat'i nazar) soatiga 300 ta yozuv.
-const IP_LIMIT = 5;
+const IP_LIMIT = 20;
 const IP_WINDOW_MS = 60_000;
 const INVITATION_LIMIT = 300;
 const INVITATION_WINDOW_MS = 60 * 60_000;
@@ -69,6 +76,12 @@ export async function POST(req: Request) {
 
     if (!invitation || invitation.order.status !== "PAID") {
       return NextResponse.json({ error: "Topilmadi" }, { status: 404 });
+    }
+
+    // Mijoz o'chirgan bo'limga qo'lda yuborilgan so'rov ham qabul qilinmaydi
+    const custom = parseStoredCustomization(invitation.options);
+    if ((parsed.value.kind === "rsvp" && !custom.rsvp) || (parsed.value.kind === "wish" && !custom.wishes)) {
+      return NextResponse.json({ error: "Bu bo'lim o'chirilgan" }, { status: 403 });
     }
 
     if (!(await rateLimit(`forms-inv:${invitation.id}`, INVITATION_LIMIT, INVITATION_WINDOW_MS))) {

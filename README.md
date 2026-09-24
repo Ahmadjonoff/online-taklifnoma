@@ -115,7 +115,7 @@ npm test
 | `BLOB_READ_WRITE_TOKEN` | Vercel Blob (surat va musiqa yuklash) |
 | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_ADMIN_CHAT_ID` | Operatorga xabarlar. Bo'sh bo'lsa yuborilmaydi |
 | `CRON_SECRET` | Yetim Blob fayllarini tozalovchi cron uchun. Bo'sh bo'lsa cron ishlamaydi |
-| `NEXT_PUBLIC_SITE_URL` | Saytning asosiy manzili (metadata) |
+| `NEXT_PUBLIC_SITE_URL` | Saytning asosiy manzili (metadata). Bo'sh bo'lsa, Vercel production domeni olinadi |
 | `MIGRATE_ON_BUILD` | `1` bo'lsa, production'dan boshqa build'da ham migratsiya ishlaydi |
 
 ## Sahifalar

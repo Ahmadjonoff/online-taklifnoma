@@ -282,22 +282,6 @@ export const uz = {
     relatedTag: "Yana ko'ring",
     relatedTitle: "{event} uchun boshqa shablonlar",
     relatedAll: "Barchasi ({total} shablon) →",
-    featuresStandard: [
-      "Konvert bilan ochiladigan jonli taklifnoma",
-      "Countdown — tadbirgacha qolgan vaqt",
-      "Tadbir dasturi va manzil",
-      "Xarita havolalari (Google / Yandex)",
-      "RSVP — mehmonlar javoblari",
-      "Shaxsiy havola + QR kod",
-    ],
-    featuresPremium: [
-      "Standart darajadagi barcha imkoniyatlar",
-      "Tilaklar daftari va galereya bo'limi",
-      "Fon musiqasi va gulbarg animatsiyasi",
-      "Muqaddas duo va murojaat bloklari",
-      "Kiyim uslubi va sovg'a bo'limlari",
-      "Oylik kalendar va ikki tadbirli dastur",
-    ],
   },
 
   order: {
@@ -460,6 +444,8 @@ export const uz = {
     confirmedTitle: "Buyurtma tasdiqlandi!",
     confirmedText: "Taklifnomangiz faol. Mehmonlaringizga yuborishingiz mumkin.",
     openInvitation: "Taklifnomani ochish →",
+    rejectedTitle: "Buyurtma bekor qilingan",
+    rejectedText: "Bu buyurtma bekor qilindi. Savolingiz bo'lsa yoki qayta buyurtma bermoqchi bo'lsangiz, Telegram orqali yozing.",
     pendingTitle: "Buyurtmangiz qabul qilindi!",
     orderNumber: "Buyurtma raqami:",
     telegramBoxTitle: "To'lov uchun Telegram orqali yozing",

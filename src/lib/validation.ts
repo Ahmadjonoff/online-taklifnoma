@@ -1,3 +1,5 @@
+import { eventDateRange, isRealDate } from "./dates";
+
 /**
  * Buyurtma va mehmon formalari (RSVP, tilak) uchun server tekshiruvi.
  *
@@ -33,7 +35,6 @@ export function cleanText(v: unknown, opts: { multiline?: boolean } = {}): strin
 }
 
 export const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
-const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 export type OrderContent = {
   customerName: string;
@@ -52,7 +53,7 @@ type Result<T> = { ok: true; value: T } | { ok: false; error: string };
 
 /**
  * Buyurtma formasidagi asosiy maydonlar.
- * @param now — sinov uchun; sana o'tmishda yoki 3 yildan uzoqda bo'lmasin
+ * @param now — sinov uchun; sana (Toshkent vaqti bo'yicha) o'tmishda yoki 3 yildan uzoqda bo'lmasin
  */
 export function validateOrderContent(input: unknown, now = new Date()): Result<OrderContent> {
   const o = (input && typeof input === "object" ? input : {}) as Record<string, unknown>;
@@ -95,13 +96,10 @@ export function validateOrderContent(input: unknown, now = new Date()): Result<O
     return { ok: false, error: "Tadbir vaqti noto'g'ri" };
   }
 
-  // Sana: o'tmishda yoki mazmunsiz uzoq kelajakda bo'lmasin
-  const parsed = new Date(v.eventDate);
-  const today = new Date(now);
-  today.setHours(0, 0, 0, 0);
-  const maxDate = new Date(today);
-  maxDate.setFullYear(maxDate.getFullYear() + 3);
-  if (!DATE_RE.test(v.eventDate) || Number.isNaN(parsed.getTime()) || parsed < today || parsed > maxDate) {
+  // Sana: haqiqiy kun (31-fevral emas), o'tmishda yoki mazmunsiz uzoq
+  // kelajakda emas. ISO satrlarni solishtirish sana tartibiga mos keladi.
+  const range = eventDateRange(now);
+  if (!isRealDate(v.eventDate) || v.eventDate < range.min || v.eventDate > range.max) {
     return { ok: false, error: "Tadbir sanasi noto'g'ri" };
   }
 

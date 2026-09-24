@@ -6,6 +6,7 @@ import { sanitizeCustomization } from "@/lib/customization";
 import { buildInvitationConfig, calendarTitle, icsContent, textOverrides } from "@/lib/invitationConfig";
 import { i18nScriptTag } from "@/lib/invitationI18n";
 import { getPalettes, paletteStyleTag } from "@/lib/palettes";
+import { scriptJson } from "@/lib/html";
 import { tierOf } from "@/lib/pricing";
 import { CONTENT_LIMITS, TIME_RE } from "@/lib/validation";
 
@@ -135,11 +136,10 @@ export async function GET(
   }
 
   // `config` foydalanuvchi kiritgan matnlarni o'z ichiga olishi mumkin —
-  // `</script` ketma-ketligini escape qilmasak, JSON string ichidan haqiqiy
-  // <script> tegini yopib, XSS ochib beradi.
+  // scriptJson har bir `<` ni escape qiladi (XSS va sahifa buzilishidan himoya).
   const inject = `<link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/icon.png" type="image/png">
-<script>window.__INV_CONFIG__=${JSON.stringify(config).replace(/<\/script/gi, "<\\/script")};</script>
+<script>window.__INV_CONFIG__=${scriptJson(config)};</script>
 ${paletteStyle}`;
   html = html.replace("<head>", `<head>${inject}`);
 

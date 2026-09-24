@@ -276,22 +276,6 @@ export const en: Dictionary = {
     relatedTag: "See also",
     relatedTitle: "Other {event} templates",
     relatedAll: "All ({total} templates) →",
-    featuresStandard: [
-      "Live invitation with envelope opening",
-      "Countdown to the event",
-      "Event program and venue",
-      "Map links (Google / Yandex)",
-      "RSVP — guest responses",
-      "Personal link + QR code",
-    ],
-    featuresPremium: [
-      "Everything in Standard",
-      "Wishes book and gallery section",
-      "Background music and petal animation",
-      "Blessing and address blocks",
-      "Dress code and gift sections",
-      "Monthly calendar and 2-event program",
-    ],
   },
 
   order: {
@@ -454,6 +438,8 @@ export const en: Dictionary = {
     confirmedTitle: "Order confirmed!",
     confirmedText: "Your invitation is live. You can now send it to your guests.",
     openInvitation: "Open invitation →",
+    rejectedTitle: "Order cancelled",
+    rejectedText: "This order has been cancelled. If you have questions or want to order again, message us on Telegram.",
     pendingTitle: "Your order has been received!",
     orderNumber: "Order number:",
     telegramBoxTitle: "Message us on Telegram to pay",

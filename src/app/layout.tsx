@@ -19,7 +19,14 @@ const playfair = Playfair_Display({
   subsets: ["latin", "latin-ext"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+// OG rasmlar va kanonik havolalar uchun asosiy manzil. NEXT_PUBLIC_SITE_URL
+// berilmasa — Vercel'ning production domeni (tizim o'zgaruvchisi), aks holda
+// production'da ham havolalar localhost'ga ishora qilardi.
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : "http://localhost:3000");
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

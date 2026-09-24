@@ -17,6 +17,7 @@ import {
   type TextTranslation,
   type TranslatedLang,
 } from "@/lib/customization";
+import { eventDateRange } from "@/lib/dates";
 import type { TimelineItem } from "@/lib/eventDefaults";
 import { t, type Dictionary } from "@/lib/i18n/dictionary";
 import {
@@ -168,13 +169,8 @@ export function OrderForm({
     galleryRef.current = gallery;
   }, [gallery]);
 
-  const { minDate, maxDate } = useMemo(() => {
-    const toIso = (d: Date) => d.toISOString().slice(0, 10);
-    const today = new Date();
-    const max = new Date(today);
-    max.setFullYear(max.getFullYear() + 3);
-    return { minDate: toIso(today), maxDate: toIso(max) };
-  }, []);
+  // Server bilan bir xil oraliq (Toshkent vaqti bo'yicha bugundan 3 yilgacha)
+  const { min: minDate, max: maxDate } = useMemo(() => eventDateRange(), []);
 
   function changeEventType(slug: string) {
     setEventType(slug);
