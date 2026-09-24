@@ -7,7 +7,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { TelegramIcon } from "@/components/site/TelegramIcon";
 import { TemplateCard } from "@/components/site/TemplateCard";
-import { formatPrice, tierOf } from "@/lib/catalog";
+import { formatPrice } from "@/lib/catalog";
 import { CUSTOM_MUSIC_PRICE, TIER_PRICE, type Tier } from "@/lib/pricing";
 import { telegramUrl } from "@/lib/contact";
 import { getDictionary, t } from "@/lib/i18n/dictionary";

@@ -129,3 +129,14 @@ model Guest {
 
   @@index([invitationId])
 }
+
+/// Rate-limit hisoblagichi (fixed window). Vercel'da har bir funksiya
+/// instance'ining xotirasi alohida — limit barcha instance'lar uchun umumiy
+/// bo'lishi uchun bazada saqlanadi. Qarang: src/lib/rateLimit.ts
+model RateLimit {
+  key     String   @id
+  count   Int      @default(0)
+  resetAt DateTime
+
+  @@index([resetAt])
+}

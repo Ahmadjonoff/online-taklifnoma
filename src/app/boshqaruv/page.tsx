@@ -11,23 +11,44 @@ import { findPalette } from "@/lib/palettes";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminPage() {
-  const orders = await prisma.order.findMany({
-    include: {
-      template: { include: { categories: { select: { slug: true, name: true } } } },
-      invitation: true,
-    },
-    orderBy: { id: "desc" },
-  });
+// Bitta sahifada ko'rsatiladigan buyurtmalar soni
+const PAGE_SIZE = 30;
 
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const pageParam = Number((await searchParams).page);
+  const page = Number.isInteger(pageParam) && pageParam > 1 ? pageParam : 1;
+
+  // Statistika bazada hisoblanadi — barcha buyurtmalarni xotiraga yuklamaymiz
+  const [counts, revenueRows, orders] = await Promise.all([
+    prisma.order.groupBy({ by: ["status"], _count: { _all: true } }),
+    // Narx 0 — narxlar ochiq bo'lishidan oldingi buyurtma: shablon narxi olinadi
+    prisma.$queryRaw<{ revenue: bigint | number | null }[]>`
+      SELECT SUM(CASE WHEN o."price" > 0 THEN o."price" ELSE t."price" END) AS revenue
+      FROM "Order" o JOIN "Template" t ON t."id" = o."templateId"
+      WHERE o."status" = 'PAID'`,
+    prisma.order.findMany({
+      include: {
+        template: { include: { categories: { select: { slug: true, name: true } } } },
+        invitation: true,
+      },
+      orderBy: { id: "desc" },
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    }),
+  ]);
+
+  const countOf = (status: string) => counts.find((c) => c.status === status)?._count._all ?? 0;
   const stats = {
-    total: orders.length,
-    pending: orders.filter((o) => o.status === "PENDING").length,
-    paid: orders.filter((o) => o.status === "PAID").length,
-    revenue: orders
-      .filter((o) => o.status === "PAID")
-      .reduce((sum, o) => sum + (o.price || o.template.price), 0),
+    total: counts.reduce((sum, c) => sum + c._count._all, 0),
+    pending: countOf("PENDING"),
+    paid: countOf("PAID"),
+    revenue: Number(revenueRows[0]?.revenue ?? 0),
   };
+  const pageCount = Math.max(1, Math.ceil(stats.total / PAGE_SIZE));
 
   return (
     <div className="min-h-screen bg-[#faf7f2]">
@@ -157,6 +178,28 @@ export default async function AdminPage() {
             </div>
           )}
         </div>
+
+        {pageCount > 1 && (
+          <nav className="mt-8 flex items-center justify-center gap-4 text-sm">
+            {page > 1 ? (
+              <Link href={`/boshqaruv?page=${page - 1}`} className="rounded-full border border-stone-300 px-4 py-1.5 text-stone-700 hover:border-stone-500">
+                ← Oldingi
+              </Link>
+            ) : (
+              <span className="px-4 py-1.5 text-stone-300">← Oldingi</span>
+            )}
+            <span className="text-stone-500">
+              {page} / {pageCount}
+            </span>
+            {page < pageCount ? (
+              <Link href={`/boshqaruv?page=${page + 1}`} className="rounded-full border border-stone-300 px-4 py-1.5 text-stone-700 hover:border-stone-500">
+                Keyingi →
+              </Link>
+            ) : (
+              <span className="px-4 py-1.5 text-stone-300">Keyingi →</span>
+            )}
+          </nav>
+        )}
       </main>
     </div>
   );

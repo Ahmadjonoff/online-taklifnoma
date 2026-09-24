@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { after } from "next/server";
 import { parseStoredCustomization } from "@/lib/customization";
 import { buildInvitationConfig, textOverrides } from "@/lib/invitationConfig";
 import { i18nScriptTag } from "@/lib/invitationI18n";
@@ -80,19 +81,26 @@ export async function GET(
       ? await prisma.guest.findFirst({ where: { code, invitationId: invitation.id } })
       : null;
 
-  // Ko'rishlar sonini oshirish — bot/crawler so'rovlarini hisobga olmaymiz
+  // Ko'rishlar sonini oshirish — bot/crawler so'rovlarini hisobga olmaymiz.
+  // after(): mehmon sahifani DB yozuvlarini kutmasdan oladi.
   const userAgent = req.headers.get("user-agent") ?? "";
   if (!BOT_UA_RE.test(userAgent)) {
-    await prisma.invitation.update({
-      where: { id: invitation.id },
-      data: { views: { increment: 1 } },
+    after(async () => {
+      try {
+        await prisma.invitation.update({
+          where: { id: invitation.id },
+          data: { views: { increment: 1 } },
+        });
+        if (guest) {
+          await prisma.guest.update({
+            where: { id: guest.id },
+            data: { views: { increment: 1 }, openedAt: guest.openedAt ?? new Date() },
+          });
+        }
+      } catch (e) {
+        console.error("Ko'rishlarni hisoblashda xatolik:", e instanceof Error ? e.message : e);
+      }
     });
-    if (guest) {
-      await prisma.guest.update({
-        where: { id: guest.id },
-        data: { views: { increment: 1 }, openedAt: guest.openedAt ?? new Date() },
-      });
-    }
   }
 
   // Shablonning statik index.html ni o'qib, config inject qilamiz

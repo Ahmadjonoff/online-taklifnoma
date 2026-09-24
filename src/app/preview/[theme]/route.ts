@@ -7,6 +7,7 @@ import { buildInvitationConfig, calendarTitle, icsContent, textOverrides } from 
 import { i18nScriptTag } from "@/lib/invitationI18n";
 import { getPalettes, paletteStyleTag } from "@/lib/palettes";
 import { tierOf } from "@/lib/pricing";
+import { CONTENT_LIMITS, TIME_RE } from "@/lib/validation";
 
 /** Bu route Next.js sahifasi emas (iframe uchun statik HTML) — o'zining 404'ini beradi. */
 function notFoundHtml(): string {
@@ -173,7 +174,7 @@ async function buildDraft(theme: string, raw: string) {
   const c = draft.content ?? {};
   const eventDate = text(c.eventDate, 10);
   const eventTime = text(c.eventTime, 5);
-  const partner1 = text(c.partner1, 80);
+  const partner1 = text(c.partner1, CONTENT_LIMITS.partner);
 
   // Preview'da qat'iy emas: hali to'liq yozilmagan havola xato bermaydi
   const options = sanitizeCustomization(
@@ -188,15 +189,15 @@ async function buildDraft(theme: string, raw: string) {
   if (!options.ok) return null;
 
   const content = {
-      title: text(c.title, 120),
+      title: text(c.title, CONTENT_LIMITS.title),
       // Bo'sh maydonlar o'rniga namuna — shablon bo'sh ko'rinmasin
       partner1: partner1 || "Ismingiz",
-      partner2: text(c.partner2, 80),
+      partner2: text(c.partner2, CONTENT_LIMITS.partner),
       eventDate: /^\d{4}-\d{2}-\d{2}$/.test(eventDate) ? eventDate : "2026-12-31",
-      eventTime: /^\d{2}:\d{2}$/.test(eventTime) ? eventTime : "18:00",
-      venueName: text(c.venueName, 120) || "To'yxona nomi",
-      venueAddress: text(c.venueAddress, 200),
-      message: text(c.message, 1000) || "Sizni tadbirimizda ko'rishdan baxtiyor bo'lamiz!",
+      eventTime: TIME_RE.test(eventTime) ? eventTime : "18:00",
+      venueName: text(c.venueName, CONTENT_LIMITS.venueName) || "To'yxona nomi",
+      venueAddress: text(c.venueAddress, CONTENT_LIMITS.venueAddress),
+      message: text(c.message, CONTENT_LIMITS.message) || "Sizni tadbirimizda ko'rishdan baxtiyor bo'lamiz!",
   };
   // Preview'da .ics fayl data: URI sifatida (alohida route shart emas)
   const ics = icsContent(content, calendarTitle(content.partner1, content.partner2), "", "preview@taklifnoma");

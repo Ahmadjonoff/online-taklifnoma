@@ -1,29 +1,57 @@
+import { prisma } from "./prisma";
+
 /**
- * Oddiy fixed-window rate-limiter (jarayon xotirasida).
+ * Fixed-window rate-limiter.
  *
- * NEGA SHUNDAY: loyiha bitta kichik instансda ishlaydi (SQLite fayl bazasi
- * ham shuni ko'rsatadi) — tashqi Redis kabi xizmatga hojat yo'q. Maqsad —
- * admin login va buyurtma formasini kalta vaqt ichida ko'p marta urinishdan
- * himoyalash, murakkab hisoblagich emas.
+ * NEGA SHUNDAY: Vercel'da har bir funksiya instance'ining xotirasi alohida va
+ * sovuq startda tozalanadi — xotiradagi hisoblagich amalda limitni N marta
+ * bo'shashtirardi (ayniqsa admin login uchun xavfli). Shu sababli hisoblagich
+ * Postgres'da (`RateLimit` jadvali) saqlanadi va bitta atomik
+ * `INSERT ... ON CONFLICT` bilan oshiriladi — bir vaqtdagi so'rovlarda ham
+ * poyga (race) bo'lmaydi.
+ *
+ * Baza vaqtincha ishlamasa — jarayon xotirasidagi limiterga qaytamiz: sayt
+ * to'xtab qolmaydi, himoya esa butunlay yo'qolmaydi.
  */
+
+/**
+ * @returns true — so'rovga ruxsat bor, false — limit oshib ketgan.
+ */
+export async function rateLimit(key: string, limit: number, windowMs: number): Promise<boolean> {
+  try {
+    // `resetAt` — TIMESTAMP (vaqt zonasiz, Prisma uni UTC'da saqlaydi)
+    const rows = await prisma.$queryRaw<{ count: number }[]>`
+      INSERT INTO "RateLimit" ("key", "count", "resetAt")
+      VALUES (${key}, 1, (NOW() AT TIME ZONE 'UTC') + ${windowMs}::double precision * INTERVAL '1 millisecond')
+      ON CONFLICT ("key") DO UPDATE SET
+        "count" = CASE WHEN "RateLimit"."resetAt" <= (NOW() AT TIME ZONE 'UTC')
+                       THEN 1 ELSE "RateLimit"."count" + 1 END,
+        "resetAt" = CASE WHEN "RateLimit"."resetAt" <= (NOW() AT TIME ZONE 'UTC')
+                         THEN EXCLUDED."resetAt" ELSE "RateLimit"."resetAt" END
+      RETURNING "count"`;
+
+    // Jadval o'sib ketmasligi uchun vaqti-vaqti bilan eskirgan yozuvlarni tozalaymiz
+    if (Math.random() < 0.01) {
+      await prisma.$executeRaw`DELETE FROM "RateLimit" WHERE "resetAt" < (NOW() AT TIME ZONE 'UTC')`;
+    }
+
+    return Number(rows[0]?.count ?? 1) <= limit;
+  } catch (e) {
+    console.error("Rate-limit bazasi xatosi:", e instanceof Error ? e.message : e);
+    return memoryRateLimit(key, limit, windowMs);
+  }
+}
 
 type Bucket = { count: number; resetAt: number };
 
 const buckets = new Map<string, Bucket>();
 
-// Xotira sekin o'sib ketmasligi uchun vaqti-vaqti bilan eskirgan yozuvlarni tozalaymiz.
-function cleanup(now: number) {
-  for (const [key, bucket] of buckets) {
-    if (bucket.resetAt <= now) buckets.delete(key);
-  }
-}
-
-/**
- * @returns true — so'rovga ruxsat bor, false — limit oshib ketgan.
- */
-export function rateLimit(key: string, limit: number, windowMs: number): boolean {
+/** Zaxira: jarayon xotirasidagi limiter (faqat baza ishlamaganda). */
+export function memoryRateLimit(key: string, limit: number, windowMs: number): boolean {
   const now = Date.now();
-  if (buckets.size > 5000) cleanup(now);
+  if (buckets.size > 5000) {
+    for (const [k, b] of buckets) if (b.resetAt <= now) buckets.delete(k);
+  }
 
   const bucket = buckets.get(key);
   if (!bucket || bucket.resetAt <= now) {

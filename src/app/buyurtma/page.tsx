@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { OrderForm } from "@/components/OrderForm";
 import { BrandMark } from "@/components/site/BrandMark";
 import { TelegramIcon } from "@/components/site/TelegramIcon";
@@ -54,10 +55,10 @@ export default async function OrderPage({
 
       <header className="relative z-10 border-b border-stone-200/70 bg-[#faf7f2]/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-          <a href="/" className="flex items-center gap-2.5 font-serif text-xl font-bold">
+          <Link href="/" className="flex items-center gap-2.5 font-serif text-xl font-bold">
             <BrandMark className="h-8 w-auto" />
             {dict.common.brand}
-          </a>
+          </Link>
           <a
             href={telegramUrl(dict.common.telegramQuestionMsg)}
             target="_blank"

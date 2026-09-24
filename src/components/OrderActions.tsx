@@ -38,7 +38,7 @@ export function OrderActions({
           onClick={() => updateStatus("PAID")}
           className="rounded-full bg-emerald-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-50"
         >
-          ✅ To'landi
+          ✅ To&apos;landi
         </button>
       )}
       {status !== "REJECTED" && (

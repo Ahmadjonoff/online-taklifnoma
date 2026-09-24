@@ -16,7 +16,7 @@ export async function GET(_req: Request, { params }: Ctx) {
 }
 
 export async function POST(req: Request, { params }: Ctx) {
-  if (!rateLimit(`guests:${clientIp(req)}`, 30, 60_000)) {
+  if (!(await rateLimit(`guests:${clientIp(req)}`, 30, 60_000))) {
     return NextResponse.json({ error: "Juda ko'p urinish" }, { status: 429 });
   }
   const inv = await guestOwner((await params).token);

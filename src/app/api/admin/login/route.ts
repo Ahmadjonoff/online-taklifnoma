@@ -13,7 +13,7 @@ const LOGIN_WINDOW_MS = 60_000;
 
 export async function POST(req: Request) {
   const ip = clientIp(req);
-  if (!rateLimit(`admin-login:${ip}`, LOGIN_LIMIT, LOGIN_WINDOW_MS)) {
+  if (!(await rateLimit(`admin-login:${ip}`, LOGIN_LIMIT, LOGIN_WINDOW_MS))) {
     return NextResponse.json(
       { error: "Juda ko'p urinish. Birozdan so'ng qayta urinib ko'ring." },
       { status: 429 }

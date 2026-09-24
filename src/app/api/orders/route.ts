@@ -1,3 +1,4 @@
+import { randomBytes } from "node:crypto";
 import { after, NextResponse } from "next/server";
 import { customizationSummary, sanitizeCustomization } from "@/lib/customization";
 import { musicTrack } from "@/lib/music";
@@ -8,6 +9,7 @@ import { formatPrice, orderPrice, tierOf } from "@/lib/pricing";
 import { prisma } from "@/lib/prisma";
 import { notifyAdminNewOrder } from "@/lib/telegramBot";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
+import { validateOrderContent } from "@/lib/validation";
 
 // Spamdan himoya: bitta IP uchun 1 daqiqada ko'pi bilan 5 buyurtma.
 const ORDER_LIMIT = 5;
@@ -33,13 +35,13 @@ function makeSlug(base: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 40);
-  const rand = Math.random().toString(36).slice(2, 7);
+  const rand = randomBytes(4).toString("hex").slice(0, 6);
   return `${clean || "taklifnoma"}-${rand}`;
 }
 
 export async function POST(req: Request) {
   const ip = clientIp(req);
-  if (!rateLimit(`order:${ip}`, ORDER_LIMIT, ORDER_WINDOW_MS)) {
+  if (!(await rateLimit(`order:${ip}`, ORDER_LIMIT, ORDER_WINDOW_MS))) {
     return NextResponse.json(
       { error: "Juda ko'p urinish. Birozdan so'ng qayta urinib ko'ring." },
       { status: 429 }
@@ -47,10 +49,17 @@ export async function POST(req: Request) {
   }
 
   try {
-    const body = await req.json();
+    const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
     const options: unknown = body?.options;
+    const templateSlug = typeof body?.templateSlug === "string" ? body.templateSlug : "";
+    const content = validateOrderContent(body);
+    if (!content.ok) {
+      return NextResponse.json({ error: content.error }, { status: 400 });
+    }
+    if (!templateSlug) {
+      return NextResponse.json({ error: "Majburiy maydonlar to'ldirilmagan" }, { status: 400 });
+    }
     const {
-      templateSlug,
       customerName,
       phone,
       title,
@@ -61,36 +70,7 @@ export async function POST(req: Request) {
       venueName,
       venueAddress,
       message,
-    } = body as Record<string, string>;
-
-    if (!templateSlug || !customerName || !phone || !title || !eventDate || !venueName) {
-      return NextResponse.json(
-        { error: "Majburiy maydonlar to'ldirilmagan" },
-        { status: 400 }
-      );
-    }
-
-    // Telefon: +998 yoki 998 bilan boshlanadigan 9 xonali raqam (bo'shliq/tire bilan ham)
-    const phoneDigits = phone.replace(/[\s()-]/g, "");
-    if (!/^(\+?998)?\d{9}$/.test(phoneDigits)) {
-      return NextResponse.json(
-        { error: "Telefon raqami noto'g'ri formatda" },
-        { status: 400 }
-      );
-    }
-
-    // Sana: o'tmishda yoki mazmunsiz uzoq kelajakda bo'lmasin
-    const parsedDate = new Date(eventDate);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const maxDate = new Date(today);
-    maxDate.setFullYear(maxDate.getFullYear() + 3);
-    if (Number.isNaN(parsedDate.getTime()) || parsedDate < today || parsedDate > maxDate) {
-      return NextResponse.json(
-        { error: "Tadbir sanasi noto'g'ri" },
-        { status: 400 }
-      );
-    }
+    } = content.value;
 
     const template = await prisma.template.findUnique({
       where: { slug: templateSlug },
@@ -113,33 +93,45 @@ export async function POST(req: Request) {
     const priced = orderPrice(template.price, custom.value);
     const price = priced.total;
 
-    const slug = makeSlug(partner1 && partner2 ? `${partner1}-va-${partner2}` : title);
-
-    const order = await prisma.order.create({
-      data: {
-        customerName,
-        phone,
-        templateId: template.id,
-        status: "PENDING",
-        price,
-        invitation: {
-          create: {
-            slug,
-            templateId: template.id,
-            title,
-            partner1,
-            partner2,
-            eventDate: new Date(eventDate),
-            eventTime: eventTime || "18:00",
-            venueName,
-            venueAddress: venueAddress ?? "",
-            message: message ?? "",
-            options: JSON.stringify(custom.value),
-          },
+    const slugBase = partner1 && partner2 ? `${partner1}-va-${partner2}` : title;
+    const orderData = (slug: string) => ({
+      customerName,
+      phone,
+      templateId: template.id,
+      status: "PENDING",
+      price,
+      invitation: {
+        create: {
+          slug,
+          templateId: template.id,
+          title,
+          partner1,
+          partner2,
+          eventDate: new Date(eventDate),
+          eventTime,
+          venueName,
+          venueAddress,
+          message,
+          options: JSON.stringify(custom.value),
         },
       },
-      include: { invitation: true },
     });
+
+    // Slug oxiridagi tasodifiy qo'shimcha kamdan-kam bo'lsa ham takrorlanishi
+    // mumkin (@unique) — shunda yangi qo'shimcha bilan qayta urinamiz.
+    let order;
+    for (let attempt = 1; ; attempt++) {
+      try {
+        order = await prisma.order.create({
+          data: orderData(makeSlug(slugBase)),
+          include: { invitation: true },
+        });
+        break;
+      } catch (e) {
+        const unique = (e as { code?: string })?.code === "P2002";
+        if (!unique || attempt >= 3) throw e;
+      }
+    }
 
     // after(): Vercel javobni qaytargach ham funksiya xabar yuborilguncha
     // yashaydi (waitUntil). Avval await'siz chaqirilardi — funksiya muzlab,
@@ -160,7 +152,7 @@ export async function POST(req: Request) {
           `💰 Jami: ${formatPrice(price)} so'm`,
         ],
         title,
-        eventDate: `${eventDate.split("-").reverse().join(".")} ${eventTime || "18:00"}`,
+        eventDate: `${eventDate.split("-").reverse().join(".")} ${eventTime}`,
         venueName,
         // So'rov kelgan domen (preview deploy'larda ham to'g'ri havola bo'lsin)
         customerPageUrl: `${new URL(req.url).origin}/buyurtma/${order.accessToken}`,
