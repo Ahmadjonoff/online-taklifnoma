@@ -33,7 +33,7 @@ export function EnvelopeGate({ onOpen }: { onOpen: () => void }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 cursor-pointer select-none overflow-hidden bg-paper-2 transition-opacity duration-700"
+      className="fixed inset-0 z-50 cursor-pointer select-none touch-none overflow-hidden bg-paper-2 transition-opacity duration-700"
       style={{ opacity: opening ? 0 : 1, transitionDelay: opening ? '650ms' : '0ms' }}
       onClick={open}
       onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && open()}

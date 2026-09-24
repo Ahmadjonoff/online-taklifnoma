@@ -126,6 +126,13 @@ export async function GET(
     config = { ...DEMO, petals: { enabled: false, count: 0 } };
   }
 
+  // ?static=1 — bosh sahifa va katalogdagi ko'rinish: shablon rasmdek qotib
+  // turadi — scroll ham, konvertni ochish ham yo'q. CSS'da, JS'dan oldin
+  // qo'yiladi — sahifa yuklanayotgan lahzada ham barmoq hech narsani surmaydi.
+  if (url.searchParams.get("static") === "1") {
+    paletteStyle += `<style>html,body{overflow:hidden!important;overscroll-behavior:none!important;touch-action:none!important}body *{pointer-events:none!important}</style>`;
+  }
+
   // `config` foydalanuvchi kiritgan matnlarni o'z ichiga olishi mumkin —
   // `</script` ketma-ketligini escape qilmasak, JSON string ichidan haqiqiy
   // <script> tegini yopib, XSS ochib beradi.
