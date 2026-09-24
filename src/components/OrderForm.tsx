@@ -398,8 +398,10 @@ export function OrderForm({
   );
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
-      <form onSubmit={handleSubmit} noValidate={false} className="space-y-5">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
+      {/* minmax(0,1fr) + min-w-0: aks holda "Kun tartibi" qadamidagi input'larning
+          tabiiy kengligi ustunni cho'zib, telefonda sahifa ekrandan kengayib ketardi */}
+      <form onSubmit={handleSubmit} noValidate={false} className="min-w-0 space-y-5 pb-20 lg:pb-0">
         {/* ------------------------------------------------ Qadamlar */}
         <nav aria-label={t(o.stepOf, { n: stepIndex + 1, total: STEPS.length })}>
           <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-rose-600">
@@ -871,7 +873,7 @@ export function OrderForm({
                       onChange={(e) =>
                         editTimeline(timeline.map((r, j) => (j === i ? { ...r, time: e.target.value } : r)))
                       }
-                      className={`${rowInputClass} w-28 shrink-0`}
+                      className={`${rowInputClass} w-32 shrink-0`}
                       aria-label={o.time}
                     />
                     <input
