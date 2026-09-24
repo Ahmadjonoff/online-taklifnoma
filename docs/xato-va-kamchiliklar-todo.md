@@ -152,3 +152,128 @@ bo'yicha topshiriqlar ro'yxati. Ustuvorlik darajasi bo'yicha guruhlangan.
 **Tekshirildi:** `npx tsc --noEmit` va `npm run build` xatosiz o'tdi; sessiya
 token yaratish/tekshirish va XSS-escape logikasi qo'lda skript bilan sinovdan
 o'tkazildi.
+
+---
+
+# 2-bosqich: qayta tahlil (2026-09-24)
+
+Loyiha Neon + Vercel'ga ko'chgach qayta ko'rib chiqildi. Quyida topilgan
+muammolar va ularning yechimi keltirilgan.
+
+## 🟠 O'rtacha
+
+### ✅ 9. RSVP/tilak endpoint'ida rate-limit yo'q edi
+- **Fayl:** `src/app/api/forms/route.ts`
+- **Bajarildi:** ikki xil limit qo'shildi:
+  - IP bo'yicha: daqiqasiga 5 ta;
+  - bitta taklifnomaga (IP'dan qat'i nazar): soatiga 300 ta.
+
+### ✅ 10. `guestsCount` tekshirilmas edi
+- **Muammo:** `Math.max(1, body.guests ?? 1)` — yuqori chegara yo'q edi. Satr yoki 2³¹ dan katta son 500 xato qaytarardi.
+- **Bajarildi:** yangi `src/lib/validation.ts` → `validateGuestSubmission`:
+  - mehmonlar soni butun son, 1–20 oralig'ida (shablondagi tanlagich bilan bir xil);
+  - `attending` faqat `keladi` yoki `kelolmaydi`;
+  - bo'sh tilak rad etiladi.
+
+### ✅ 11. Buyurtma maydonlarida uzunlik va tur chegarasi yo'q edi
+- **Fayl:** `src/app/api/orders/route.ts`
+- **Bajarildi:** `validateOrderContent` (`src/lib/validation.ts`):
+  - tur tekshiruvi, boshqaruv belgilarini tozalash;
+  - `CONTENT_LIMITS` bo'yicha uzunlik chegarasi;
+  - `eventTime` formati (HH:MM) va sana formati tekshiriladi.
+
+  Xuddi shu chegaralar jonli preview'da va formadagi `maxLength` da ham ishlatiladi.
+
+### ✅ 12. Rate-limiter faqat instance xotirasida edi
+- **Muammo:** Vercel'da har bir instance'ning xotirasi alohida, shuning uchun limit amalda N marta zaif edi.
+- **Bajarildi:** hisoblagich Postgres'ga ko'chirildi:
+  - yangi `RateLimit` jadvali (migratsiya `20260924082813_rate_limit`);
+  - bitta atomik `INSERT … ON CONFLICT` so'rovi;
+  - baza ishlamasa xotiradagi limiterga qaytiladi.
+
+### ✅ 13. Upload token'lari cheklanmagan edi
+- **Muammo:** yuklash buyurtmadan oldin sodir bo'ladi, shuning uchun login talab qilib bo'lmaydi.
+- **Bajarildi:**
+  - IP limitidan tashqari umumiy soatlik limit qo'shildi (suratlar 600, musiqa 100);
+  - kunlik Vercel Cron qo'shildi (`/api/cron/blob-cleanup`, `CRON_SECRET` bilan). U 3 kundan eski va hech bir taklifnomada ishlatilmagan fayllarni o'chiradi.
+
+### ✅ 14. Preview deploy prod bazaga migratsiya qo'llashi mumkin edi
+- **Bajarildi:** `scripts/vercel-build.sh` migratsiya va seed'ni faqat `VERCEL_ENV=production` bo'lganda ishga tushiradi. Boshqa muhitlarda buni yoqish uchun `MIGRATE_ON_BUILD=1` qo'yish kerak.
+
+## 🟡 Kichik / kod sifati
+
+### ✅ 15. README eskirgan edi
+- **Muammo:** README'da SQLite, 77 shablon, `/admin` va `/buyurtma/[id]` yozilgan edi.
+- **Bajarildi:** README yangilandi. `.env.example` qo'shildi.
+
+### ✅ 16. Admin panel barcha buyurtmalarni yuklardi
+- **Bajarildi:**
+  - statistika bazada hisoblanadi (`groupBy` va `SUM`);
+  - ro'yxat 30 tadan sahifalanadi (`?page=`).
+
+### ✅ 17. Ko'rishlar hisoblagichi javobni sekinlashtirardi
+- **Bajarildi:** `/e/[slug]` dagi DB yozuvlari `after()` ichiga ko'chirildi.
+
+### ✅ 18. Test va lint yo'q edi
+- **Bajarildi:**
+  - `npm run lint` (ESLint 9 + `eslint-config-next`) qo'shildi, topilgan 4 ta xato tuzatildi;
+  - `npm test` (`node:test` + tsx) qo'shildi. 25 ta test `validation`, `customization`, `pricing` va `adminAuth` ni qamraydi.
+
+### ✅ 19. Keraksiz fayllar
+- **Bajarildi:**
+  - Create Next App'dan qolgan `public/*.svg` fayllari o'chirildi;
+  - logo manbasi `docs/brand/` ga ko'chirildi.
+- **Qoldirildi:** `.agents`, `.claude`, `.windsurf` agent skill'lari (`skills-lock.json` orqali o'rnatiladi) va `.freebuff`. Ular deploy'ga kirmaydi.
+
+### ✅ 20. Slug to'qnashuvi 500 qaytarishi mumkin edi
+- **Bajarildi:**
+  - slug qo'shimchasi endi `crypto.randomBytes` bilan yasaladi;
+  - `@unique` to'qnashuvida (P2002) 3 martagacha qayta urinadi.
+
+---
+
+# 3-bosqich: logika va texnik xatolar (2026-09-24)
+
+### ✅ 21. Mavjud bo'lmagan sana qabul qilinardi
+- **Muammo:** `new Date("2026-02-31")` xato bermaydi, jimgina 3-martga aylanadi. Taklifnomada esa "31.02.2026" ko'rinardi.
+- **Bajarildi:** yangi `src/lib/dates.ts` → `isRealDate` sanani qaytarib solishtiradi.
+
+### ✅ 22. Sana server vaqt zonasiga bog'liq edi
+- **Muammo:** `eventDate` UTC yarim tunida saqlanadi, lekin `getDate()`/`getMonth()` bilan o'qilardi. Server UTC bo'lmasa, sana bir kunga siljiydi.
+- **Bajarildi:** `isoDate()` faqat UTC getter'larni ishlatadi. `/e/[slug]`, `kalendar.ics` va ulashish rasmlari shunga o'tkazildi.
+- "Bugun" endi Toshkent vaqti bo'yicha hisoblanadi (`eventDateRange`). Forma va server bir xil oraliqni ishlatadi.
+
+### ✅ 23. Shablon sahifasida Luxury uchun Standart imkoniyatlari ko'rsatilardi
+- **Muammo:**
+  - `tier === "premium" ? … : featuresStandard` sharti Luxury'ni ham Standart deb ko'rsatardi;
+  - ro'yxatlar tariflarga mos emas edi (masalan, galereya Premium'da deb yozilgan, aslida faqat Luxury'da).
+- **Bajarildi:** sahifa bosh sahifadagi tarif kartalaridan (`home.plans`) foydalanadi. Eskirgan ro'yxatlar o'chirildi.
+
+### ✅ 24. O'chirilgan RSVP/tilaklar API orqali ishlayverardi
+- **Bajarildi:** mijoz bo'limni o'chirgan bo'lsa:
+  - POST 403 qaytaradi;
+  - tilaklar GET orqali ko'rsatilmaydi.
+
+### ✅ 25. Bekor qilingan buyurtma mijozga "kutilmoqda" bo'lib ko'rinardi
+- **Bajarildi:** `/buyurtma/[token]` da alohida "Buyurtma bekor qilingan" holati qo'shildi (uz/ru/en).
+
+### ✅ 26. Admin tugmalari xatoni yashirardi
+- **Muammo:** sessiya tugagan bo'lsa ham tugma bosilganda hech narsa bo'lmasdi.
+- **Bajarildi:**
+  - 401 bo'lsa login sahifasiga o'tadi;
+  - boshqa xatolar ko'rsatiladi;
+  - tasdiqlangan taklifnomani bekor qilishdan oldin tasdiq so'raladi.
+
+### ✅ 27. Production'da metadata localhost'ga ishora qilardi
+- **Muammo:** Vercel'da `NEXT_PUBLIC_SITE_URL` yo'q edi, shuning uchun `metadataBase` = `http://localhost:3000` bo'lib qolardi.
+- **Bajarildi:** `VERCEL_PROJECT_PRODUCTION_URL` ga fallback qo'shildi.
+
+### ✅ 28. Script ichidagi JSON faqat `</script` bo'yicha escape qilinardi
+- **Muammo:** `<!--<script>` kabi matn sahifani buzishi mumkin edi.
+- **Bajarildi:** `scriptJson()` har bir `<` ni `<` ga almashtiradi. Taklifnoma, preview va tarjima skriptida ishlatiladi.
+
+### ✅ 29. RSVP limiti CGNAT ortidagi mehmonlarni to'sib qo'yishi mumkin edi
+- **Bajarildi:** IP limiti 20/daqiqaga oshirildi. Taklifnoma boshiga soatlik limit o'zgarmadi.
+
+### ✅ 30. Shablon fayli yo'q bo'lsa 500 xato chiqardi
+- **Bajarildi:** `/e/[slug]` endi xatoni loglaydi va 404 sahifa ko'rsatadi.

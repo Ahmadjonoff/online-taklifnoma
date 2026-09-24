@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- next/og (ImageResponse) faqat oddiy <img> ni tushunadi */
 import { ImageResponse } from "next/og";
 import QRCode from "qrcode";
 import type { InvitationLang } from "./customization";

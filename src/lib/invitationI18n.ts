@@ -9,6 +9,7 @@
  *  - rus/ingliz: shablon matnlari lug'at bo'yicha tarjima qilinadi, mijozning
  *    o'z matni (ismlar, taklif matni) u yozgandek qoladi.
  */
+import { scriptJson } from "./html";
 import type { InvitationLang } from "./customization";
 
 type Dict = Record<string, string>;
@@ -382,7 +383,7 @@ export function i18nScriptTag(langs: InvitationLang[], overrides: Record<string,
     dicts[l] = { ...dictFor(l), ...custom };
     pats[l] = PATTERNS.map(([re, ru, en]) => [re, l === "ru" ? ru : en]);
   }
-  const args = [langs, dicts, pats, KEEP_LATIN].map((a) => JSON.stringify(a)).join(",");
+  const args = [langs, dicts, pats, KEEP_LATIN].map((a) => scriptJson(a)).join(",");
   const code = `${RUNTIME}(${args});`.replace(/<\/script/gi, "<\\/script");
   return `<script>${code}</script>`;
 }

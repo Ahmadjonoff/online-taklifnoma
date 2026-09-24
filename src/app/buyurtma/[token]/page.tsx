@@ -55,6 +55,7 @@ export default async function OrderStatusPage({
   if (!order) notFound();
 
   const confirmed = order.status === "PAID";
+  const rejected = order.status === "REJECTED";
   const luxury = tierFeatures(tierOf(order.template.price)).guestLinks;
   const h = await headers();
   const origin = `${h.get("x-forwarded-proto") ?? "https"}://${h.get("host")}`;
@@ -98,6 +99,26 @@ export default async function OrderStatusPage({
               >
                 {os.openInvitation}
               </Link>
+            </>
+          ) : rejected ? (
+            <>
+              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-stone-200 text-4xl">
+                ✕
+              </div>
+              <h1 className="mt-6 font-serif text-3xl font-bold">{os.rejectedTitle}</h1>
+              <p className="mt-3 text-stone-600">
+                {os.orderNumber} <span className="font-bold text-stone-900">#{order.id}</span>
+              </p>
+              <p className="mt-3 text-stone-600">{os.rejectedText}</p>
+              <a
+                href={telegramUrl(tgText)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-sky-500 px-6 py-3.5 font-semibold text-white shadow-md transition hover:bg-sky-400"
+              >
+                <TelegramIcon />
+                {t(os.telegramContact, { label: dict.common.telegramLabel })}
+              </a>
             </>
           ) : (
             <>

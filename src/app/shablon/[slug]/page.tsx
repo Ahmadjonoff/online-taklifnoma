@@ -49,7 +49,8 @@ export default async function TemplatePage({
 
   const tier = tierOf(template.price);
   const tierLabel = labelOf(tier, dict.common);
-  const tierFeatures = tier === "premium" ? td.featuresPremium : td.featuresStandard;
+  // Bosh sahifadagi tarif kartalari bilan bir xil ro'yxat (bitta manba)
+  const tierFeatures = dict.home.plans.find((p) => p.key === tier)?.items ?? [];
 
   // `templates` allaqachon narx↓, id↑ tartibida
   // O'xshash: kamida bitta umumiy tadbir turi bor shablonlar

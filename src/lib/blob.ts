@@ -24,3 +24,16 @@ export function isOwnBlobUrl(url: string, prefix: string): boolean {
 // Mijoz suratlari (hikoya, galereya): brauzer yuklashdan oldin kichraytiradi
 export const PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"];
 export const PHOTO_MAX_BYTES = 8 * 1024 * 1024;
+
+/** Taklifnomalarda ishlatilayotgan barcha Blob fayllar (hikoya surati, galereya, mijoz musiqasi). */
+export function referencedBlobUrls(
+  items: { story: { photo: string }; gallery: string[]; customMusicUrl: string }[]
+): Set<string> {
+  const urls = new Set<string>();
+  for (const c of items) {
+    if (c.story.photo) urls.add(c.story.photo);
+    for (const u of c.gallery) urls.add(u);
+    if (c.customMusicUrl) urls.add(c.customMusicUrl);
+  }
+  return urls;
+}

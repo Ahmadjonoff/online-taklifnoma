@@ -17,6 +17,7 @@ import {
   type TextTranslation,
   type TranslatedLang,
 } from "@/lib/customization";
+import { eventDateRange } from "@/lib/dates";
 import type { TimelineItem } from "@/lib/eventDefaults";
 import { t, type Dictionary } from "@/lib/i18n/dictionary";
 import {
@@ -29,6 +30,7 @@ import {
 import type { ColorRole, MainColors } from "@/lib/palettes";
 import { uploadPhoto } from "@/lib/photoUpload";
 import { CUSTOM_MUSIC_PRICE, formatPrice, orderPrice, type Tier } from "@/lib/pricing";
+import { CONTENT_LIMITS } from "@/lib/validation";
 
 /** `strip` — kartadagi 5 rangli chiziq, `main` — shu palitraning 3 ta asosiy rangi */
 export type OrderPalette = { id: string; name: string; strip: string[]; main: MainColors };
@@ -161,16 +163,14 @@ export function OrderForm({
     }
     setPhotoBusy(null);
   }
+  // Yuklash sikli (await) davomida galereyaning eng so'nggi holatini o'qish uchun
   const galleryRef = useRef(gallery);
-  galleryRef.current = gallery;
+  useEffect(() => {
+    galleryRef.current = gallery;
+  }, [gallery]);
 
-  const { minDate, maxDate } = useMemo(() => {
-    const toIso = (d: Date) => d.toISOString().slice(0, 10);
-    const today = new Date();
-    const max = new Date(today);
-    max.setFullYear(max.getFullYear() + 3);
-    return { minDate: toIso(today), maxDate: toIso(max) };
-  }, []);
+  // Server bilan bir xil oraliq (Toshkent vaqti bo'yicha bugundan 3 yilgacha)
+  const { min: minDate, max: maxDate } = useMemo(() => eventDateRange(), []);
 
   function changeEventType(slug: string) {
     setEventType(slug);
@@ -640,6 +640,7 @@ export function OrderForm({
                   <input
                     required
                     value={partner1}
+                    maxLength={CONTENT_LIMITS.partner}
                     onChange={(e) => setPartner1(e.target.value)}
                     className={inputClass}
                     placeholder={o.name1Placeholder}
@@ -649,6 +650,7 @@ export function OrderForm({
                   <label className={labelClass}>{o.name2}</label>
                   <input
                     value={partner2}
+                    maxLength={CONTENT_LIMITS.partner}
                     onChange={(e) => setPartner2(e.target.value)}
                     className={inputClass}
                     placeholder={o.name2Placeholder}
@@ -683,6 +685,7 @@ export function OrderForm({
                 <input
                   required
                   value={venueName}
+                  maxLength={CONTENT_LIMITS.venueName}
                   onChange={(e) => setVenueName(e.target.value)}
                   className={inputClass}
                   placeholder={o.venueNamePlaceholder}
@@ -692,6 +695,7 @@ export function OrderForm({
                 <label className={labelClass}>{o.venueAddress}</label>
                 <input
                   value={venueAddress}
+                  maxLength={CONTENT_LIMITS.venueAddress}
                   onChange={(e) => setVenueAddress(e.target.value)}
                   className={inputClass}
                   placeholder={o.venueAddressPlaceholder}
@@ -726,6 +730,7 @@ export function OrderForm({
                 <label className={labelClass}>{o.message}</label>
                 <textarea
                   value={message}
+                  maxLength={CONTENT_LIMITS.message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={3}
                   className={inputClass}
@@ -762,6 +767,8 @@ export function OrderForm({
                     <p className={labelClass}>{o.storyPhoto}</p>
                     <div className="flex items-center gap-3">
                       {storyPhoto && (
+                        // Blob'dagi kichik ko'rinish — next/image optimizatsiyasi shart emas
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img src={storyPhoto} alt="" className="h-20 w-16 rounded-lg object-cover" />
                       )}
                       <label className="cursor-pointer rounded-full border border-stone-300 bg-white px-4 py-2 text-xs font-semibold text-stone-700 transition hover:border-stone-400">
@@ -1076,6 +1083,7 @@ export function OrderForm({
                   <div className="grid grid-cols-4 gap-2 sm:grid-cols-5">
                     {gallery.map((url) => (
                       <div key={url} className="relative">
+                        {/* eslint-disable-next-line @next/next/no-img-element -- Blob'dagi kichik ko'rinish */}
                         <img src={url} alt="" className="aspect-square w-full rounded-lg object-cover" />
                         <button
                           type="button"
@@ -1146,6 +1154,7 @@ export function OrderForm({
                   <input
                     required
                     value={customerName}
+                    maxLength={CONTENT_LIMITS.customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     className={inputClass}
                     placeholder={o.yourNamePlaceholder}

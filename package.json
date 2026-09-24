@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "vercel-build": "prisma generate --config prisma7.config.ts && npm run templates:build && prisma migrate deploy --config prisma7.config.ts && SEED_IF_EMPTY=1 tsx prisma/seed.ts && next build",
+    "vercel-build": "bash scripts/vercel-build.sh",
     "start": "next start",
     "db:migrate": "prisma migrate dev --config prisma7.config.ts",
     "db:seed": "tsx prisma/seed.ts",
@@ -15,6 +15,8 @@
     "templates:taklif": "node scripts/generate-taklif-templates.mjs",
     "templates:build:taklif": "bash scripts/build-taklif-templates.sh",
     "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "tsx --test tests/*.test.ts",
     "postinstall": "prisma generate --config prisma7.config.ts"
   },
   "dependencies": {
@@ -37,6 +39,8 @@
     "@types/react-dom": "^19",
     "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "^6.1.1",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.5",
     "prisma": "^7.10.0",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.15",
