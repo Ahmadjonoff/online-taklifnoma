@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { sendTelegram, webhookSecret } from "@/lib/telegramBot";
+import { isAdminChat, sendTelegram, webhookSecret } from "@/lib/telegramBot";
 
 /**
  * Telegram bot webhook'i: mijoz o'z sahifasidagi «Javoblarni Telegram'da olish» tugmasini bossa,
@@ -10,7 +10,7 @@ import { sendTelegram, webhookSecret } from "@/lib/telegramBot";
 type Update = { message?: { chat: { id: number }; text?: string } };
 
 export async function POST(req: Request) {
-  if (!process.env.TELEGRAM_CUSTOMER_BOT_TOKEN || req.headers.get("x-telegram-bot-api-secret-token") !== (await webhookSecret())) {
+  if (!process.env.TELEGRAM_BOT_TOKEN || req.headers.get("x-telegram-bot-api-secret-token") !== (await webhookSecret())) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
   const update = (await req.json().catch(() => ({}))) as Update;
@@ -36,6 +36,8 @@ export async function POST(req: Request) {
   } else if (cmd === "/stop") {
     const { count } = await prisma.order.updateMany({ where: { notifyChatId: chatId }, data: { notifyChatId: "" } });
     await sendTelegram(chatId, count ? "🔕 Xabarlar o'chirildi. Qayta yoqish — sahifangizdagi tugma orqali." : "Sizga ulangan taklifnoma yo'q.");
+  } else if (cmd === "/start" && isAdminChat(chatId)) {
+    await sendTelegram(chatId, "✅ Siz operatorsiz — yangi buyurtmalar shu yerga keladi.\nBoshqaruv: https://online-taklifnoma-neon.vercel.app/boshqaruv");
   } else if (cmd === "/start") {
     await sendTelegram(
       chatId,

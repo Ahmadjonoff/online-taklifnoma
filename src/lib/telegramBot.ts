@@ -12,11 +12,11 @@
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID;
-/**
- * Mijozlar uchun alohida bot (RSVP/tilak xabarlari, /start <token>). Operator boti boshqa loyihalarda
- * ham ishlatilishi mumkin — unga webhook o'rnatib bo'lmaydi. Bo'sh bo'lsa — bu imkoniyat yashirin.
- */
-const CUSTOMER_BOT_TOKEN = process.env.TELEGRAM_CUSTOMER_BOT_TOKEN;
+// Mijozlar ham shu botdan foydalanadi (RSVP/tilak xabarlari, /start <token>) — bot faqat shu sayt
+// uchun, webhook'i /api/telegram/webhook ga o'rnatiladi (scripts/telegram-webhook.ts).
+
+/** Webhook kelgan chat — operatorning chatimi */
+export const isAdminChat = (chatId: string) => !!ADMIN_CHAT_ID && chatId === ADMIN_CHAT_ID;
 
 const REQUEST_TIMEOUT_MS = 8_000;
 const MAX_ATTEMPTS = 3;
@@ -136,7 +136,7 @@ export async function notifyAdminNewOrder(order: NewOrderNotice): Promise<boolea
 
 /** Mijozlar botidan xabar (webhook javoblari) */
 export function sendTelegram(chatId: string, text: string): Promise<boolean> {
-  return sendWithRetry(text, chatId, CUSTOMER_BOT_TOKEN);
+  return sendWithRetry(text, chatId, BOT_TOKEN);
 }
 
 /**
@@ -144,7 +144,7 @@ export function sendTelegram(chatId: string, text: string): Promise<boolean> {
  * Telegram har so'rovda uni `X-Telegram-Bot-Api-Secret-Token` sarlavhasida yuboradi.
  */
 export async function webhookSecret(): Promise<string> {
-  const data = new TextEncoder().encode(`${CUSTOMER_BOT_TOKEN ?? ""}:taklifnoma-webhook`);
+  const data = new TextEncoder().encode(`${BOT_TOKEN ?? ""}:taklifnoma-webhook`);
   const hash = await crypto.subtle.digest("SHA-256", data);
   return Array.from(new Uint8Array(hash), (b) => b.toString(16).padStart(2, "0")).join("").slice(0, 48);
 }
@@ -152,8 +152,8 @@ export async function webhookSecret(): Promise<string> {
 let botUsername: Promise<string> | null = null;
 /** Bot foydalanuvchi nomi (t.me/<bot>?start=... havolasi uchun) — getMe, jarayon davomida keshlanadi */
 export function getBotUsername(): Promise<string> {
-  if (!CUSTOMER_BOT_TOKEN) return Promise.resolve("");
-  botUsername ??= fetch(`https://api.telegram.org/bot${CUSTOMER_BOT_TOKEN}/getMe`, { signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) })
+  if (!BOT_TOKEN) return Promise.resolve("");
+  botUsername ??= fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getMe`, { signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) })
     .then((r) => r.json())
     .then((d: { result?: { username?: string } }) => d.result?.username ?? "")
     .catch(() => {
@@ -177,6 +177,6 @@ export function notifyCustomerResponse(
   return sendWithRetry(
     [head, ...(r.text ? [`«${r.text}»`] : []), "", `🎉 ${r.invitationTitle}`, `📋 Barcha javoblar: ${r.pageUrl}`].join("\n"),
     chatId,
-    CUSTOMER_BOT_TOKEN
+    BOT_TOKEN
   );
 }

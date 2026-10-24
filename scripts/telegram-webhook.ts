@@ -1,12 +1,11 @@
-// Mijozlar botiga webhook o'rnatadi (RSVP/tilak xabarlari uchun). Avval @BotFather'da alohida bot
-// yarating va tokenini Vercel'ga TELEGRAM_CUSTOMER_BOT_TOKEN qilib qo'shing (va .env.local ga ham).
+// Sayt botiga (TELEGRAM_BOT_TOKEN) webhook o'rnatadi — mijozlarning /start <token> buyrug'i va RSVP/tilak xabarlari uchun.
 // Ishlatish: npx tsx scripts/telegram-webhook.ts [https://sayt-manzili]
 import { loadEnvConfig } from "@next/env";
 
 loadEnvConfig(process.cwd());
-const token = process.env.TELEGRAM_CUSTOMER_BOT_TOKEN;
+const token = process.env.TELEGRAM_BOT_TOKEN;
 const site = process.argv[2] ?? "https://online-taklifnoma-neon.vercel.app";
-if (!token) throw new Error("TELEGRAM_CUSTOMER_BOT_TOKEN sozlanmagan");
+if (!token) throw new Error("TELEGRAM_BOT_TOKEN sozlanmagan");
 
 async function main() {
   // src/lib/telegramBot.ts → webhookSecret() bilan bir xil hisob
