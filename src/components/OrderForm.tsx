@@ -19,6 +19,8 @@ import {
   type TextTranslation,
   type TranslatedLang,
 } from "@/lib/customization";
+import { eventDateRange } from "@/lib/dates";
+import { approxMapUrls } from "@/lib/maps";
 import type { TimelineItem } from "@/lib/eventDefaults";
 import { t, type Dictionary } from "@/lib/i18n/dictionary";
 import {
@@ -31,6 +33,7 @@ import {
 import type { ColorRole, MainColors } from "@/lib/palettes";
 import { uploadPhoto } from "@/lib/photoUpload";
 import { CUSTOM_MUSIC_PRICE, formatPrice, orderPrice, type Tier } from "@/lib/pricing";
+import { CONTENT_LIMITS } from "@/lib/validation";
 
 /** `strip` — kartadagi 5 rangli chiziq, `main` — shu palitraning 3 ta asosiy rangi */
 export type OrderPalette = { id: string; name: string; strip: string[]; main: MainColors };
@@ -116,8 +119,12 @@ export function OrderForm({
   const [kickerTouched, setKickerTouched] = useState(false);
   const [envelopeText, setEnvelopeText] = useState("");
   const [timelineTouched, setTimelineTouched] = useState(false);
+  // Kun tartibi ixtiyoriy: o'chirilsa taklifnomada bu bo'lim umuman bo'lmaydi
+  const [scheduleOn, setScheduleOn] = useState(true);
   const [googleMapsUrl, setGoogleMapsUrl] = useState("");
   const [yandexMapsUrl, setYandexMapsUrl] = useState("");
+  // Havola kiritilmasa — manzil bo'yicha taxminiy joylashuvni mijoz tasdiqlaydi
+  const [mapConfirmed, setMapConfirmed] = useState(false);
   const [music, setMusic] = useState(musicTracks[0]?.id ?? MUSIC_NONE);
   const [customMusic, setCustomMusic] = useState<{ url: string; name: string } | null>(null);
   const [uploadPct, setUploadPct] = useState<number | null>(null);
@@ -174,16 +181,14 @@ export function OrderForm({
     }
     setPhotoBusy(null);
   }
+  // Yuklash sikli (await) davomida galereyaning eng so'nggi holatini o'qish uchun
   const galleryRef = useRef(gallery);
-  galleryRef.current = gallery;
+  useEffect(() => {
+    galleryRef.current = gallery;
+  }, [gallery]);
 
-  const { minDate, maxDate } = useMemo(() => {
-    const toIso = (d: Date) => d.toISOString().slice(0, 10);
-    const today = new Date();
-    const max = new Date(today);
-    max.setFullYear(max.getFullYear() + 3);
-    return { minDate: toIso(today), maxDate: toIso(max) };
-  }, []);
+  // Server bilan bir xil oraliq (Toshkent vaqti bo'yicha bugundan 3 yilgacha)
+  const { min: minDate, max: maxDate } = useMemo(() => eventDateRange(), []);
 
   function changeEventType(slug: string) {
     setEventType(slug);
@@ -199,6 +204,7 @@ export function OrderForm({
   }
 
   const title = partner2 ? `${partner1} & ${partner2}` : partner1;
+  const approxMaps = approxMapUrls(venueName, venueAddress);
 
   const options: Customization = useMemo(
     () => ({
@@ -207,9 +213,10 @@ export function OrderForm({
       eventType,
       kicker,
       envelope: envelopeText,
-      timeline,
+      timeline: scheduleOn ? timeline : [],
       googleMapsUrl,
       yandexMapsUrl,
+      mapConfirmed,
       music,
       customMusicUrl: music === MUSIC_CUSTOM ? (customMusic?.url ?? "") : "",
       dressCode: { text: dressText, colors: dressText ? dressColors : [] },
@@ -223,7 +230,7 @@ export function OrderForm({
       gallery,
       calendar,
     }),
-    [palette, colors, eventType, kicker, envelopeText, timeline, googleMapsUrl, yandexMapsUrl, music, customMusic, dressText, dressColors, giftCard, giftHolder, rsvp, wishes, petals, langs, translations, storyTitle, storyText, storyPhoto, gallery, calendar]
+    [palette, colors, eventType, kicker, envelopeText, timeline, scheduleOn, googleMapsUrl, yandexMapsUrl, mapConfirmed, music, customMusic, dressText, dressColors, giftCard, giftHolder, rsvp, wishes, petals, langs, translations, storyTitle, storyText, storyPhoto, gallery, calendar]
   );
 
   const price = orderPrice(templatePrice, options);
@@ -414,8 +421,10 @@ export function OrderForm({
   );
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
-      <form onSubmit={handleSubmit} noValidate={false} className="space-y-5 pb-20 lg:pb-0">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
+      {/* minmax(0,1fr) + min-w-0: aks holda "Kun tartibi" qadamidagi input'larning
+          tabiiy kengligi ustunni cho'zib, telefonda sahifa ekrandan kengayib ketardi */}
+      <form onSubmit={handleSubmit} noValidate={false} className="min-w-0 space-y-5 pb-20 lg:pb-0">
         {/* ------------------------------------------------ Qadamlar */}
         <nav aria-label={t(o.stepOf, { n: stepIndex + 1, total: STEPS.length })}>
           <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-rose-600">
@@ -666,6 +675,7 @@ export function OrderForm({
                   <input
                     required
                     value={partner1}
+                    maxLength={CONTENT_LIMITS.partner}
                     onChange={(e) => setPartner1(e.target.value)}
                     className={inputClass}
                     placeholder={o.name1Placeholder}
@@ -675,6 +685,7 @@ export function OrderForm({
                   <label className={labelClass}>{o.name2}</label>
                   <input
                     value={partner2}
+                    maxLength={CONTENT_LIMITS.partner}
                     onChange={(e) => setPartner2(e.target.value)}
                     className={inputClass}
                     placeholder={o.name2Placeholder}
@@ -709,6 +720,7 @@ export function OrderForm({
                 <input
                   required
                   value={venueName}
+                  maxLength={CONTENT_LIMITS.venueName}
                   onChange={(e) => setVenueName(e.target.value)}
                   className={inputClass}
                   placeholder={o.venueNamePlaceholder}
@@ -718,6 +730,7 @@ export function OrderForm({
                 <label className={labelClass}>{o.venueAddress}</label>
                 <input
                   value={venueAddress}
+                  maxLength={CONTENT_LIMITS.venueAddress}
                   onChange={(e) => setVenueAddress(e.target.value)}
                   className={inputClass}
                   placeholder={o.venueAddressPlaceholder}
@@ -748,10 +761,35 @@ export function OrderForm({
                 </div>
               </div>
               <p className="mt-2 text-xs text-stone-500">{o.venueMapsHint}</p>
+              {!googleMapsUrl.trim() && !yandexMapsUrl.trim() && approxMaps && (
+                <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50/70 px-4 py-3 text-sm text-amber-900">
+                  <p className="font-medium">{o.mapsApproxTitle}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-amber-900/80">{o.mapsApproxHint}</p>
+                  <div className="mt-2 flex flex-wrap gap-3 text-sm font-semibold">
+                    <a href={approxMaps.google} target="_blank" rel="noopener noreferrer" className="underline">
+                      Google Maps ↗
+                    </a>
+                    <a href={approxMaps.yandex} target="_blank" rel="noopener noreferrer" className="underline">
+                      Yandex Maps ↗
+                    </a>
+                  </div>
+                  <label className="mt-3 flex cursor-pointer items-start gap-2.5">
+                    <input
+                      type="checkbox"
+                      required
+                      checked={mapConfirmed}
+                      onChange={(e) => setMapConfirmed(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 shrink-0 accent-rose-600"
+                    />
+                    <span>{o.mapsApproxConfirm}</span>
+                  </label>
+                </div>
+              )}
               <div className="mt-4">
                 <label className={labelClass}>{o.message}</label>
                 <textarea
                   value={message}
+                  maxLength={CONTENT_LIMITS.message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={3}
                   className={inputClass}
@@ -788,6 +826,8 @@ export function OrderForm({
                     <p className={labelClass}>{o.storyPhoto}</p>
                     <div className="flex items-center gap-3">
                       {storyPhoto && (
+                        // Blob'dagi kichik ko'rinish — next/image optimizatsiyasi shart emas
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img src={storyPhoto} alt="" className="h-20 w-16 rounded-lg object-cover" />
                       )}
                       <label className="cursor-pointer rounded-full border border-stone-300 bg-white px-4 py-2 text-xs font-semibold text-stone-700 transition hover:border-stone-400">
@@ -880,7 +920,20 @@ export function OrderForm({
           {/* ------------------------------------------------ 3. Kun tartibi */}
           {step === "schedule" && (
             <div>
-              <p className="-mt-2 mb-4 text-sm text-stone-500">{o.scheduleHint}</p>
+              <label className="-mt-1 mb-4 flex cursor-pointer items-center gap-3 rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm font-medium text-stone-800">
+                <input
+                  type="checkbox"
+                  checked={scheduleOn}
+                  onChange={(e) => setScheduleOn(e.target.checked)}
+                  className="h-4 w-4 accent-rose-600"
+                />
+                {o.scheduleToggle}
+              </label>
+              {!scheduleOn ? (
+                <p className="text-sm text-stone-500">{o.scheduleOff}</p>
+              ) : (
+              <>
+              <p className="mb-4 text-sm text-stone-500">{o.scheduleHint}</p>
               <div className="space-y-2.5">
                 {timeline.map((row, i) => (
                   <div key={i} className="flex items-center gap-2">
@@ -890,7 +943,7 @@ export function OrderForm({
                       onChange={(e) =>
                         editTimeline(timeline.map((r, j) => (j === i ? { ...r, time: e.target.value } : r)))
                       }
-                      className={`${rowInputClass} w-28 shrink-0`}
+                      className={`${rowInputClass} w-32 shrink-0`}
                       aria-label={o.time}
                     />
                     <input
@@ -923,6 +976,8 @@ export function OrderForm({
                 >
                   {o.scheduleAdd}
                 </button>
+              )}
+              </>
               )}
             </div>
           )}
@@ -1102,6 +1157,7 @@ export function OrderForm({
                   <div className="grid grid-cols-4 gap-2 sm:grid-cols-5">
                     {gallery.map((url) => (
                       <div key={url} className="relative">
+                        {/* eslint-disable-next-line @next/next/no-img-element -- Blob'dagi kichik ko'rinish */}
                         <img src={url} alt="" className="aspect-square w-full rounded-lg object-cover" />
                         <button
                           type="button"
@@ -1172,6 +1228,7 @@ export function OrderForm({
                   <input
                     required
                     value={customerName}
+                    maxLength={CONTENT_LIMITS.customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     className={inputClass}
                     placeholder={o.yourNamePlaceholder}

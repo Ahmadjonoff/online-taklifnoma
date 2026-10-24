@@ -19,6 +19,11 @@ const SHORT_LABEL: Record<Locale, string> = {
  * chaqirish yetarli, server komponentlar yangi tilni o'qib qayta render
  * qiladi.
  */
+/** Komponentdan tashqarida: cookie — brauzerning global holati (react-hooks/immutability) */
+function saveLocaleCookie(locale: Locale) {
+  document.cookie = `${LOCALE_COOKIE}=${locale}; path=/; max-age=31536000; samesite=lax`;
+}
+
 export function LanguageSwitcher({ locale }: { locale: Locale }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -27,7 +32,7 @@ export function LanguageSwitcher({ locale }: { locale: Locale }) {
   function choose(next: Locale) {
     setOpen(false);
     if (next === locale) return;
-    document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=31536000; samesite=lax`;
+    saveLocaleCookie(next);
     startTransition(() => router.refresh());
   }
 

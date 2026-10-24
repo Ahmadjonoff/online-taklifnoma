@@ -16,6 +16,13 @@ const nextConfig: NextConfig = {
     "/e/[slug]": ["./public/t/*/index.html"],
     "/preview/[theme]": ["./public/t/*/index.html"],
   },
+  images: {
+    // Katalog rasmlari (public/thumbs) faqat `npm run thumbs` bilan
+    // o'zgaradi — optimallashtirilgan nusxa 31 kun keshda tursin (standart
+    // 4 soatda Vercel har safar qayta optimallashtirardi)
+    minimumCacheTTL: 60 * 60 * 24 * 31,
+    formats: ["image/avif", "image/webp"],
+  },
   async headers() {
     return [
       {
@@ -25,7 +32,17 @@ const nextConfig: NextConfig = {
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       },
       {
+        // Nomida hash yo'q — bir kun keshlanadi, keyin fonda yangilanadi
+        source: "/thumbs/:file*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
+      },
+      {
         source: "/music.mp3",
+        headers: [{ key: "Cache-Control", value: "public, max-age=604800" }],
+      },
+      {
+        // Musiqa kutubxonasi (public/music) — bir hafta
+        source: "/music/:file*",
         headers: [{ key: "Cache-Control", value: "public, max-age=604800" }],
       },
     ];

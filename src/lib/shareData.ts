@@ -1,4 +1,5 @@
 import { parseStoredCustomization, tierFeatures } from "./customization";
+import { dateLabel, isoDate } from "./dates";
 import { resolvedColors } from "./palettes";
 import { tierOf } from "./pricing";
 import { prisma } from "./prisma";
@@ -30,13 +31,11 @@ function toShareData(order: OrderWithInvitation, origin: string): ShareData {
   const inv = order.invitation!;
 
   const c = parseStoredCustomization(inv.options);
-  const d = inv.eventDate;
-  const pad = (n: number) => String(n).padStart(2, "0");
   return {
     groom: inv.partner1 || inv.title,
     bride: inv.partner2,
     kicker: c.kicker || order.template.kicker,
-    dateLabel: `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()}`,
+    dateLabel: dateLabel(isoDate(inv.eventDate)),
     timeLabel: inv.eventTime || "18:00",
     venueName: inv.venueName,
     url: `${origin}/e/${inv.slug}`,

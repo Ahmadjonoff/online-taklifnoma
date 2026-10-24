@@ -4,5 +4,12 @@
   "buildCommand": "npm run vercel-build",
   "regions": [
     "fra1"
+  ],
+  "fluid": true,
+  "crons": [
+    {
+      "path": "/api/cron/blob-cleanup",
+      "schedule": "0 3 * * *"
+    }
   ]
 }

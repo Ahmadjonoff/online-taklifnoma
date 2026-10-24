@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { Geist, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { LOCALE_HTML_LANG } from "@/lib/i18n/locales";
 import { getLocale } from "@/lib/i18n/server";
@@ -10,17 +10,19 @@ const geistSans = Geist({
   subsets: ["latin", "latin-ext"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin", "latin-ext"],
-});
-
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin", "latin-ext"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+// OG rasmlar va kanonik havolalar uchun asosiy manzil. NEXT_PUBLIC_SITE_URL
+// berilmasa — Vercel'ning production domeni (tizim o'zgaruvchisi), aks holda
+// production'da ham havolalar localhost'ga ishora qilardi.
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : "http://localhost:3000");
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -60,7 +62,7 @@ export default async function RootLayout({
   return (
     <html lang={LOCALE_HTML_LANG[locale]}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased`}
+        className={`${geistSans.variable} ${playfair.variable} antialiased`}
       >
         {children}
         {/* Birinchi ekrandagi `Reveal` bloklari JS yuklanib, gidratsiya

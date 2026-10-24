@@ -1,135 +1,183 @@
 # Taklifnoma.uz — Premium online taklifnomalar platformasi
 
-To'y, nikoh, sunnat to'yi, qiz bazmi, tug'ilgan kun, biznes tadbirlar va boshqalar
-uchun **jonli, konvert bilan ochiladigan** online taklifnomalar.
+To'y, nikoh, sunnat to'yi, qiz bazmi, beshik to'yi, tug'ilgan kun, biznes
+tadbirlar va boshqalar uchun **jonli, konvert bilan ochiladigan** online
+taklifnomalar.
 
 ## Imkoniyatlar
 
-- 🎨 **77 premium shablon** — 11 tadbir turi uchun. Har biri alohida palitra,
-  bezak va animatsiya bilan (konvert, mum muhr, gul sochilishi, musiqa)
-- ✍️ **Jonli preview** — buyurtma formada yozganingiz darhol shablonda aks etadi
-- ⏳ **Countdown** — tadbirgacha qolgan vaqt
-- 📋 **Tadbir dasturi** — timeline bo'limi (max 5 band)
-- 🗓️ **Oylik kalendar** — tadbir kuni ajratib ko'rsatiladi
-- 🎊 **Ko'p tadbirli dastur** — «Qizlar bazmi» + «Nikoh to'yi» kabi 2+ marosim
-- 🎤 **Maxsus mehmonlar** — xonandalar ro'yxati (slider yoki ro'yxat)
-- 💐 **Kiyim uslubi, hikoya, galereya** — mavzu bo'yicha qo'shimcha bo'limlar
-- ✅ **RSVP** — mehmonlar kelish/kelmasligini bildiradi, izoh yozadi
-- 💌 **Tilaklar galereyasi** — mehmonlar tilak qoldiradi, barchasi taklifnomada ko'rinadi
-- 📲 **QR kod + ulashish** — Telegram/WhatsApp tugmalari, QR yuklab olish
-- 🔐 **Admin panel** — parol bilan himoyalangan, buyurtmalar va javoblar statistikasi
+- 🎨 **21 ta shablon, 11 ta tadbir turi.** Har birining o'z palitrasi, bezagi va animatsiyasi bor (konvert, mum muhr, gulbarglar, musiqa). Mijoz 3 ta asosiy rangni o'zi tanlaydi.
+- ✍️ **Jonli preview.** Buyurtma formasida yozilgan narsa darhol shablonda ko'rinadi.
+- ⏳ Countdown, 📋 kun tartibi, 🗺 Google/Yandex xarita, 👗 dress-kod, 💳 sovg'a kartasi.
+- ✅ **RSVP va 💌 tilaklar.** Mehmonlar javob beradi. Mijoz javoblarni o'z sahifasida ko'radi va CSV qilib yuklab oladi.
+- 🎵 **Musiqa.** Fortepiano kutubxonasi yoki mijozning o'z faylini yuklash (+29 000).
+- 📲 QR kod, Telegram/WhatsApp ulashish.
+- 🔐 Admin panel: parol bilan himoyalangan, buyurtmalar sahifalab ko'rsatiladi, statistika bor.
+
+### Tariflar (`src/lib/pricing.ts`)
+
+| Tarif | Narx | Qo'shimcha |
+|---|---|---|
+| Standart | 149 000 | Barcha asosiy bo'limlar |
+| Premium | 199 000 | + «Bizning hikoyamiz», 4 til (uz, kirill, ru, en) |
+| Luxury | 279 000 | + galereya, kalendarga qo'shish, shaxsiy mehmon havolalari, ulashish rasmlari |
+
+Tarif shablon narxidan aniqlanadi (`tierOf`). Tarifga kirmaydigan
+imkoniyatlarni server jimgina o'chiradi (`tierFeatures`). Narx faqat serverda
+hisoblanadi.
 
 ## Texnologiyalar
 
 | Qism | Yechim |
 |---|---|
-| Sayt | Next.js 16.3 (App Router, Turbopack), TypeScript, Tailwind CSS 4 |
-| Baza | Prisma 7 + SQLite (driver adapter) |
+| Sayt | Next.js 16.3 (App Router), React 19, TypeScript, Tailwind CSS 4 |
+| Baza | Prisma 7 + Neon Postgres (`@prisma/adapter-neon`), region `fra1` |
+| Fayllar | Vercel Blob (suratlar va musiqa brauzerdan to'g'ridan-to'g'ri yuklanadi) |
 | Shablonlar | React + Vite (har biri alohida statik bundle) |
-| QR | `qrcode` |
+| Bildirishnoma | Telegram Bot API (yangi buyurtma, tasdiqlash) |
+| Sifat | `tsc`, ESLint (`eslint-config-next`), `node:test` (tsx orqali) |
 
 ## Arxitektura
 
 ```
+src/app/                    # Next.js sahifalari va API
+  e/[slug]/                 #   Mehmonlar ko'radigan taklifnoma (statik HTML + config)
+  preview/[theme]/          #   Shablon demo va buyurtma formasidagi jonli preview
+  api/orders | forms | upload/* | admin/* | cron/blob-cleanup
+src/lib/                    # Biznes mantiq
+  customization.ts          #   Mijoz sozlamalari: tur, standartlar, server tekshiruvi
+  validation.ts             #   Buyurtma va RSVP/tilak maydonlarini tekshirish
+  pricing.ts                #   Tariflar va narx hisobi
+  rateLimit.ts              #   Postgres'dagi umumiy rate-limiter
 templates-src/              # Shablonlar manbasi
-  core/                     #   Umumiy komponentlar (RSVP, Wishes, Countdown...)
-  core/taklif/              #   Yangi bo'limlar: Calendar, Events, Schedule,
-                            #   Singers, Story, DearGuests, DressCode, Details
-  luxe-vow/                 #   Baza A — konvert + mum muhr, tilla naqsh
-  watercolor-garden/        #   Baza B — akvarel gullar, yumshoq to'lqin chekka
-  noir-gradient/            #   Baza C — qorong'i gradient, kinematografik
+  core/                     #   Umumiy komponentlar (RSVP, Wishes, Countdown ...)
+  core/taklif/              #   Calendar, Events, Schedule, Story, DressCode ...
+  luxe-vow/ watercolor-garden/ noir-gradient/   # Baza dizaynlar (generator uchun)
   <shablon-nomi>/src/       #   Har shablonning App/Hero/config'i
-public/t/<nomi>/            # Build qilingan statik shablonlar
+public/t/<nomi>/            # Build qilingan statik shablonlar (git'da yo'q)
 scripts/
-  templates-plan.json       #   60 ta asosiy shablon rejasi
-  templates-plan-taklif.json#   17 ta taklif-link uslubidagi shablon rejasi
-  generate-templates.mjs    #   Asosiy shablonlarni generatsiya qiladi
-  generate-taklif-templates.mjs # Yangi 17 shablonni generatsiya qiladi
-  prepare-templates.sh      #   config-shim + submit.ts ni o'rnatadi
-  build-templates.sh        #   Hamma shablonni public/t/ ga build qiladi
-  build-taklif-templates.sh #   Faqat yangi 17 shablonni build qiladi
-  vite.template.config.ts   #   Vite konfiguratsiyasi
-docs/
-  taklif-link-tahlil.md     # taklif-link.uz skreypingi va tahlili
+  templates-plan*.json      #   Katalog rejasi (seed shu yerdan o'qiydi)
+  generate-*.mjs            #   Shablon manbalarini generatsiya qilish
+  build-templates.sh        #   Hamma shablonni public/t/ ga build qilish
+  vercel-build.sh           #   Vercel build (migratsiya faqat production'da)
+tests/                      # Unit testlar (npm test)
 ```
 
-**Qanday ishlaydi:** `/e/<slug>` sahifasi bazadan taklifnoma ma'lumotlarini
-o'qib, shablonning statik HTML'iga `window.__INV_CONFIG__` sifatida inject
-qiladi. Shablon ichidagi `config-shim` buni default config ustiga merge qiladi
-— shu tariqa bitta shablon cheksiz xilma-xil taklifnomalarga aylanadi.
+**Qanday ishlaydi:** `/e/<slug>` bazadan taklifnomani o'qiydi va shablonning
+statik `index.html` fayliga quyidagilarni qo'shadi:
+- `window.__INV_CONFIG__` — taklifnoma ma'lumotlari;
+- palitra CSS'i;
+- tarjima skripti.
 
-Bo'limlar `config-default.ts` dagi `enabled` bayroqlari bilan boshqariladi
-(`calendar`, `events`, `story`, `singers`, `dressCode`, `gallery`, `rsvp`,
-`wishes`, `gift`) — shu sababli 17 shablon bir xil kod ustida har xil ko'rinadi.
+Shablon ichidagi `config-shim` bu ma'lumotni default config ustiga qo'shadi.
+Shu tariqa bitta build qilingan shablon cheksiz ko'p taklifnomaga xizmat
+qiladi, Next.js esa shablon kodini umuman yuklamaydi.
 
-## Shablonlar oilalari
+### Shablon oilalari
 
-| Baza | Shablonlar | Uslubi |
-|---|---|---|
-| **luxe-vow** | Yoqut, Imperial, Royal, Ivory, Garden, Qiz bazmi — Nafis, Qiz bazmi — Sharqona, Milliy, Sunnat to'y, Pearl, Velvet | Ikki qatlamli tilla hoshiya, mum muhr, tilla naqsh chekka |
-| **watercolor-garden** | Floral, Floral Fotiha, Gul | Akvarel gullar, yumshoq to'lqinli chekka, konvertdan ko'tariladigan xat |
-| **noir-gradient** | Aurora, Epic, Zamonaviy | Qorong'i gradient, katta displey shrifti, minimal chiziq bezak |
+| Baza | Uslubi |
+|---|---|
+| **luxe-vow** | Ikki qatlamli tilla hoshiya, mum muhr, tilla naqsh chekka |
+| **watercolor-garden** | Akvarel gullar, yumshoq to'lqinli chekka, konvertdan ko'tariladigan xat |
+| **noir-gradient** | Qorong'i gradient, katta displey shrifti, minimal chiziq bezak |
+
+> Muhim: har bir shablon CSS'ida `@source '../../core';` qatori turishi shart.
+> Tailwind faqat shablon papkasini avtomatik skanerlaydi. Bu qatorsiz umumiy
+> `templates-src/core/` komponentlaridagi sinflar generatsiya qilinmaydi va
+> bo'limlar buzuq ko'rinadi.
 
 ## Ishga tushirish
 
 ```bash
 npm install
-npm run templates:prepare     # shablonlarni platformaga moslashtirish
-npm run templates:taklif      # 17 ta yangi shablon manbasini yozish
-npm run templates:build       # hamma shablonni build qilish (77 ta)
-npm run templates:build:taklif# yoki faqat yangi 17 tasini
-npm run db:migrate            # baza yaratish
-npm run db:seed               # 11 tadbir turi + 77 shablon
+cp .env.example .env.local    # yoki: vercel env pull .env.local
+npm run templates:build       # shablonlarni public/t/ ga build qilish
+npm run db:migrate            # migratsiyalar (DATABASE_URL_UNPOOLED)
+npm run db:seed               # tadbir turlari va shablonlar
 npm run dev                   # http://localhost:3000
 ```
 
-## Muhit o'zgaruvchilari (.env)
+**Shablon rasmlari.** Katalog kartalari va bosh sahifa jonli iframe o'rniga
+`public/thumbs/` dagi rasmlarni ko'rsatadi. Shablon dizayni o'zgarganda yoki
+yangi shablon qo'shilganda rasmlarni qayta yarating:
 
+```bash
+npm run templates:build && npm run build && npm start   # boshqa terminalda
+npm run thumbs                                          # BASE_URL=http://localhost:3000
 ```
-DATABASE_URL="file:./dev.db"
-ADMIN_PASSWORD="o'z-parolingiz"
+
+Rasmi yo'q shablon uchun sayt avvalgidek jonli iframe ko'rsatadi.
+
+Tekshiruvlar:
+
+```bash
+npm run typecheck
+npm run lint
+npm test
 ```
+
+## Muhit o'zgaruvchilari
+
+| O'zgaruvchi | Tavsif |
+|---|---|
+| `DATABASE_URL` | Neon pooled ulanish (ilova) |
+| `DATABASE_URL_UNPOOLED` | Neon to'g'ridan-to'g'ri ulanish (Prisma CLI, migratsiyalar) |
+| `ADMIN_PASSWORD` | Admin paroli. Production'da majburiy |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob (surat va musiqa yuklash) |
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_ADMIN_CHAT_ID` | Operatorga xabarlar. Bo'sh bo'lsa yuborilmaydi |
+| `CRON_SECRET` | Yetim Blob fayllarini tozalovchi cron uchun. Bo'sh bo'lsa cron ishlamaydi |
+| `NEXT_PUBLIC_SITE_URL` | Saytning asosiy manzili (metadata). Bo'sh bo'lsa, Vercel production domeni olinadi |
+| `MIGRATE_ON_BUILD` | `1` bo'lsa, production'dan boshqa build'da ham migratsiya ishlaydi |
 
 ## Sahifalar
 
 | Manzil | Tavsif |
 |---|---|
-| `/` | Bosh sahifa — hero, jonli namuna, taqqoslash, imkoniyatlar, to'plamlar, FAQ |
-| `/shablonlar` | Katalog — qidiruv, tadbir turi, daraja (Premium/Standart), tartiblash |
-| `/shablon/[slug]` | Shablon sahifasi — telefon ramkasida jonli demo, dastur, o'xshashlar |
-| `/buyurtma?shablon=...` | Buyurtma formasi + jonli preview (to'lov yo'q) |
-| `/buyurtma/[id]` | Buyurtma qabul qilindi — Telegram aloqa + havola holati |
-| `/e/[slug]` | **Mehmonlar ko'radigan taklifnoma** |
+| `/` | Bosh sahifa: hero, jonli namuna, tariflar, FAQ |
+| `/shablonlar` | Katalog: qidiruv, tadbir turi, tarif, tartiblash |
+| `/shablon/[slug]` | Shablon sahifasi: telefon ramkasida jonli demo |
+| `/buyurtma?shablon=...` | Bosqichma-bosqich buyurtma formasi va jonli preview |
+| `/buyurtma/[token]` | Mijoz sahifasi: holat, RSVP, tilaklar, CSV, mehmon havolalari (Luxury). Faqat tasodifiy token orqali ochiladi |
+| `/e/[slug]` | **Mehmonlar ko'radigan taklifnoma** (faqat `PAID` bo'lsa ochiladi) |
 | `/preview/[theme]` | Shablon demo (namuna ma'lumotlar bilan) |
-| `/admin` | Buyurtmalar (parol: `ADMIN_PASSWORD`) |
-| `/admin/javoblar` | RSVP va tilaklar statistikasi |
+| `/boshqaruv` | Admin: buyurtmalar (saytda havolasi yo'q) |
+| `/boshqaruv/javoblar` | Admin: RSVP va tilaklar |
 
-> Muhim: har bir shablon CSS'ida `@source '../../core';` qatori turishi shart.
-> Tailwind faqat shablon papkasini avtomatik skanerlaydi; usiz umumiy
-> `templates-src/core/` komponentlaridagi sinflar (grid, flex, `bg-paper-2`)
-> generatsiya qilinmay, bo'limlar buzuq ko'rinadi.
-
-> Eslatma: admin himoyasi `src/proxy.ts` da (Next.js 16 da `middleware` fayl
-> konvensiyasi `proxy` ga o'zgartirilgan).
+Admin himoyasi `src/proxy.ts` da joylashgan. Next.js 16 da `middleware` fayl
+konvensiyasi `proxy` ga o'zgartirilgan. Sessiya cookie'si HMAC bilan
+imzolangan token (`src/lib/adminAuth.ts`).
 
 ## Oqim
 
-1. Mijoz shablon tanlaydi → buyurtma beradi (`PENDING`) yoki Telegram orqali yozadi
-2. Operator Telegram'da bog'lanadi, **narxni kelishadi** (saytda qat'iy narx yo'q)
-3. Kelishuvdan so'ng admin panelda **"Tasdiqlangan"** bosiladi va havola faollashadi
-4. Mijoz `/buyurtma/[id]` sahifasida Telegram havolasi va holatni ko'radi
-5. Mehmonlar taklifnomani ochadi → RSVP va tilak qoldiradi
-6. Admin `/admin/javoblar` da kuzatib turadi
+1. Mijoz shablon tanlaydi va formani to'ldiradi. Buyurtma `PENDING` holatida saqlanadi, operatorga Telegram'da xabar keladi (tarif va jami summa bilan).
+2. Mijoz Telegram orqali to'laydi, operator admin panelda **«To'landi»** tugmasini bosadi.
+3. Bot operatorga mijozga yuborish uchun tayyor xabar beradi: taklifnoma havolasi va mijoz sahifasi.
+4. Mehmonlar taklifnomani ochadi, RSVP va tilak qoldiradi. Mijoz ularni `/buyurtma/[token]` da ko'radi.
 
-Aloqa manzili bitta joyda: `src/lib/contact.ts` (`TELEGRAM_USERNAME`).
-Narx matnlari: `src/lib/catalog.ts` (`PRICE_SHORT`, `PRICE_NOTE`).
-Bazadagi `Template.price` faqat daraja (Premium/Standart) va admin
-statistikasi uchun qoladi — mijozga ko'rsatilmaydi.
+Aloqa manzili bitta joyda: `src/lib/contact.ts`.
 
-## Deploy
+## Deploy (Vercel + Neon)
 
-Production uchun tavsiya: **Vercel** (sayt) + **Neon/Supabase** (PostgreSQL'ga
-o'tish uchun `prisma/schema.prisma` providerini `postgresql` ga o'zgartiring).
-Shablonlar statik fayllar — `public/t/` bilan birga deploy bo'ladi
-(eslatma: `public/t` git'ga kirmaydi, deploydan oldin
-`npm run templates:build` ni ishga tushiring).
+`vercel.json` build buyrug'i sifatida `npm run vercel-build` ni ishlatadi, u
+`scripts/vercel-build.sh` ni chaqiradi. Skript quyidagilarni bajaradi:
+
+1. Prisma client generatsiyasi.
+2. Shablonlarni build qilish (`public/t` git'ga kirmaydi, build paytida yig'iladi).
+3. **Faqat production'da** (`VERCEL_ENV=production`): `prisma migrate deploy` va bo'sh bazaga seed.
+4. `next build`.
+
+Preview deploy'lar prod bazaga migratsiya qo'llamaydi. Preview uchun alohida
+Neon branch ulangan bo'lsa, Preview muhitiga `MIGRATE_ON_BUILD=1` qo'shing.
+
+**Cron:** `/api/cron/blob-cleanup` kuniga bir marta ishlaydi. U 3 kundan eski
+va hech bir taklifnomada ishlatilmagan suratlar va musiqalarni o'chiradi.
+Ishlashi uchun Vercel'da `CRON_SECRET` o'rnatilgan bo'lishi kerak.
+
+**Tezlik sozlamalari:**
+- Vercel: Fluid Compute yoqilgan (`vercel.json` → `fluid`), funksiyalar `fra1` da — Neon bazasi ham `fra1` da.
+- Rasmlar 31 kun keshlanadi (`next.config.ts` → `images.minimumCacheTTL`).
+- Neon Free tarifida baza 5 daqiqa ishlatilmasa uxlaydi (scale-to-zero, o'chirib bo'lmaydi). Uyg'onish birinchi so'rovga taxminan 0,5–1 soniya qo'shadi. To'liq yo'qotish uchun Neon'ning pullik tarifiga o'tib, scale-to-zero'ni o'chirish kerak (Vercel → Storage → taklifnoma-eu → Open in Neon → Branches → production → Compute → Edit).
+
+**Rate-limit:** login, buyurtma, RSVP/tilak, yuklash va mehmon havolalari
+uchun limitlar Postgres'dagi `RateLimit` jadvalida hisoblanadi. Shuning uchun
+ular barcha serverless instance'lar uchun umumiy.

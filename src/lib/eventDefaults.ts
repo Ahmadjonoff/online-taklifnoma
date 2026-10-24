@@ -84,7 +84,9 @@ export function defaultNotes(eventType: string): NoteItem[] {
       { title: "Kiyinish uslubi", text: "Zamonaviy yoki milliy liboslar" },
       { title: "Sovg'a haqida", text: "Ezgu duolaringiz eng qimmatli sovg'a" },
     ],
-    "nikoh-toyi": [{ title: "Marosim haqida", text: "Nikoh o'qilishi 17:30 da boshlanadi" }],
+    // "Marosim haqida" olib tashlandi: vaqti ("17:30") qattiq yozilgan edi va
+    // mijozning haqiqiy vaqtiga mos kelmasdi. Bo'sh ro'yxat — bo'lim ko'rinmaydi.
+    "nikoh-toyi": [],
     "fotiha-toyi": [{ title: "Eslatma", text: "Marosimdan so'ng dasturxon ochiladi" }],
     "sunnat-toyi": [{ title: "Bolalar uchun", text: "O'yinlar va shirinliklar mavjud" }],
     "beshik-toyi": [{ title: "An'ana", text: "Beshikni opa-singillar bezatadi" }],

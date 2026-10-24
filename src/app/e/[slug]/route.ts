@@ -1,6 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
+import { after } from "next/server";
 import { parseStoredCustomization } from "@/lib/customization";
+import { isoDate } from "@/lib/dates";
+import { scriptJson } from "@/lib/html";
 import { buildInvitationConfig, textOverrides } from "@/lib/invitationConfig";
 import { i18nScriptTag } from "@/lib/invitationI18n";
 import { paletteStyleTag } from "@/lib/palettes";
@@ -80,19 +83,26 @@ export async function GET(
       ? await prisma.guest.findFirst({ where: { code, invitationId: invitation.id } })
       : null;
 
-  // Ko'rishlar sonini oshirish — bot/crawler so'rovlarini hisobga olmaymiz
+  // Ko'rishlar sonini oshirish — bot/crawler so'rovlarini hisobga olmaymiz.
+  // after(): mehmon sahifani DB yozuvlarini kutmasdan oladi.
   const userAgent = req.headers.get("user-agent") ?? "";
   if (!BOT_UA_RE.test(userAgent)) {
-    await prisma.invitation.update({
-      where: { id: invitation.id },
-      data: { views: { increment: 1 } },
+    after(async () => {
+      try {
+        await prisma.invitation.update({
+          where: { id: invitation.id },
+          data: { views: { increment: 1 } },
+        });
+        if (guest) {
+          await prisma.guest.update({
+            where: { id: guest.id },
+            data: { views: { increment: 1 }, openedAt: guest.openedAt ?? new Date() },
+          });
+        }
+      } catch (e) {
+        console.error("Ko'rishlarni hisoblashda xatolik:", e instanceof Error ? e.message : e);
+      }
     });
-    if (guest) {
-      await prisma.guest.update({
-        where: { id: guest.id },
-        data: { views: { increment: 1 }, openedAt: guest.openedAt ?? new Date() },
-      });
-    }
   }
 
   // Shablonning statik index.html ni o'qib, config inject qilamiz
@@ -103,14 +113,19 @@ export async function GET(
     invitation.template.theme,
     "index.html"
   );
-  let html = fs.readFileSync(htmlPath, "utf8");
+  let html: string;
+  try {
+    html = fs.readFileSync(htmlPath, "utf8");
+  } catch {
+    // Shablon build qilinmagan (public/t/<theme> yo'q) — deploy xatosi
+    console.error(`Shablon fayli topilmadi: public/t/${invitation.template.theme}/index.html`);
+    return notFoundResponse();
+  }
 
-  const d = invitation.eventDate;
-  const pad = (n: number) => String(n).padStart(2, "0");
   const invConfig = buildInvitationConfig(
     {
       ...invitation,
-      eventDate: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`,
+      eventDate: isoDate(invitation.eventDate),
     },
     invitation.template,
     options,
@@ -143,7 +158,7 @@ export async function GET(
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<script>window.__INV_CONFIG__=${JSON.stringify(invConfig).replace(/<\/script/gi, "<\\/script")};</script>
+<script>window.__INV_CONFIG__=${scriptJson(invConfig)};</script>
 ${paletteStyleTag(invitation.template.theme, options.palette, options.colors)}
 ${i18nScriptTag(options.langs, textOverrides(invitation.template, options, invitation.message, guest?.name))}`;
   html = html.replace("<head>", `<head>${inject}`);

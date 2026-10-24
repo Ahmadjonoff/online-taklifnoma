@@ -12,7 +12,8 @@ import { findPalette } from "@/lib/palettes";
 
 export const dynamic = "force-dynamic";
 
-const PAGE_SIZE = 20;
+// Bitta sahifada ko'rsatiladigan buyurtmalar soni
+const PAGE_SIZE = 30;
 const FILTERS = [
   { key: "", label: "Hammasi" },
   { key: "PENDING", label: "Kutilmoqda" },
@@ -21,7 +22,7 @@ const FILTERS = [
   { key: "demo", label: "🧪 Demo" },
 ] as const;
 
-type Search = { holat?: string; q?: string; sahifa?: string };
+type Search = { holat?: string; q?: string; page?: string };
 
 function adminHref(sp: Search, patch: Partial<Search>) {
   const next = { ...sp, ...patch };
@@ -33,7 +34,8 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   const sp = await searchParams;
   const filter = FILTERS.some((f) => f.key === sp.holat) ? (sp.holat ?? "") : "";
   const q = (sp.q ?? "").trim().slice(0, 80);
-  const page = Math.max(1, Number(sp.sahifa) || 1);
+  const pageParam = Number(sp.page);
+  const page = Number.isInteger(pageParam) && pageParam > 1 ? pageParam : 1;
   const idQuery = Number(q.replace(/^#/, ""));
 
   // Demo buyurtmalar faqat «Demo» tabida; qolgan tablarda — haqiqiy buyurtmalar
@@ -52,7 +54,14 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
       : {}),
   };
 
-  const [orders, found, real, demoCount] = await Promise.all([
+  // Statistika bazada hisoblanadi (faqat haqiqiy, demo bo'lmagan buyurtmalar) — hammasini xotiraga yuklamaymiz
+  const [counts, revenueRows, orders, found, demoCount] = await Promise.all([
+    prisma.order.groupBy({ by: ["status"], where: { isDemo: false }, _count: { _all: true } }),
+    // Narx 0 — narxlar ochiq bo'lishidan oldingi buyurtma: shablon narxi olinadi
+    prisma.$queryRaw<{ revenue: bigint | number | null }[]>`
+      SELECT SUM(CASE WHEN o."price" > 0 THEN o."price" ELSE t."price" END) AS revenue
+      FROM "Order" o JOIN "Template" t ON t."id" = o."templateId"
+      WHERE o."status" = 'PAID' AND o."isDemo" = false`,
     prisma.order.findMany({
       where,
       include: {
@@ -64,22 +73,16 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
       take: PAGE_SIZE,
     }),
     prisma.order.count({ where }),
-    prisma.order.findMany({
-      where: { isDemo: false },
-      select: { status: true, price: true, template: { select: { price: true } } },
-    }),
     prisma.order.count({ where: { isDemo: true } }),
   ]);
-  const pages = Math.max(1, Math.ceil(found / PAGE_SIZE));
+  const pageCount = Math.max(1, Math.ceil(found / PAGE_SIZE));
 
-  // Statistika — faqat haqiqiy (demo bo'lmagan) buyurtmalar
+  const countOf = (status: string) => counts.find((c) => c.status === status)?._count._all ?? 0;
   const stats = {
-    total: real.length,
-    pending: real.filter((o) => o.status === "PENDING").length,
-    paid: real.filter((o) => o.status === "PAID").length,
-    revenue: real
-      .filter((o) => o.status === "PAID")
-      .reduce((sum, o) => sum + (o.price || o.template.price), 0),
+    total: counts.reduce((sum, c) => sum + c._count._all, 0),
+    pending: countOf("PENDING"),
+    paid: countOf("PAID"),
+    revenue: Number(revenueRows[0]?.revenue ?? 0),
   };
 
   return (
@@ -215,6 +218,11 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
 
                 <div className="flex flex-col items-end gap-2">
                   <OrderActions orderId={order.id} status={order.status} isDemo={order.isDemo} />
+                  {order.invitation && (
+                    <Link href={`/boshqaruv/buyurtma/${order.id}`} className="text-xs font-medium text-stone-600 underline hover:text-stone-900">
+                      ✏️ Tahrirlash
+                    </Link>
+                  )}
                   {order.status === "PAID" && order.invitation && (
                     <div className="flex gap-3 text-xs">
                       <Link
@@ -245,22 +253,26 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
           )}
         </div>
 
-        {pages > 1 && (
-          <div className="mt-8 flex items-center justify-center gap-3 text-sm">
-            {page > 1 && (
-              <Link href={adminHref({ holat: filter, q }, { sahifa: String(page - 1) })} className="rounded-full border border-stone-300 bg-white px-4 py-2">
+        {pageCount > 1 && (
+          <nav className="mt-8 flex items-center justify-center gap-4 text-sm">
+            {page > 1 ? (
+              <Link href={adminHref({ holat: filter, q }, { page: String(page - 1) })} className="rounded-full border border-stone-300 px-4 py-1.5 text-stone-700 hover:border-stone-500">
                 ← Oldingi
               </Link>
+            ) : (
+              <span className="px-4 py-1.5 text-stone-300">← Oldingi</span>
             )}
             <span className="text-stone-500">
-              {page} / {pages}
+              {page} / {pageCount}
             </span>
-            {page < pages && (
-              <Link href={adminHref({ holat: filter, q }, { sahifa: String(page + 1) })} className="rounded-full border border-stone-300 bg-white px-4 py-2">
+            {page < pageCount ? (
+              <Link href={adminHref({ holat: filter, q }, { page: String(page + 1) })} className="rounded-full border border-stone-300 px-4 py-1.5 text-stone-700 hover:border-stone-500">
                 Keyingi →
               </Link>
+            ) : (
+              <span className="px-4 py-1.5 text-stone-300">Keyingi →</span>
             )}
-          </div>
+          </nav>
         )}
       </main>
     </div>

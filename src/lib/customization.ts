@@ -57,6 +57,11 @@ export type Customization = {
   timeline: TimelineItem[] | null;
   googleMapsUrl: string;
   yandexMapsUrl: string;
+  /**
+   * Mijoz xarita havolasi bermay, manzil bo'yicha taxminiy joylashuvni
+   * tasdiqlagan (src/lib/maps.ts). Buyurtmada havolalar shundan yasaladi.
+   */
+  mapConfirmed: boolean;
   /** Musiqa id'si, "none" yoki "custom" (mijoz yuklagan — `customMusicUrl`) */
   music: string;
   customMusicUrl: string;
@@ -92,6 +97,7 @@ export const DEFAULT_CUSTOMIZATION: Customization = {
   timeline: null,
   googleMapsUrl: "",
   yandexMapsUrl: "",
+  mapConfirmed: false,
   music: MUSIC_TRACKS[0].id,
   customMusicUrl: "",
   dressCode: { text: "", colors: [] },
@@ -253,6 +259,7 @@ export function sanitizeCustomization(input: unknown, ctx: Ctx, strict = true): 
       timeline: timeline(o.timeline),
       googleMapsUrl: google ?? "",
       yandexMapsUrl: yandex ?? "",
+      mapConfirmed: bool(o.mapConfirmed, false),
       music:
         music === MUSIC_NONE || music === MUSIC_CUSTOM || MUSIC_TRACKS.some((t) => t.id === music)
           ? music
@@ -336,7 +343,7 @@ export function customizationSummary(
   );
   if (c.timeline) lines.push(`🗓 Kun tartibi: ${c.timeline.length ? `${c.timeline.length} ta band` : "ko'rsatilmaydi"}`);
   const maps = [c.googleMapsUrl && "Google", c.yandexMapsUrl && "Yandex"].filter(Boolean);
-  if (maps.length) lines.push(`🗺 Xarita: ${maps.join(", ")}`);
+  if (maps.length) lines.push(`🗺 Xarita: ${maps.join(", ")}${c.mapConfirmed ? " (taxminiy, manzil bo'yicha — mijoz tasdiqlagan)" : ""}`);
   if (c.dressCode.text) lines.push(`👗 Dress-kod: ${c.dressCode.text}`);
   if (c.gift.cardNumber) lines.push(`💳 Sovg'a kartasi: bor`);
   const LN = { uz: "o'zbek", "uz-cyrl": "kirill", ru: "rus", en: "ingliz" } as const;

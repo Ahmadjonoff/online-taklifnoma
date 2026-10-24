@@ -1,13 +1,15 @@
+import Image from "next/image";
 import Link from "next/link";
 import { getCatalog } from "@/lib/catalogData";
 import { Faq } from "@/components/site/Faq";
 import { PreviewFrame } from "@/components/site/PreviewFrame";
+import { thumbUrl } from "@/lib/thumbs";
 import { Reveal } from "@/components/site/Reveal";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { TelegramIcon } from "@/components/site/TelegramIcon";
 import { TemplateCard } from "@/components/site/TemplateCard";
-import { formatPrice, tierOf } from "@/lib/catalog";
+import { formatPrice } from "@/lib/catalog";
 import { CUSTOM_MUSIC_PRICE, TIER_PRICE, type Tier } from "@/lib/pricing";
 import { telegramUrl } from "@/lib/contact";
 import { getDictionary, t } from "@/lib/i18n/dictionary";
@@ -114,14 +116,26 @@ export default async function HomePage() {
 
                 <div className="mx-auto w-full max-w-[340px] overflow-hidden rounded-[2.75rem] border-[10px] border-stone-900 bg-stone-900 shadow-[0_40px_80px_-40px_rgba(60,45,20,0.7)]">
                   <div className="overflow-hidden rounded-[2.1rem]">
-                    {hero && (
-                      <PreviewFrame
-                        mode="showcase"
-                        src={`/preview/${hero.theme}`}
-                        title={hero.name}
-                        className="block h-[600px] w-full border-0"
-                      />
-                    )}
+                    {hero &&
+                      (thumbUrl(hero.theme, "phone") ? (
+                        // Birinchi ekrandagi asosiy rasm (LCP) — darhol yuklanadi
+                        <Image
+                          src={thumbUrl(hero.theme, "phone")!}
+                          alt={hero.name}
+                          width={320}
+                          height={600}
+                          priority
+                          sizes="320px"
+                          className="block h-[600px] w-full object-cover object-top"
+                        />
+                      ) : (
+                        <PreviewFrame
+                          mode="showcase"
+                          src={`/preview/${hero.theme}`}
+                          title={hero.name}
+                          className="block h-[600px] w-full border-0"
+                        />
+                      ))}
                   </div>
                 </div>
 

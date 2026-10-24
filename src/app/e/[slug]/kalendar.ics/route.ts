@@ -1,4 +1,5 @@
 import { parseStoredCustomization } from "@/lib/customization";
+import { isoDate } from "@/lib/dates";
 import { calendarTitle, icsContent } from "@/lib/invitationConfig";
 import { prisma } from "@/lib/prisma";
 
@@ -15,15 +16,13 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
     return new Response("Topilmadi", { status: 404 });
   }
 
-  const d = inv.eventDate;
-  const pad = (n: number) => String(n).padStart(2, "0");
   const origin = new URL(req.url).origin;
   const ics = icsContent(
     {
       title: inv.title,
       partner1: inv.partner1,
       partner2: inv.partner2,
-      eventDate: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`,
+      eventDate: isoDate(inv.eventDate),
       eventTime: inv.eventTime,
       venueName: inv.venueName,
       venueAddress: inv.venueAddress,
