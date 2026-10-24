@@ -30,6 +30,8 @@ export function EnvelopeGate({ onOpen }: { onOpen: () => void }) {
 
   const opening = phase === 'opening'
   const { couple, event } = config
+  // Konvertdagi yozuv (mijoz yozgan) yoki shaxsiy havolada «Hurmatli Aziz aka!»
+  const envelopeText = (config as unknown as { envelope?: { kicker?: string } }).envelope?.kicker
 
   return (
     <div
@@ -44,7 +46,7 @@ export function EnvelopeGate({ onOpen }: { onOpen: () => void }) {
       {/* Markaz — doim ko'rinadi */}
       <div className="relative z-10 flex h-full flex-col items-center justify-center px-10 text-center">
         <p className="tracking-wider-caps font-body text-[0.68rem] text-gold-dark/80">
-          {event.kicker || 'Sizga taklifnoma keldi'}
+          {envelopeText || event.kicker || 'Sizga taklifnoma keldi'}
         </p>
 
         <h1 className="mt-5 flex flex-col items-center leading-[1.05]">

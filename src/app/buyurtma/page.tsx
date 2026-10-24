@@ -6,7 +6,7 @@ import { getCatalog } from "@/lib/catalogData";
 import { defaultTimeline } from "@/lib/eventDefaults";
 import { getDictionary } from "@/lib/i18n/dictionary";
 import { getLocale } from "@/lib/i18n/server";
-import { MUSIC_TRACKS } from "@/lib/music";
+import { PICKER_TRACKS } from "@/lib/music";
 import { getPalettes, mainColors, roleSwatches } from "@/lib/palettes";
 import { tierOf } from "@/lib/pricing";
 
@@ -90,7 +90,7 @@ export default async function OrderPage({
             swatches={template ? roleSwatches(template.theme) : { paper: [], gold: [], wine: [] }}
             categories={categories}
             defaultEventType={defaultEventType}
-            musicTracks={MUSIC_TRACKS}
+            musicTracks={PICKER_TRACKS}
             dict={dict}
           />
         </div>

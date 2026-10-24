@@ -13,6 +13,16 @@ const FALLBACK_WISHES: WishItem[] = [
   { id: -3, guestName: 'Aziza', message: 'Quvonchingizga quvonaman. Do\'moq do\'st bo\'ling!', createdAt: '' },
 ]
 
+/** Shablon config'ida matn bo'lmasa (ko'p shablonlarda faqat `enabled` keladi) — standart matnlar */
+const WISHES_DEFAULTS = {
+  enabled: true,
+  title: 'Tilaklar daftari',
+  namePlaceholder: 'Ismingizni kiriting',
+  messagePlaceholder: 'Xabaringizni yozing',
+  submitLabel: 'Xabar yuborish',
+  successText: 'Tilagingiz uchun rahmat!',
+}
+
 /** Tilaklar daftari — mehmonlar xabar qoldiradi va boshqalarni o'qiydi. */
 export function Wishes(skin: Skin) {
   const edge = topEdge(skin)
@@ -22,7 +32,10 @@ export function Wishes(skin: Skin) {
   const [wishes, setWishes] = useState<WishItem[] | null>(null)
   const preview = isPreviewContext()
 
-  const { enabled, title, namePlaceholder, messagePlaceholder, submitLabel, successText } = config.wishes
+  const { enabled, title, namePlaceholder, messagePlaceholder, submitLabel, successText } = {
+    ...WISHES_DEFAULTS,
+    ...(config as unknown as { wishes?: Partial<typeof WISHES_DEFAULTS> }).wishes,
+  }
 
   if (!enabled) return null
 
@@ -31,8 +44,9 @@ export function Wishes(skin: Skin) {
     let alive = true
     fetchWishes().then((items) => {
       if (!alive) return
-      // Preview sahifalarida slug bo'lmaydi — fallback kartalar ko'rsatamiz
-      setWishes(items.length > 0 ? items : FALLBACK_WISHES)
+      // Preview sahifalarida slug bo'lmaydi — fallback kartalar faqat o'sha yerda;
+      // haqiqiy taklifnomada soxta tilaklar ko'rinmasin
+      setWishes(items.length > 0 ? items : preview ? FALLBACK_WISHES : [])
     })
     return () => {
       alive = false
@@ -50,7 +64,7 @@ export function Wishes(skin: Skin) {
       setName('')
       setMessage('')
       // Ro'yxatni yangilash
-      fetchWishes().then((items) => setWishes(items.length > 0 ? items : FALLBACK_WISHES))
+      fetchWishes().then((items) => setWishes(items.length > 0 ? items : preview ? FALLBACK_WISHES : []))
       window.setTimeout(() => setStatus('idle'), 4000)
     } catch {
       setStatus('error')

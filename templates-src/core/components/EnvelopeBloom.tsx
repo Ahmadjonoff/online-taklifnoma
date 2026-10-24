@@ -30,6 +30,8 @@ export function EnvelopeBloom({ onOpen }: { onOpen: () => void }) {
   const blooming = phase === 'blooming' || phase === 'opening'
   const opening = phase === 'opening'
   const { couple, event } = config
+  // Konvertdagi yozuv (mijoz yozgan) yoki shaxsiy havolada «Hurmatli Aziz aka!»
+  const envelopeText = (config as unknown as { envelope?: { kicker?: string } }).envelope?.kicker
 
   return (
     <div
@@ -59,7 +61,7 @@ export function EnvelopeBloom({ onOpen }: { onOpen: () => void }) {
         style={{ opacity: blooming ? 0 : 1 }}
       >
         <p className="tracking-wider-caps font-body text-[0.68rem] text-gold-dark/80">
-          {event.kicker || 'Sizga taklifnoma keldi'}
+          {envelopeText || event.kicker || 'Sizga taklifnoma keldi'}
         </p>
 
         <div className="mt-6 transition-transform duration-500" style={{ transform: blooming ? 'scale(0.4)' : 'scale(1)' }}>

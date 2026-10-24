@@ -50,8 +50,12 @@ export function Hero({ bg }: Skin) {
             <span className="font-script text-gilded text-[3.2rem] sm:text-7xl">{couple.groom}</span>
             {couple.bride && (
               <>
-                <span className="font-script my-0.5 text-2xl text-gold/60">&amp;</span>
-                <span className="font-script text-gilded text-[3.2rem] sm:text-7xl">{couple.bride}</span>
+                {couple.bride && (
+                  <>
+                    <span className="font-script my-0.5 text-2xl text-gold/60">&amp;</span>
+                    <span className="font-script text-gilded text-[3.2rem] sm:text-7xl">{couple.bride}</span>
+                  </>
+                )}
               </>
             )}
           </h1>

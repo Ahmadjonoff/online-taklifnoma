@@ -12,6 +12,8 @@ import { CUSTOM_MUSIC_PRICE, TIER_PRICE, type Tier } from "@/lib/pricing";
 import { telegramUrl } from "@/lib/contact";
 import { getDictionary, t } from "@/lib/i18n/dictionary";
 import { getLocale } from "@/lib/i18n/server";
+import { getShowcase } from "@/lib/showcase";
+import { tierLabel } from "@/lib/catalog";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +24,7 @@ export default async function HomePage() {
   const dict = getDictionary(locale);
   const home = dict.home;
 
-  const { eventTypes, templates } = await getCatalog();
+  const [{ eventTypes, templates }, showcase] = await Promise.all([getCatalog(), getShowcase().catch(() => [])]);
   const featured = templates.slice(0, 6);
   const total = templates.length;
 
@@ -189,6 +191,64 @@ export default async function HomePage() {
             ))}
           </div>
         </section>
+
+        {/* ================================================ HAQIQIY NAMUNALAR */}
+        {showcase.length > 0 && (
+          <section id="namunalar" className="mx-auto max-w-6xl scroll-mt-24 px-6 pb-20">
+            <Reveal>
+              <div className="mb-9 flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-widest text-rose-600">{home.showcaseTag}</p>
+                  <h2 className="mt-1 font-serif text-3xl font-bold sm:text-4xl">{home.showcaseTitle}</h2>
+                  <p className="mt-3 max-w-2xl text-stone-600">{home.showcaseText}</p>
+                </div>
+                <Link
+                  href="/shablonlar"
+                  className="rounded-full bg-stone-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-rose-700"
+                >
+                  {home.showcaseCta} →
+                </Link>
+              </div>
+            </Reveal>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {showcase.map((s, i) => (
+                <Reveal key={s.slug} delay={(i % 3) * 80}>
+                  <a
+                    href={`/e/${s.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block overflow-hidden rounded-3xl border border-stone-200/80 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element -- dinamik og.png, optimallashtirish shart emas */}
+                    <img
+                      src={`/e/${s.slug}/og.png`}
+                      alt={`${s.kicker}: ${s.names}`}
+                      width={1200}
+                      height={630}
+                      loading="lazy"
+                      className="aspect-[1200/630] w-full object-cover"
+                    />
+                    <div className="flex items-center justify-between gap-3 p-5">
+                      <div className="min-w-0">
+                        <p className="truncate text-xs font-semibold uppercase tracking-widest text-rose-600">
+                          {s.kicker}
+                          {s.city ? ` · ${s.city}` : ""}
+                        </p>
+                        <p className="mt-1 truncate font-serif text-lg font-bold text-stone-900">{s.names}</p>
+                        <p className="text-xs text-stone-500">
+                          «{s.templateName}» · {tierLabel(s.tier, dict.common)}
+                        </p>
+                      </div>
+                      <span className="shrink-0 rounded-full border border-stone-300 px-4 py-2 text-xs font-semibold text-stone-700 transition group-hover:border-stone-900 group-hover:bg-stone-900 group-hover:text-white">
+                        {home.showcaseOpen} →
+                      </span>
+                    </div>
+                  </a>
+                </Reveal>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* ================================================== TAQQOSLASH */}
         <section className="mx-auto max-w-6xl px-6 pb-20">

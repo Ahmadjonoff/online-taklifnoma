@@ -39,7 +39,8 @@ export function Hero({ bg }: Skin) {
 
         <Reveal delay={650}>
           <h1 className="mt-8 flex flex-col items-center leading-[0.95]">
-            <span className="font-script text-gilded text-[4rem] sm:text-7xl">{couple.bride}</span>
+            {/* Bitta ismli shablon: sayt yagona ismni `groom` ga yozadi (namuna config'da — `bride`) */}
+            <span className="font-script text-gilded text-[4rem] sm:text-7xl">{couple.groom || couple.bride}</span>
           </h1>
         </Reveal>
 

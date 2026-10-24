@@ -34,7 +34,7 @@ export const en: Dictionary = {
   footer: {
     tagline:
       "Live online invitations for weddings, nikah, sunnat celebrations and other events — one link, unlimited guests.",
-    priceLine: "Prices from 149 000 UZS. No hidden fees.",
+    priceLine: "Prices from 79 000 UZS. No hidden fees.",
     customDesignLine: "Not just templates — we also build fully custom invitations on request.",
     eventTypesTitle: "Event types",
     pagesTitle: "Pages",
@@ -65,6 +65,11 @@ export const en: Dictionary = {
     liveSampleLabel: "Live sample",
     liveSampleView: "View",
 
+    showcaseTag: "Real examples",
+    showcaseTitle: "Invitations made on the site",
+    showcaseText: "Different celebrations, names and cities — open any of them on your phone: envelope, music, map and an RSVP button.",
+    showcaseOpen: "Open",
+    showcaseCta: "Create yours",
     templatesTag: "Featured",
     templatesTitle: "Popular templates",
     templatesText: "Every template comes with a live preview — open the envelope and see the animation.",
@@ -191,7 +196,7 @@ export const en: Dictionary = {
     ctaTag: "One link — a whole celebration",
     ctaTitle: "Create the perfect invitation for your wedding",
     ctaText:
-      "Choose a template, enter your details and send the link to your guests — we'll take care of the rest. Prices from 149 000 UZS.",
+      "Choose a template, enter your details and send the link to your guests — we'll take care of the rest. Prices from 79 000 UZS.",
     ctaTemplateBtn: "Choose a template",
     ctaOrderBtn: "Place an order",
   },
@@ -219,7 +224,7 @@ export const en: Dictionary = {
     },
     {
       q: "How much does it cost and how do I pay?",
-      a: "The price depends on the design: Standard — 149 000, Premium — 199 000, Luxury — 279 000 UZS. Music, countdown, RSVP, guest wishes and colour choice are included; uploading your own music is +29 000 UZS. Payment is via Telegram: after sending your order, message the operator to pay.",
+      a: "The price depends on the design: Standard — 79 000, Premium — 149 000, Luxury — 249 000 UZS. Music, countdown, RSVP, guest wishes and colour choice are included; uploading your own music is +19 000 UZS. Payment is via Telegram: after sending your order, message the operator to pay.",
     },
     {
       q: "Can I just contact you on Telegram?",
@@ -389,6 +394,8 @@ export const en: Dictionary = {
     eventType: "Event type",
     kicker: "Line above the names",
     kickerPlaceholder: "E.g. Wedding",
+    envelopeLabel: "Envelope text (optional)",
+    envelopePlaceholder: "E.g. Join us on our big day",
     scheduleTitle: "4. Schedule",
     scheduleHint: "Event programme — edit, add or remove items.",
     scheduleItemPlaceholder: "E.g. Welcoming guests",
@@ -432,6 +439,10 @@ export const en: Dictionary = {
     statusComing: "Coming · {n}",
     statusNotComing: "Can't come",
     guestInviteText: "Dear {name}! You are invited to our celebration:",
+    notifyTitle: "Get guest replies in Telegram",
+    notifyText: "The moment a guest taps RSVP or leaves a wish, you get a Telegram message.",
+    notifyButton: "Connect Telegram",
+    notifyOn: "✅ Telegram connected — new replies come to you. To turn off, send /stop to the bot.",
     shareImagesTitle: "Images to share",
     shareImagesHint: "An Instagram story and a printable QR postcard — ready-made images to download and share.",
     storyImage: "Instagram story (PNG)",

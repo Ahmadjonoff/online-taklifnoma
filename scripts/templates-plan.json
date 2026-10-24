@@ -70,7 +70,7 @@
       "palette": "royal-gold",
       "typo": "classic",
       "desc": "Qorong'i fon, oltin zarhal ramka va gullar — hashamatli, sahnaviy uslub",
-      "price": 279000,
+      "price": 249000,
       "emoji": "👑",
       "kicker": "Nikoh kuni",
       "categories": [
@@ -92,7 +92,7 @@
       "palette": "ivory-pearl",
       "typo": "classic",
       "desc": "Oq-oltin, gulli va hurmatli an'anaviy uslub",
-      "price": 199000,
+      "price": 149000,
       "emoji": "🕌",
       "kicker": "Nikoh to'yi",
       "categories": [
@@ -111,7 +111,7 @@
       "palette": "emerald-night",
       "typo": "classic",
       "desc": "Yarim oy va yulduz naqshlari — sharqona nafislik",
-      "price": 199000,
+      "price": 149000,
       "emoji": "☪",
       "kicker": "Nikoh marosimi",
       "categories": [
@@ -130,7 +130,7 @@
       "palette": "sunset-amber",
       "typo": "classic",
       "desc": "Art-deko oltin ramka va iliq shafaq ranglari",
-      "price": 199000,
+      "price": 149000,
       "emoji": "🌅",
       "kicker": "Nikoh dasturxoni",
       "categories": [
@@ -150,7 +150,7 @@
       "palette": "ivory-pearl",
       "typo": "script",
       "desc": "Anor va marvarid naqshlari — yumshoq, sharqona uslub",
-      "price": 199000,
+      "price": 149000,
       "emoji": "🤍",
       "kicker": "Nikoh kechasi",
       "categories": [
@@ -169,7 +169,7 @@
       "palette": "sapphire-noir",
       "typo": "classic",
       "desc": "Safir ko'ki va oltin — tungi, zamonaviy uslub",
-      "price": 149000,
+      "price": 79000,
       "emoji": "💙",
       "kicker": "Nikoh to'yi",
       "categories": [
@@ -188,7 +188,7 @@
       "palette": "sage-mist",
       "typo": "minimal",
       "desc": "Anor va gullar — tabiiy, ochiq havo uslubi",
-      "price": 149000,
+      "price": 79000,
       "emoji": "🌸",
       "kicker": "Biz nikoh qilamiz",
       "categories": [
@@ -208,7 +208,7 @@
       "palette": "sunset-amber",
       "typo": "script",
       "desc": "Bulut va yulduzlar — bolalar bayramlari uchun quvnoq uslub",
-      "price": 149000,
+      "price": 79000,
       "emoji": "☀️",
       "kicker": "Sunnat to'yi",
       "categories": [
@@ -225,7 +225,7 @@
       "palette": "candy-cloud",
       "typo": "script",
       "desc": "Shirinliklar va sharlar — quvnoq kun",
-      "price": 149000,
+      "price": 79000,
       "emoji": "🎈",
       "kicker": "Sunnat bayrami",
       "categories": [
@@ -242,7 +242,7 @@
       "palette": "sunset-amber",
       "typo": "script",
       "desc": "Iliq, uyumli ranglar — chaqaloq bayrami",
-      "price": 149000,
+      "price": 79000,
       "emoji": "🍼",
       "kicker": "Beshik to'yi",
       "categories": [
@@ -258,7 +258,7 @@
       "palette": "sapphire-noir",
       "typo": "script",
       "desc": "Osmon ko'ki — chaqaloq va bolalar bayrami",
-      "price": 149000,
+      "price": 79000,
       "emoji": "💙",
       "kicker": "Beshik to'yi",
       "categories": [
@@ -275,7 +275,7 @@
       "palette": "emerald-night",
       "typo": "classic",
       "desc": "Zumrad va oltin — kechki tantana",
-      "price": 149000,
+      "price": 79000,
       "emoji": "✨",
       "kicker": "Yubiley kechasi",
       "categories": [
@@ -292,7 +292,7 @@
       "palette": "sapphire-noir",
       "typo": "classic",
       "desc": "Texnologiya sammiti — professional",
-      "price": 149000,
+      "price": 79000,
       "emoji": "🎤",
       "kicker": "Texnologiya sammiti",
       "categories": [
@@ -308,7 +308,7 @@
       "palette": "sapphire-noir",
       "typo": "classic",
       "desc": "Biznes konferensiya — ishonchli",
-      "price": 149000,
+      "price": 79000,
       "emoji": "💼",
       "kicker": "Biznes konferensiya",
       "categories": [
@@ -324,7 +324,7 @@
       "palette": "burgundy-luxe",
       "typo": "classic",
       "desc": "Restoran/kafe ochilishi — mazali kayfiyat",
-      "price": 149000,
+      "price": 79000,
       "emoji": "🍴",
       "kicker": "Restoran ochilishi",
       "categories": [
@@ -340,7 +340,7 @@
       "palette": "sunset-amber",
       "typo": "classic",
       "desc": "Anor naqshli iliq uslub — kechki qabul va oilaviy davralar uchun",
-      "price": 199000,
+      "price": 149000,
       "emoji": "🤝",
       "kicker": "Kechki qabul",
       "categories": [
@@ -359,7 +359,7 @@
       "palette": "royal-gold",
       "typo": "classic",
       "desc": "Qorong'i fon, oltin nur va gullar — tantanali oqshom",
-      "price": 199000,
+      "price": 149000,
       "emoji": "💞",
       "kicker": "Oltin to'y",
       "categories": [
@@ -377,7 +377,7 @@
       "palette": "rose-garden",
       "typo": "script",
       "desc": "Pushti bulutlar va gullar — samimiy davralar va bayramlar",
-      "price": 149000,
+      "price": 79000,
       "emoji": "💐",
       "kicker": "Gul sayli",
       "categories": [

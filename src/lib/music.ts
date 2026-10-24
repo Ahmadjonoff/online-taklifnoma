@@ -7,7 +7,13 @@
  */
 import { isOwnBlobUrl } from "./blob";
 
-export type MusicTrack = { id: string; name: string; src: string };
+export type MusicTrack = {
+  id: string;
+  name: string;
+  src: string;
+  /** Tanlov ro'yxatida ko'rinmaydi — faqat avval tanlagan buyurtmalar uchun ishlab turadi */
+  hidden?: boolean;
+};
 
 export const MUSIC_TRACKS: MusicTrack[] = [
   { id: "classic", name: "Nafis kuy", src: "/music.mp3" },
@@ -18,8 +24,12 @@ export const MUSIC_TRACKS: MusicTrack[] = [
   { id: "satie-gymnopedie", name: "Sati — Gimnopediya (fortepiano)", src: "/music/satie-gymnopedie.mp3" },
   { id: "schumann-traumerei", name: "Shuman — Orzu (fortepiano)", src: "/music/schumann-traumerei.mp3" },
   { id: "wedding-march", name: "Mendelson — To'y marshi", src: "/music/wedding-march.mp3" },
-  { id: "ave-maria", name: "Shubert — Ave Maria", src: "/music/ave-maria.mp3" },
+  // Xristian madhiyasi — o'zbek to'ylariga mos emas: yangi buyurtmalarda taklif qilinmaydi
+  { id: "ave-maria", name: "Shubert — Ave Maria", src: "/music/ave-maria.mp3", hidden: true },
 ];
+
+/** Buyurtma formasidagi tanlov ro'yxati */
+export const PICKER_TRACKS = MUSIC_TRACKS.filter((t) => !t.hidden);
 
 export const MUSIC_NONE = "none";
 /** Mijoz o'zi yuklagan musiqa (`Customization.customMusicUrl`) */

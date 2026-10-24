@@ -5,6 +5,7 @@ import { Blessing } from '@core/components/Blessing'
 import { Countdown } from '@core/components/Countdown'
 import { Envelope } from './components/Envelope'
 import { Footer } from '@core/components/Footer'
+import { Wishes } from '@core/components/Wishes'
 import { Gallery } from '@core/components/Gallery'
 import { Rsvp } from '@core/components/Rsvp'
 import { Venue } from '@core/components/Venue'
@@ -19,6 +20,11 @@ import type { Bg, Skin } from '@core/lib/skin'
  */
 type SectionDef = { key: string; bg: Bg; Comp: (skin: Skin) => React.ReactNode }
 
+/** RSVP/tilaklar — platforma config'idan (shablonning standart config'ida bo'lmasligi mumkin) */
+function sectionOn(key: 'rsvp' | 'wishes'): boolean {
+  return Boolean((config as unknown as Record<string, { enabled?: boolean } | undefined>)[key]?.enabled)
+}
+
 function sectionList(): SectionDef[] {
   const all: Array<SectionDef | false> = [
     { key: 'hero', bg: 'paper', Comp: Hero },
@@ -30,6 +36,7 @@ function sectionList(): SectionDef[] {
     { key: 'countdown', bg: 'paper', Comp: Countdown },
     { key: 'venue', bg: 'paper-2', Comp: Venue },
     config.rsvp.enabled && { key: 'rsvp', bg: 'paper' as Bg, Comp: Rsvp },
+    sectionOn('wishes') && { key: 'wishes', bg: 'paper-3' as Bg, Comp: Wishes },
     { key: 'footer', bg: 'paper-2', Comp: Footer },
   ]
 

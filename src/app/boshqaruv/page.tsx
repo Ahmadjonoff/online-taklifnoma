@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { OrderActions } from "@/components/OrderActions";
 import { customizationSummary, parseStoredCustomization } from "@/lib/customization";
@@ -11,20 +12,72 @@ import { findPalette } from "@/lib/palettes";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminPage() {
-  const orders = await prisma.order.findMany({
-    include: {
-      template: { include: { categories: { select: { slug: true, name: true } } } },
-      invitation: true,
-    },
-    orderBy: { id: "desc" },
-  });
+const PAGE_SIZE = 20;
+const FILTERS = [
+  { key: "", label: "Hammasi" },
+  { key: "PENDING", label: "Kutilmoqda" },
+  { key: "PAID", label: "Tasdiqlangan" },
+  { key: "REJECTED", label: "Bekor qilingan" },
+  { key: "demo", label: "🧪 Demo" },
+] as const;
 
+type Search = { holat?: string; q?: string; sahifa?: string };
+
+function adminHref(sp: Search, patch: Partial<Search>) {
+  const next = { ...sp, ...patch };
+  const qs = new URLSearchParams(Object.entries(next).filter(([, v]) => v) as [string, string][]).toString();
+  return `/boshqaruv${qs ? `?${qs}` : ""}`;
+}
+
+export default async function AdminPage({ searchParams }: { searchParams: Promise<Search> }) {
+  const sp = await searchParams;
+  const filter = FILTERS.some((f) => f.key === sp.holat) ? (sp.holat ?? "") : "";
+  const q = (sp.q ?? "").trim().slice(0, 80);
+  const page = Math.max(1, Number(sp.sahifa) || 1);
+  const idQuery = Number(q.replace(/^#/, ""));
+
+  // Demo buyurtmalar faqat «Demo» tabida; qolgan tablarda — haqiqiy buyurtmalar
+  const where: Prisma.OrderWhereInput = {
+    ...(filter === "demo" ? { isDemo: true } : { isDemo: false, ...(filter ? { status: filter } : {}) }),
+    ...(q
+      ? {
+          OR: [
+            { customerName: { contains: q, mode: "insensitive" } },
+            { phone: { contains: q } },
+            { invitation: { is: { title: { contains: q, mode: "insensitive" } } } },
+            { invitation: { is: { slug: { contains: q.toLowerCase() } } } },
+            ...(Number.isInteger(idQuery) && idQuery > 0 ? [{ id: idQuery }] : []),
+          ],
+        }
+      : {}),
+  };
+
+  const [orders, found, real, demoCount] = await Promise.all([
+    prisma.order.findMany({
+      where,
+      include: {
+        template: { include: { categories: { select: { slug: true, name: true } } } },
+        invitation: true,
+      },
+      orderBy: { id: "desc" },
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    }),
+    prisma.order.count({ where }),
+    prisma.order.findMany({
+      where: { isDemo: false },
+      select: { status: true, price: true, template: { select: { price: true } } },
+    }),
+    prisma.order.count({ where: { isDemo: true } }),
+  ]);
+  const pages = Math.max(1, Math.ceil(found / PAGE_SIZE));
+
+  // Statistika — faqat haqiqiy (demo bo'lmagan) buyurtmalar
   const stats = {
-    total: orders.length,
-    pending: orders.filter((o) => o.status === "PENDING").length,
-    paid: orders.filter((o) => o.status === "PAID").length,
-    revenue: orders
+    total: real.length,
+    pending: real.filter((o) => o.status === "PENDING").length,
+    paid: real.filter((o) => o.status === "PAID").length,
+    revenue: real
       .filter((o) => o.status === "PAID")
       .reduce((sum, o) => sum + (o.price || o.template.price), 0),
   };
@@ -78,10 +131,38 @@ export default async function AdminPage() {
           ))}
         </div>
 
+        <p className="mt-3 text-xs text-stone-400">
+          Statistika faqat haqiqiy buyurtmalar bo&apos;yicha — {demoCount} ta demo/test buyurtma hisobga olinmagan.
+        </p>
+
         {/* Buyurtmalar */}
-        <h2 className="mb-4 mt-10 font-serif text-xl font-bold text-stone-900">
-          Buyurtmalar
-        </h2>
+        <div className="mb-4 mt-10 flex flex-wrap items-center justify-between gap-4">
+          <h2 className="font-serif text-xl font-bold text-stone-900">Buyurtmalar</h2>
+          <form action="/boshqaruv" className="flex gap-2">
+            {filter && <input type="hidden" name="holat" value={filter} />}
+            <input
+              name="q"
+              defaultValue={q}
+              placeholder="Ism, telefon, #raqam yoki havola"
+              className="w-64 rounded-full border border-stone-300 bg-white px-4 py-2 text-sm outline-none focus:border-stone-500"
+            />
+            <button className="rounded-full bg-stone-900 px-4 py-2 text-sm font-semibold text-white">Qidirish</button>
+          </form>
+        </div>
+        <nav className="mb-5 flex flex-wrap gap-2 text-sm">
+          {FILTERS.map((f) => (
+            <Link
+              key={f.key}
+              href={adminHref({ q }, { holat: f.key })}
+              className={`rounded-full border px-4 py-1.5 transition ${
+                filter === f.key ? "border-stone-900 bg-stone-900 text-white" : "border-stone-300 bg-white text-stone-600 hover:border-stone-400"
+              }`}
+            >
+              {f.label}
+            </Link>
+          ))}
+          <span className="self-center pl-2 text-xs text-stone-400">{found} ta topildi</span>
+        </nav>
         <div className="space-y-4">
           {orders.map((order) => (
             <div
@@ -109,6 +190,12 @@ export default async function AdminPage() {
                           ? "Kutilmoqda"
                           : "Bekor qilingan"}
                     </span>
+                    {order.isDemo && (
+                      <span className="rounded-full bg-violet-100 px-3 py-1 text-xs font-semibold text-violet-700">🧪 Demo</span>
+                    )}
+                    {order.source && (
+                      <span className="rounded-full bg-sky-50 px-3 py-1 text-xs font-medium text-sky-700">📍 {order.source}</span>
+                    )}
                   </div>
                   <p className="mt-2 text-sm text-stone-700">
                     <strong>{order.customerName}</strong> • {order.phone}
@@ -127,7 +214,7 @@ export default async function AdminPage() {
                 </div>
 
                 <div className="flex flex-col items-end gap-2">
-                  <OrderActions orderId={order.id} status={order.status} />
+                  <OrderActions orderId={order.id} status={order.status} isDemo={order.isDemo} />
                   {order.status === "PAID" && order.invitation && (
                     <div className="flex gap-3 text-xs">
                       <Link
@@ -153,10 +240,28 @@ export default async function AdminPage() {
 
           {orders.length === 0 && (
             <div className="rounded-2xl border border-dashed border-stone-300 bg-white/50 p-12 text-center text-stone-500">
-              Hozircha buyurtmalar yo&apos;q.
+              {q || filter ? "Hech narsa topilmadi." : "Hozircha buyurtmalar yo'q."}
             </div>
           )}
         </div>
+
+        {pages > 1 && (
+          <div className="mt-8 flex items-center justify-center gap-3 text-sm">
+            {page > 1 && (
+              <Link href={adminHref({ holat: filter, q }, { sahifa: String(page - 1) })} className="rounded-full border border-stone-300 bg-white px-4 py-2">
+                ← Oldingi
+              </Link>
+            )}
+            <span className="text-stone-500">
+              {page} / {pages}
+            </span>
+            {page < pages && (
+              <Link href={adminHref({ holat: filter, q }, { sahifa: String(page + 1) })} className="rounded-full border border-stone-300 bg-white px-4 py-2">
+                Keyingi →
+              </Link>
+            )}
+          </div>
+        )}
       </main>
     </div>
   );

@@ -8,6 +8,7 @@ import { formatPrice, orderPrice, tierOf } from "@/lib/pricing";
 import { prisma } from "@/lib/prisma";
 import { notifyAdminNewOrder } from "@/lib/telegramBot";
 import { clientIp, rateLimit } from "@/lib/rateLimit";
+import { cleanSource } from "@/lib/attribution";
 
 // Spamdan himoya: bitta IP uchun 1 daqiqada ko'pi bilan 5 buyurtma.
 const ORDER_LIMIT = 5;
@@ -70,9 +71,10 @@ export async function POST(req: Request) {
       );
     }
 
-    // Telefon: +998 yoki 998 bilan boshlanadigan 9 xonali raqam (bo'shliq/tire bilan ham)
+    // Telefon: O'zbekiston (+998 / 998 / 9 xonali) yoki chet el raqami xalqaro formatda (+7…, +90…;
+    // E.164 — 8–15 raqam). Chet eldagi qarindoshlar ham buyurtma bera olsin.
     const phoneDigits = phone.replace(/[\s()-]/g, "");
-    if (!/^(\+?998)?\d{9}$/.test(phoneDigits)) {
+    if (!/^(\+?998)?\d{9}$/.test(phoneDigits) && !/^\+[1-9]\d{7,14}$/.test(phoneDigits)) {
       return NextResponse.json(
         { error: "Telefon raqami noto'g'ri formatda" },
         { status: 400 }
@@ -122,6 +124,7 @@ export async function POST(req: Request) {
         templateId: template.id,
         status: "PENDING",
         price,
+        source: cleanSource((body as { source?: unknown }).source),
         invitation: {
           create: {
             slug,
@@ -162,6 +165,7 @@ export async function POST(req: Request) {
         title,
         eventDate: `${eventDate.split("-").reverse().join(".")} ${eventTime || "18:00"}`,
         venueName,
+        source: order.source,
         // So'rov kelgan domen (preview deploy'larda ham to'g'ri havola bo'lsin)
         customerPageUrl: `${new URL(req.url).origin}/buyurtma/${order.accessToken}`,
         details: customizationSummary(c, {

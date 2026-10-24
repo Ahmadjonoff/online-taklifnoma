@@ -7,6 +7,17 @@ import { isPreviewContext, submit } from '../lib/submit'
 import { WaxSeal } from '@decor/WaxSeal'
 import { GoldButton, Reveal, ScriptTitle, Section } from '@ui'
 
+/** Shablon config'ida matn bo'lmasa (ko'p shablonlarda faqat `enabled` keladi) — standart matnlar */
+const RSVP_DEFAULTS = {
+  enabled: true,
+  title: 'Ishtirokni tasdiqlang',
+  text: 'Bayramni yaxshi tayyorlashimiz uchun, iltimos, kelishingizni tasdiqlang.',
+  sealText: 'RSVP',
+  openHint: 'Ochish uchun bosing',
+  successText: 'Rahmat! Javobingiz qabul qilindi.',
+}
+const rsvp = { ...RSVP_DEFAULTS, ...(config as unknown as { rsvp?: Partial<typeof RSVP_DEFAULTS> }).rsvp }
+
 type Status = 'idle' | 'sending' | 'done' | 'error'
 
 /** Ishtirokni tasdiqlash: muhr bosiladi → forma ochiladi. */
@@ -36,7 +47,7 @@ export function Rsvp(skin: Skin) {
     }
   }, [open])
 
-  if (!config.rsvp.enabled) return null
+  if (!rsvp.enabled) return null
 
   async function send(e: React.FormEvent) {
     e.preventDefault()
@@ -59,16 +70,16 @@ export function Rsvp(skin: Skin) {
   return (
     <Section skin={skin} id="rsvp">
       <Reveal>
-        <ScriptTitle flourish={false}>{config.rsvp.title}</ScriptTitle>
+        <ScriptTitle flourish={false}>{rsvp.title}</ScriptTitle>
         <p className="mx-auto mt-4 max-w-sm font-body text-lg leading-relaxed text-ink-soft sm:text-xl">
-          {config.rsvp.text}
+          {rsvp.text}
         </p>
       </Reveal>
 
       <Reveal delay={200}>
         {preview ? (
           <div className="mt-10 flex w-full flex-col items-center gap-2 opacity-80">
-            <WaxSeal id="rsvp" label={config.rsvp.sealText} size={150} variant="caps" />
+            <WaxSeal id="rsvp" label={rsvp.sealText} size={150} variant="caps" />
             <span className="mt-2 max-w-xs text-center font-body text-sm text-ink-soft">
               Bu — namuna. RSVP faqat haqiqiy (sotib olingan) taklifnomada ishlaydi.
             </span>
@@ -81,12 +92,12 @@ export function Rsvp(skin: Skin) {
             aria-haspopup="dialog"
           >
             <span className="animate-pulse-soft transition-transform duration-300 group-active:scale-95">
-              <WaxSeal id="rsvp" label={config.rsvp.sealText} size={150} variant="caps" />
+              <WaxSeal id="rsvp" label={rsvp.sealText} size={150} variant="caps" />
             </span>
             <svg width="24" height="11" viewBox="0 0 26 12" fill="none" className="mt-1 text-gold/60">
               <path d="M2 10L13 2l11 8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
             </svg>
-            <span className="font-script text-2xl text-gold/85">{config.rsvp.openHint}</span>
+            <span className="font-script text-2xl text-gold/85">{rsvp.openHint}</span>
           </button>
         )}
       </Reveal>
@@ -99,7 +110,7 @@ export function Rsvp(skin: Skin) {
             className="fixed inset-0 z-50 flex items-end justify-center bg-ink/45 px-4 py-6 backdrop-blur-[3px] sm:items-center"
             role="dialog"
             aria-modal="true"
-            aria-label={config.rsvp.title}
+            aria-label={rsvp.title}
             onClick={(e) => e.target === e.currentTarget && setOpen(false)}
           >
             <div className="paper-grain relative max-h-full w-full max-w-md overflow-y-auto rounded-2xl border border-gold/25 bg-paper p-7 text-left shadow-2xl">
@@ -121,11 +132,11 @@ export function Rsvp(skin: Skin) {
                     <path d="M6 13.5l4.5 4.5L20 8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                   </svg>
                 </div>
-                <p className="mt-5 font-script text-gilded text-3xl">{config.rsvp.successText}</p>
+                <p className="mt-5 font-script text-gilded text-3xl">{rsvp.successText}</p>
               </div>
             ) : (
               <form onSubmit={send} className="space-y-5">
-                <h3 className="text-center font-script text-gilded text-4xl">{config.rsvp.title}</h3>
+                <h3 className="text-center font-script text-gilded text-4xl">{rsvp.title}</h3>
 
                 <Field label="Ismingiz">
                   <input

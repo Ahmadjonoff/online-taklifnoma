@@ -1,6 +1,8 @@
 "use client";
 
 import { upload } from "@vercel/blob/client";
+import { getSource } from "@/lib/attribution";
+import { trackLead } from "@/components/site/Analytics";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PreviewFrame } from "@/components/site/PreviewFrame";
@@ -78,6 +80,16 @@ export function OrderForm({
   const step: Step = STEPS[stepIndex];
   const stepBoxRef = useRef<HTMLDivElement>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
+  // Kompyuter (yonida preview) yoki telefon (to'liq ekranli oyna) — bitta iframe yuklansin.
+  // Telefonda oyna yopiq turganda ham iframe orqada yuklanib turadi: ochilganda darhol ko'rinadi.
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const sync = () => setIsDesktop(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
   // Buyurtma yuborilgach preview'ni yopamiz: iframe ichidagi yuklanishlar
   // (shablon, shriftlar) keyingi sahifaga o'tishga xalaqit bermasin
   const [leaving, setLeaving] = useState(false);
@@ -102,6 +114,7 @@ export function OrderForm({
   const [timeline, setTimeline] = useState<TimelineItem[]>(initialCategory?.timeline ?? []);
   // Mijoz o'zi tahrirlagan bo'lsa — tadbir turini almashtirganda ustidan yozmaymiz
   const [kickerTouched, setKickerTouched] = useState(false);
+  const [envelopeText, setEnvelopeText] = useState("");
   const [timelineTouched, setTimelineTouched] = useState(false);
   const [googleMapsUrl, setGoogleMapsUrl] = useState("");
   const [yandexMapsUrl, setYandexMapsUrl] = useState("");
@@ -193,6 +206,7 @@ export function OrderForm({
       colors,
       eventType,
       kicker,
+      envelope: envelopeText,
       timeline,
       googleMapsUrl,
       yandexMapsUrl,
@@ -209,7 +223,7 @@ export function OrderForm({
       gallery,
       calendar,
     }),
-    [palette, colors, eventType, kicker, timeline, googleMapsUrl, yandexMapsUrl, music, customMusic, dressText, dressColors, giftCard, giftHolder, rsvp, wishes, petals, langs, translations, storyTitle, storyText, storyPhoto, gallery, calendar]
+    [palette, colors, eventType, kicker, envelopeText, timeline, googleMapsUrl, yandexMapsUrl, music, customMusic, dressText, dressColors, giftCard, giftHolder, rsvp, wishes, petals, langs, translations, storyTitle, storyText, storyPhoto, gallery, calendar]
   );
 
   const price = orderPrice(templatePrice, options);
@@ -341,10 +355,12 @@ export function OrderForm({
           venueAddress,
           message,
           options,
+          source: getSource(),
         }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? o.genericError);
+      trackLead(price.total);
       audioRef.current?.pause();
       setLeaving(true);
       router.push(`/buyurtma/${data.orderToken}`);
@@ -399,7 +415,7 @@ export function OrderForm({
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
-      <form onSubmit={handleSubmit} noValidate={false} className="space-y-5">
+      <form onSubmit={handleSubmit} noValidate={false} className="space-y-5 pb-20 lg:pb-0">
         {/* ------------------------------------------------ Qadamlar */}
         <nav aria-label={t(o.stepOf, { n: stepIndex + 1, total: STEPS.length })}>
           <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-rose-600">
@@ -579,6 +595,16 @@ export function OrderForm({
                     }}
                     className={inputClass}
                     placeholder={o.kickerPlaceholder}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>{o.envelopeLabel}</label>
+                  <input
+                    value={envelopeText}
+                    maxLength={LIMITS.envelope}
+                    onChange={(e) => setEnvelopeText(e.target.value)}
+                    className={inputClass}
+                    placeholder={o.envelopePlaceholder}
                   />
                 </div>
               </div>
@@ -1158,8 +1184,8 @@ export function OrderForm({
                     type="tel"
                     inputMode="tel"
                     // Chrome pattern'ni "v" rejimida tekshiradi: sinf ichida "-" ekranlanishi shart
-                    pattern="^(\+?998)?[\s\-]?\d{2}[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}$"
-                    title="Masalan: +998 90 123 45 67"
+                    pattern="^((\+?998)?[\s\-]?\d{2}[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}|\+[1-9][\d\s\-\(\)]{7,18})$"
+                    title="Masalan: +998 90 123 45 67 (chet el raqami: +7 912 345 67 89)"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     className={inputClass}
@@ -1236,20 +1262,27 @@ export function OrderForm({
       <div className="hidden lg:sticky lg:top-6 lg:block lg:self-start">
         <p className="mb-3 text-center text-sm font-medium text-stone-500">{o.livePreview}</p>
         <div className="overflow-hidden rounded-[2rem] border-8 border-stone-800 bg-stone-800 shadow-2xl">
-          {!previewOpen && !leaving && preview}
+          {isDesktop && !leaving && preview}
         </div>
       </div>
 
-      {/* Telefonda — pastdagi tugma orqali to'liq ekranda */}
+      {/* Telefonda — o'ng pastdagi tugma orqali to'liq ekranda (oldindan yuklangan) */}
       <button
         type="button"
         onClick={() => setPreviewOpen(true)}
-        className="fixed bottom-4 left-1/2 z-40 -translate-x-1/2 rounded-full bg-stone-900 px-5 py-3 text-sm font-semibold text-white shadow-xl lg:hidden"
+        className="fixed bottom-4 right-4 z-40 rounded-full bg-stone-900 px-5 py-3 text-sm font-semibold text-white shadow-xl lg:hidden"
       >
         {o.showPreview}
       </button>
-      {previewOpen && !leaving && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-stone-950/90 p-3 lg:hidden" role="dialog" aria-modal="true">
+      {isDesktop === false && !leaving && (
+        <div
+          className={`fixed inset-0 z-50 flex flex-col bg-stone-950/90 p-3 transition-opacity duration-200 lg:hidden ${
+            previewOpen ? "opacity-100" : "pointer-events-none invisible opacity-0"
+          }`}
+          role="dialog"
+          aria-modal="true"
+          aria-hidden={!previewOpen}
+        >
           <div className="mb-2 flex justify-end">
             <button
               type="button"

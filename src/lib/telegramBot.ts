@@ -12,6 +12,11 @@
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID;
+/**
+ * Mijozlar uchun alohida bot (RSVP/tilak xabarlari, /start <token>). Operator boti boshqa loyihalarda
+ * ham ishlatilishi mumkin — unga webhook o'rnatib bo'lmaydi. Bo'sh bo'lsa — bu imkoniyat yashirin.
+ */
+const CUSTOMER_BOT_TOKEN = process.env.TELEGRAM_CUSTOMER_BOT_TOKEN;
 
 const REQUEST_TIMEOUT_MS = 8_000;
 const MAX_ATTEMPTS = 3;
@@ -26,17 +31,23 @@ export type NewOrderNotice = {
   title: string;
   eventDate: string; // "25.12.2026 18:00"
   venueName: string;
+  /** Mijoz qayerdan kelgan (instagram, telegram ...) — bo'sh bo'lishi mumkin */
+  source?: string;
   details: string[]; // mijoz tanlagan qo'shimcha sozlamalar (rang, musiqa ...)
   /** Mijozning shaxsiy sahifasi: buyurtma holati, RSVP va tilaklar */
   customerPageUrl: string;
 };
 
-async function sendOnce(text: string): Promise<{ ok: boolean; retryAfterSec?: number; error?: string }> {
+async function sendOnce(
+  text: string,
+  chatId = ADMIN_CHAT_ID,
+  token = BOT_TOKEN
+): Promise<{ ok: boolean; retryAfterSec?: number; error?: string }> {
   try {
-    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chat_id: ADMIN_CHAT_ID, text, disable_web_page_preview: true }),
+      body: JSON.stringify({ chat_id: chatId, text, disable_web_page_preview: true }),
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
     const data = (await res.json().catch(() => ({}))) as {
@@ -55,13 +66,13 @@ async function sendOnce(text: string): Promise<{ ok: boolean; retryAfterSec?: nu
   }
 }
 
-async function sendWithRetry(text: string): Promise<boolean> {
-  if (!BOT_TOKEN || !ADMIN_CHAT_ID) {
+async function sendWithRetry(text: string, chatId = ADMIN_CHAT_ID, token = BOT_TOKEN): Promise<boolean> {
+  if (!token || !chatId) {
     console.warn("Telegram sozlanmagan (TELEGRAM_BOT_TOKEN / TELEGRAM_ADMIN_CHAT_ID) — xabar yuborilmadi.");
     return false;
   }
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-    const r = await sendOnce(text);
+    const r = await sendOnce(text, chatId, token);
     if (r.ok) return true;
     console.error(`Telegram xabari yuborilmadi (urinish ${attempt}/${MAX_ATTEMPTS}): ${r.error}`);
     if (attempt < MAX_ATTEMPTS) {
@@ -113,6 +124,7 @@ export async function notifyAdminNewOrder(order: NewOrderNotice): Promise<boolea
     `🎉 ${order.title}`,
     `📅 ${order.eventDate}`,
     `📍 ${order.venueName}`,
+    ...(order.source ? [`🔎 Manba: ${order.source}`] : []),
     ...(order.details.length ? ["", ...order.details] : []),
     "",
     "🔗 Mijoz sahifasi (holat, RSVP va tilaklar) — mijozga yuboring:",
@@ -120,4 +132,51 @@ export async function notifyAdminNewOrder(order: NewOrderNotice): Promise<boolea
   ].join("\n");
 
   return sendWithRetry(text);
+}
+
+/** Mijozlar botidan xabar (webhook javoblari) */
+export function sendTelegram(chatId: string, text: string): Promise<boolean> {
+  return sendWithRetry(text, chatId, CUSTOMER_BOT_TOKEN);
+}
+
+/**
+ * Webhook'ning maxfiy kaliti — bot tokenidan hosil qilinadi (alohida sozlama kerak emas).
+ * Telegram har so'rovda uni `X-Telegram-Bot-Api-Secret-Token` sarlavhasida yuboradi.
+ */
+export async function webhookSecret(): Promise<string> {
+  const data = new TextEncoder().encode(`${CUSTOMER_BOT_TOKEN ?? ""}:taklifnoma-webhook`);
+  const hash = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(hash), (b) => b.toString(16).padStart(2, "0")).join("").slice(0, 48);
+}
+
+let botUsername: Promise<string> | null = null;
+/** Bot foydalanuvchi nomi (t.me/<bot>?start=... havolasi uchun) — getMe, jarayon davomida keshlanadi */
+export function getBotUsername(): Promise<string> {
+  if (!CUSTOMER_BOT_TOKEN) return Promise.resolve("");
+  botUsername ??= fetch(`https://api.telegram.org/bot${CUSTOMER_BOT_TOKEN}/getMe`, { signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) })
+    .then((r) => r.json())
+    .then((d: { result?: { username?: string } }) => d.result?.username ?? "")
+    .catch(() => {
+      botUsername = null;
+      return "";
+    });
+  return botUsername;
+}
+
+/** Mijozga: yangi RSVP yoki tilak (u botga /start bosgan bo'lsa) */
+export function notifyCustomerResponse(
+  chatId: string,
+  r: { invitationTitle: string; kind: "rsvp" | "wish"; name: string; attending?: boolean; guests?: number; text?: string; pageUrl: string }
+): Promise<boolean> {
+  const head =
+    r.kind === "rsvp"
+      ? r.attending
+        ? `✅ ${r.name} — keladi${r.guests && r.guests > 1 ? ` (${r.guests} kishi)` : ""}`
+        : `❌ ${r.name} — kela olmaydi`
+      : `💌 Yangi tilak — ${r.name}`;
+  return sendWithRetry(
+    [head, ...(r.text ? [`«${r.text}»`] : []), "", `🎉 ${r.invitationTitle}`, `📋 Barcha javoblar: ${r.pageUrl}`].join("\n"),
+    chatId,
+    CUSTOMER_BOT_TOKEN
+  );
 }

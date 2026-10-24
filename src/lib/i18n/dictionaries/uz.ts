@@ -40,7 +40,7 @@ export const uz = {
   footer: {
     tagline:
       "To'y, nikoh, sunnat to'yi va boshqa tantanalar uchun jonli online taklifnomalar — bir havola, cheksiz mehmon.",
-    priceLine: "Narxlar 149 000 so'mdan. Yashirin to'lovlar yo'q.",
+    priceLine: "Narxlar 79 000 so'mdan. Yashirin to'lovlar yo'q.",
     customDesignLine: "Faqat shablon emas — mijoz xohlagan dizaynda ham tayyorlab beramiz.",
     eventTypesTitle: "Tadbir turlari",
     pagesTitle: "Sahifalar",
@@ -71,6 +71,11 @@ export const uz = {
     liveSampleLabel: "Jonli namuna",
     liveSampleView: "Ko'rish",
 
+    showcaseTag: "Haqiqiy namunalar",
+    showcaseTitle: "Saytda yaratilgan taklifnomalar",
+    showcaseText: "Turli marosimlar, ismlar va shaharlar — har birini telefoningizda ochib ko'ring: konvert, musiqa, xarita va «Kelaman» tugmasi.",
+    showcaseOpen: "Ochib ko'rish",
+    showcaseCta: "O'zingiznikini yaratish",
     templatesTag: "Tanlangan",
     templatesTitle: "Ommabop shablonlar",
     templatesText: "Har bir shablon jonli namuna bilan ko'rsatilgan — konvertni bosib ochib, animatsiyalarni ko'ring.",
@@ -197,7 +202,7 @@ export const uz = {
     ctaTag: "Bir havola — butun tantana",
     ctaTitle: "To'yingiz uchun mukammal taklifnomani yarating",
     ctaText:
-      "Shablon tanlang, ma'lumotlarni kiriting va havolani mehmonlarga yuboring — qolganini biz bajaramiz. Narxlar 149 000 so'mdan.",
+      "Shablon tanlang, ma'lumotlarni kiriting va havolani mehmonlarga yuboring — qolganini biz bajaramiz. Narxlar 79 000 so'mdan.",
     ctaTemplateBtn: "Shablon tanlash",
     ctaOrderBtn: "Buyurtma berish",
   },
@@ -225,7 +230,7 @@ export const uz = {
     },
     {
       q: "Narx qancha va qanday to'lanadi?",
-      a: "Narx shablon dizayniga bog'liq: Standart — 149 000, Premium — 199 000, Luxury — 279 000 so'm. Musiqa, taymer, RSVP, tilaklar va rang tanlash hammasiga kiritilgan; o'z musiqangizni yuklash +29 000 so'm. To'lov Telegram orqali: buyurtma yuborgach, to'lov uchun operatorga yozasiz.",
+      a: "Narx shablon dizayniga bog'liq: Standart — 79 000, Premium — 149 000, Luxury — 249 000 so'm. Musiqa, taymer, RSVP, tilaklar va rang tanlash hammasiga kiritilgan; o'z musiqangizni yuklash +19 000 so'm. To'lov Telegram orqali: buyurtma yuborgach, to'lov uchun operatorga yozasiz.",
     },
     {
       q: "Telegram orqali bog'lanishim mumkinmi?",
@@ -395,6 +400,8 @@ export const uz = {
     eventType: "Tadbir turi",
     kicker: "Ismlar ustidagi yozuv",
     kickerPlaceholder: "Masalan: Nikoh to'yi",
+    envelopeLabel: "Konvertdagi yozuv (ixtiyoriy)",
+    envelopePlaceholder: "Masalan: Sizni to'yimizga kutamiz",
     scheduleTitle: "4. Kun tartibi",
     scheduleHint: "Tadbir dasturi — bandlarni o'zgartiring, qo'shing yoki olib tashlang.",
     scheduleItemPlaceholder: "Masalan: Mehmonlarni kutib olish",
@@ -438,6 +445,10 @@ export const uz = {
     statusComing: "Keladi · {n}",
     statusNotComing: "Kela olmaydi",
     guestInviteText: "Hurmatli {name}! Sizni tadbirimizga taklif qilamiz:",
+    notifyTitle: "Javoblarni Telegram'da oling",
+    notifyText: "Mehmon «Kelaman» deb bosishi yoki tilak qoldirishi bilan — Telegramingizga darhol xabar keladi.",
+    notifyButton: "Telegram'da ulash",
+    notifyOn: "✅ Telegram ulangan — yangi javoblar sizga keladi. O'chirish: botga /stop yozing.",
     shareImagesTitle: "Ulashish uchun rasmlar",
     shareImagesHint: "Instagram story va bosma/QR postkart — tayyor rasm, yuklab oling va ulashing.",
     storyImage: "Instagram story (PNG)",

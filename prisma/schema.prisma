@@ -60,6 +60,12 @@ model Order {
   // shablon narxi o'zgarsa ham mijozga aytilgan summa o'zgarmaydi.
   // 0 — narxlar ochiq bo'lishidan oldingi buyurtmalar.
   price        Int         @default(0)
+  // Demo/test buyurtma (Instagram namunalari) — admin statistikasi va daromadga kirmaydi
+  isDemo       Boolean     @default(false)
+  // Mijoz qayerdan kelgan: utm_source (instagram, telegram ...) yoki referrer domeni
+  source       String      @default("")
+  // Mijozning Telegram chat ID'si — u botga /start bosgach RSVP va tilaklar xabari shu yerga boradi
+  notifyChatId String      @default("")
   invitation   Invitation?
   createdAt    DateTime    @default(now())
 }

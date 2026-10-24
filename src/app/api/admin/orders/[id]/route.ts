@@ -14,9 +14,15 @@ export async function PATCH(
     }
 
     const body = await req.json();
-    const { status } = body as { status: string };
+    const { status, isDemo } = body as { status?: string; isDemo?: unknown };
 
-    if (!["PENDING", "PAID", "REJECTED"].includes(status)) {
+    // Faqat demo belgisini almashtirish
+    if (status === undefined && typeof isDemo === "boolean") {
+      await prisma.order.update({ where: { id: orderId }, data: { isDemo } });
+      return NextResponse.json({ ok: true });
+    }
+
+    if (!status || !["PENDING", "PAID", "REJECTED"].includes(status)) {
       return NextResponse.json({ error: "Noto'g'ri holat" }, { status: 400 });
     }
 

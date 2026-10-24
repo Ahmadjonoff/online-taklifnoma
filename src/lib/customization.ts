@@ -51,6 +51,8 @@ export type Customization = {
   eventType: string;
   /** Ismlar ustidagi kichik yozuv ("Nikoh to'yi", "Kelin salom" ...) */
   kicker: string;
+  /** Konvertdagi yozuv; "" — `kicker` ko'rsatiladi (shaxsiy havolada — «Hurmatli ...!») */
+  envelope: string;
   /** null — shablonning standart kun tartibi; [] — kun tartibi ko'rsatilmaydi */
   timeline: TimelineItem[] | null;
   googleMapsUrl: string;
@@ -86,6 +88,7 @@ export const DEFAULT_CUSTOMIZATION: Customization = {
   colors: { paper: "", gold: "", wine: "" },
   eventType: "",
   kicker: "",
+  envelope: "",
   timeline: null,
   googleMapsUrl: "",
   yandexMapsUrl: "",
@@ -105,6 +108,7 @@ export const DEFAULT_CUSTOMIZATION: Customization = {
 
 export const LIMITS = {
   kicker: 60,
+  envelope: 60,
   timelineItems: 12,
   timelineLabel: 80,
   dressCodeText: 200,
@@ -245,6 +249,7 @@ export function sanitizeCustomization(input: unknown, ctx: Ctx, strict = true): 
       colors: mainColors,
       eventType: ctx.eventTypeSlugs.includes(eventType) ? eventType : "",
       kicker: str(o.kicker, LIMITS.kicker),
+      envelope: str(o.envelope, LIMITS.envelope),
       timeline: timeline(o.timeline),
       googleMapsUrl: google ?? "",
       yandexMapsUrl: yandex ?? "",
@@ -312,6 +317,7 @@ export function customizationSummary(
 ): string[] {
   const lines: string[] = [];
   if (names.eventType) lines.push(`🏷 Tadbir: ${names.eventType}`);
+  if (c.envelope) lines.push(`✉️ Konvertda: ${c.envelope}`);
   if (names.palette) lines.push(`🎨 Rang: ${names.palette}`);
   const picked = [
     c.colors.paper && `fon ${c.colors.paper}`,

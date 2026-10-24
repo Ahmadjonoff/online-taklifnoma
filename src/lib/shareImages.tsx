@@ -60,8 +60,29 @@ async function fonts() {
   ];
 }
 
-async function qr(url: string, ink: string): Promise<string> {
-  return QRCode.toDataURL(url, { margin: 1, width: 720, color: { dark: ink, light: "#ffffff" } });
+/** "#rrggbb" → nisbiy yorqinlik (WCAG) */
+function luminance(hex: string): number {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+  if (!m) return 0;
+  const [r, g, b] = [0, 2, 4].map((i) => {
+    const c = parseInt(m[1].slice(i, i + 2), 16) / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+/**
+ * QR oq fonda chiziladi: modullar to'q bo'lishi shart. Qorong'i shablonlarda `ink` och rang
+ * (matn qora fonda) — u holda QR deyarli ko'rinmay, skanerlanmay qolardi. Shuning uchun
+ * oq bilan kontrasti kamida 7:1 bo'lgan rangni olamiz, bo'lmasa — deyarli qora.
+ */
+function qrInk(...candidates: string[]): string {
+  const ok = candidates.find((c) => 1.05 / (luminance(c) + 0.05) >= 7);
+  return ok ?? "#1c1917";
+}
+
+async function qr(url: string, ink: string, paper = ""): Promise<string> {
+  return QRCode.toDataURL(url, { margin: 1, width: 720, color: { dark: qrInk(ink, paper), light: "#ffffff" } });
 }
 
 function Names({ d, size }: { d: ShareData; size: number }) {
@@ -75,7 +96,7 @@ function Names({ d, size }: { d: ShareData; size: number }) {
 }
 
 export async function storyImage(d: ShareData): Promise<ImageResponse> {
-  const code = await qr(d.url, d.colors.ink);
+  const code = await qr(d.url, d.colors.ink, d.colors.paper);
   return new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", display: "flex", background: d.colors.paper, padding: 60, fontFamily: "Serif" }}>
@@ -110,7 +131,7 @@ export async function storyImage(d: ShareData): Promise<ImageResponse> {
 }
 
 export async function postcardImage(d: ShareData): Promise<ImageResponse> {
-  const code = await qr(d.url, d.colors.ink);
+  const code = await qr(d.url, d.colors.ink, d.colors.paper);
   return new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", display: "flex", background: d.colors.paper, padding: 56, fontFamily: "Serif" }}>
@@ -142,5 +163,35 @@ export async function postcardImage(d: ShareData): Promise<ImageResponse> {
       </div>
     ),
     { width: 1800, height: 1200, fonts: await fonts() }
+  );
+}
+
+/** Havola preview'i (Telegram/WhatsApp/Instagram) — 1200×630, QR'siz */
+export async function ogImage(d: ShareData): Promise<ImageResponse> {
+  return new ImageResponse(
+    (
+      <div style={{ width: "100%", height: "100%", display: "flex", background: d.colors.paper, padding: 36, fontFamily: "Serif" }}>
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            border: `3px solid ${d.colors.gold}`,
+            borderRadius: 24,
+            color: d.colors.ink,
+          }}
+        >
+          <div style={{ fontSize: 26, letterSpacing: 8, textTransform: "uppercase", color: d.colors.gold }}>{d.kicker || INVITED[d.lang]}</div>
+          <div style={{ width: 160, height: 2, background: d.colors.gold, margin: "22px 0 26px", opacity: 0.6 }} />
+          <Names d={d} size={104} />
+          <div style={{ fontSize: 40, marginTop: 30, letterSpacing: 4 }}>{`${d.dateLabel}  ·  ${d.timeLabel}`}</div>
+          <div style={{ fontSize: 30, marginTop: 12, opacity: 0.8, maxWidth: 900 }}>{d.venueName}</div>
+        </div>
+      </div>
+    ),
+    { width: 1200, height: 630, fonts: await fonts() }
   );
 }

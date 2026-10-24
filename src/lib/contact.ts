@@ -19,7 +19,7 @@ export const TELEGRAM_URL = `https://t.me/${TELEGRAM_USERNAME}`;
 /** Sayt manzili — taklifnomalardagi reklama blokida ko'rsatiladi. */
 export const SITE_URL = "https://online-taklifnoma-neon.vercel.app";
 
-export const INSTAGRAM_URL = "https://www.instagram.com/abdurauf.dev/";
+export const INSTAGRAM_URL = "https://www.instagram.com/online_taklifnomalarrrr/";
 
 /**
  * Har bir taklifnoma oxiridagi reklama bloki (shablonlardagi Footer

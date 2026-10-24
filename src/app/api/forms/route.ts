@@ -1,5 +1,7 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { clientIp, rateLimit } from "@/lib/rateLimit";
+import { notifyCustomerResponse } from "@/lib/telegramBot";
 
 /** Ochiq taklifnoma uchun tilaklarni olish (galereya). */
 export async function GET(req: Request) {
@@ -48,8 +50,17 @@ type Body = {
 // DB'ni cheksiz uzun matn bilan to'ldirishning oldini olish.
 const MAX_NAME_LENGTH = 80;
 const MAX_TEXT_LENGTH = 500;
+// Bitta javobdagi mehmonlar soni (oila bilan) — mazmunsiz katta raqamlar statistikani buzmasin
+const MAX_PARTY = 20;
+
+// Spamdan himoya: bitta IP uchun 1 daqiqada ko'pi bilan 10 ta javob/tilak
+const FORM_LIMIT = 10;
+const FORM_WINDOW_MS = 60_000;
 
 export async function POST(req: Request) {
+  if (!rateLimit(`form:${clientIp(req)}`, FORM_LIMIT, FORM_WINDOW_MS)) {
+    return NextResponse.json({ error: "Juda ko'p urinish. Birozdan so'ng qayta urinib ko'ring." }, { status: 429 });
+  }
   try {
     const body = (await req.json()) as Body;
     const { kind, slug, name } = body;
@@ -74,12 +85,20 @@ export async function POST(req: Request) {
 
     const invitation = await prisma.invitation.findUnique({
       where: { slug },
-      include: { order: { select: { status: true } } },
+      include: { order: { select: { status: true, notifyChatId: true, accessToken: true } } },
     });
 
     if (!invitation || invitation.order.status !== "PAID") {
       return NextResponse.json({ error: "Topilmadi" }, { status: 404 });
     }
+
+    // Mijoz botga ulangan bo'lsa — javob/tilak darhol uning Telegramiga
+    const notify = (r: { kind: "rsvp" | "wish"; attending?: boolean; guests?: number; text?: string }) => {
+      const chatId = invitation.order.notifyChatId;
+      if (!chatId) return;
+      const pageUrl = `${new URL(req.url).origin}/buyurtma/${invitation.order.accessToken}`;
+      after(() => notifyCustomerResponse(chatId, { invitationTitle: invitation.title, name, pageUrl, ...r }));
+    };
 
     if (kind === "rsvp") {
       // Faqat shu taklifnomaning mehmoni bo'lsa bog'lanadi
@@ -97,10 +116,11 @@ export async function POST(req: Request) {
           guestName: name,
           attending: body.attending === "keladi",
           guestsCount:
-            body.attending === "keladi" ? Math.max(1, body.guests ?? 1) : 0,
+            body.attending === "keladi" ? Math.min(MAX_PARTY, Math.max(1, Math.floor(Number(body.guests) || 1))) : 0,
           comment: body.comment ?? "",
         },
       });
+      notify({ kind: "rsvp", attending: body.attending === "keladi", guests: Number(body.guests) || 1, text: body.comment });
       return NextResponse.json({ ok: true });
     }
 
@@ -112,6 +132,7 @@ export async function POST(req: Request) {
           message: body.message ?? "",
         },
       });
+      notify({ kind: "wish", text: body.message });
       return NextResponse.json({ ok: true });
     }
 

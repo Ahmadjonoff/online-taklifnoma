@@ -8,21 +8,24 @@ import { MUSIC_CUSTOM } from "./music";
  * aniqlanadi (`tierOf`). Bu yerda — daraja narxlari (bosh sahifadagi
  * to'plamlar) va qo'shimcha xizmatlar.
  *
- * Mo'ljal (2026-09): Taklifnomachi.uz Standart 199 000 (musiqasiz),
- * Premium 349 000; Momento 200 000. Bizda musiqa, taymer, tilaklar va rang
- * tanlash barcha darajalarga kiradi — daraja faqat dizayn murakkabligiga
- * (qilinadigan ish hajmiga) qarab farq qiladi.
+ * Mo'ljal (2026-10): o'zi yasaydigan shablon xizmatlari 9 000–80 000
+ * (e-taklifnomachi.uz 9 000/39 000, taklifnoma.link 50 000–80 000), tayyorlab
+ * beriladiganlari 199 000+ (taklifnomachi.uz Standart 199 000 musiqasiz,
+ * Premium 349 000). Standart shablonli xizmatlar bilan bir qatorda turadi,
+ * Premium/Luxury esa «tayyorlab beramiz» segmentidan arzonroq. Bizda musiqa,
+ * taymer, tilaklar va rang tanlash barcha darajalarga kiradi — daraja faqat
+ * dizayn murakkabligiga (qilinadigan ish hajmiga) qarab farq qiladi.
  */
 export type Tier = "standard" | "premium" | "luxury";
 
 export const TIER_PRICE: Record<Tier, number> = {
-  standard: 149_000,
-  premium: 199_000,
-  luxury: 279_000,
+  standard: 79_000,
+  premium: 149_000,
+  luxury: 249_000,
 };
 
 /** Mijoz o'z musiqasini yuklasa: operator faylni tekshiradi, qirqadi, ovozini tekislaydi */
-export const CUSTOM_MUSIC_PRICE = 29_000;
+export const CUSTOM_MUSIC_PRICE = 19_000;
 
 export function tierOf(price: number): Tier {
   if (price >= TIER_PRICE.luxury) return "luxury";

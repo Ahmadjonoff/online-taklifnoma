@@ -206,7 +206,11 @@ export function buildInvitationConfig(
           envelope: { kicker: GUEST_GREETING.uz(extras.guestName) },
           dearGuests: { enabled: true, greeting: GUEST_GREETING.uz(extras.guestName) },
         }
-      : {}),
+      : c.envelope || c.kicker
+        ? // Konvertdagi yozuv: mijozning alohida matni, bo'lmasa tadbir nomi — aks holda konvertli
+          // shablonlar (Imperial, Floral, Aurora) o'z standarti «Sizga taklifnoma keldi» ni ko'rsatardi
+          { envelope: { kicker: c.envelope || c.kicker } }
+        : {}),
     addToCalendar: c.calendar
       ? {
           enabled: true,

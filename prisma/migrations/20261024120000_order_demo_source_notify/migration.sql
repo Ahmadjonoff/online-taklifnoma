@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Order" ADD COLUMN     "isDemo" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "notifyChatId" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "source" TEXT NOT NULL DEFAULT '';

@@ -139,6 +139,10 @@ export async function GET(
 <meta property="og:type" content="website">
 <meta property="og:title" content="${pageTitle}">
 <meta property="og:description" content="${pageDescription}">
+<meta property="og:image" content="${url.origin}/e/${encodeURIComponent(slug)}/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <script>window.__INV_CONFIG__=${JSON.stringify(invConfig).replace(/<\/script/gi, "<\\/script")};</script>
 ${paletteStyleTag(invitation.template.theme, options.palette, options.colors)}
 ${i18nScriptTag(options.langs, textOverrides(invitation.template, options, invitation.message, guest?.name))}`;

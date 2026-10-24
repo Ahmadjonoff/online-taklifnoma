@@ -45,7 +45,8 @@ export const getCatalog = unstable_cache(
   // Kalit versiyasi: ma'lumot shakli yoki tariflar o'zgarganda oshiriladi —
   // unstable_cache deploy'lar orasida saqlanadi, eski kesh aralashmasin.
   // v3: Standart/Premium/Luxury tariflari va yangi kategoriyalar
-  ["catalog-v3"],
+  // v4: 2026-10 narxlari (79/149/249 ming) — bazadagi Template.price ham ko'chirilgan
+  ["catalog-v4"],
   // revalidate: seed qo'lda qayta ishga tushirilsa ham 5 daqiqada yangilanadi
   { tags: [CATALOG_TAG], revalidate: 300 }
 );

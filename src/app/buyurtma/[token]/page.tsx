@@ -2,6 +2,7 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { GuestLinks } from "@/components/GuestLinks";
+import { getBotUsername } from "@/lib/telegramBot";
 import { tierFeatures } from "@/lib/customization";
 import { listGuests } from "@/lib/guests";
 import { tierOf } from "@/lib/pricing";
@@ -55,6 +56,7 @@ export default async function OrderStatusPage({
   if (!order) notFound();
 
   const confirmed = order.status === "PAID";
+  const botUsername = confirmed ? await getBotUsername() : "";
   const luxury = tierFeatures(tierOf(order.template.price)).guestLinks;
   const h = await headers();
   const origin = `${h.get("x-forwarded-proto") ?? "https"}://${h.get("host")}`;
@@ -178,6 +180,27 @@ export default async function OrderStatusPage({
               </div>
             </section>
           </>
+        )}
+
+        {confirmed && order.invitation && botUsername && (
+          <section className="mt-8 rounded-3xl border border-sky-200 bg-white p-6 shadow-xl shadow-stone-200/60 sm:p-8">
+            <h2 className="font-serif text-2xl font-bold">📲 {os.notifyTitle}</h2>
+            {order.notifyChatId ? (
+              <p className="mt-2 text-sm text-emerald-700">{os.notifyOn}</p>
+            ) : (
+              <>
+                <p className="mt-2 text-sm text-stone-500">{os.notifyText}</p>
+                <a
+                  href={`https://t.me/${botUsername}?start=${token}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-sky-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-700"
+                >
+                  ✈️ {os.notifyButton}
+                </a>
+              </>
+            )}
+          </section>
         )}
 
         {confirmed && order.invitation && (

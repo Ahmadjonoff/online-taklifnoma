@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { LOCALE_HTML_LANG } from "@/lib/i18n/locales";
 import { getLocale } from "@/lib/i18n/server";
+import { SiteAnalytics } from "@/components/site/Analytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -66,6 +67,7 @@ export default async function RootLayout({
             tugashini kutmasin — aks holda sekin tarmoqda sahifa bir necha
             soniya bo'sh turadi. Pastdagilar odatdagidek scroll'da ochiladi. */}
         <script dangerouslySetInnerHTML={{ __html: REVEAL_ABOVE_FOLD }} />
+        <SiteAnalytics />
       </body>
     </html>
   );
