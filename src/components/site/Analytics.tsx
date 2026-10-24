@@ -5,8 +5,11 @@ import Script from "next/script";
 import { useEffect } from "react";
 import { rememberSource } from "@/lib/attribution";
 
-/** Meta Pixel ID — Vercel'da NEXT_PUBLIC_META_PIXEL_ID; bo'sh bo'lsa Pixel yuklanmaydi */
-const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID ?? "";
+/**
+ * Meta Pixel «Online taklifnoma sayti» (Events Manager, reklama hisobi 1432020002359155).
+ * ID ochiq ma'lumot (sahifa kodida baribir ko'rinadi); boshqasiga almashtirish — NEXT_PUBLIC_META_PIXEL_ID.
+ */
+const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || "2538776116629907";
 
 declare global {
   interface Window {
