@@ -80,6 +80,7 @@ qiladi, Next.js esa shablon kodini umuman yuklamaydi.
 | **luxe-vow** | Ikki qatlamli tilla hoshiya, mum muhr, tilla naqsh chekka |
 | **watercolor-garden** | Akvarel gullar, yumshoq to'lqinli chekka, konvertdan ko'tariladigan xat |
 | **noir-gradient** | Qorong'i gradient, katta displey shrifti, minimal chiziq bezak |
+| **cinematic-3d** | Real vaqtli 3D sahna (three.js + GSAP): shisha mehrob plaket, fonarlar, kinematik ochilish. WebGL bo'lmasa CSS konvert |
 
 > Muhim: har bir shablon CSS'ida `@source '../../core';` qatori turishi shart.
 > Tailwind faqat shablon papkasini avtomatik skanerlaydi. Bu qatorsiz umumiy

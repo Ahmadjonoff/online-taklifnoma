@@ -9,6 +9,25 @@
   ],
   "templates": [
     {
+      "slug": "nikoh-kristall-3d",
+      "name": "Kristall 3D",
+      "base": "cinematic-3d",
+      "eventType": "nikoh-toyi",
+      "palette": "nikoh-kristall-3d",
+      "typo": "classic",
+      "desc": "Kinematik 3D ochilish: binafsha shisha mehrob, oltin naqsh, fonarlar va sham nuri",
+      "price": 249000,
+      "emoji": "💎",
+      "kicker": "Nikoh to‘yi",
+      "tier": "luxury",
+      "categories": [
+        "nikoh-toyi",
+        "toy",
+        "fotiha-toyi",
+        "qiz-bazmi"
+      ]
+    },
+    {
       "slug": "nikoh-imperial",
       "name": "Imperial",
       "base": "luxe-vow",

@@ -1115,5 +1115,76 @@
     "--tpl-accent": "#C9A96E"
    }
   }
+ ],
+ "nikoh-kristall-3d": [
+  {
+   "id": "nikoh-kristall-3d",
+   "name": "Ametist",
+   "vars": {
+    "--color-paper": "#170E2B",
+    "--color-paper-2": "#1F1338",
+    "--color-paper-3": "#281945",
+    "--color-gold": "#D9B56C",
+    "--color-gold-light": "#F6E2B0",
+    "--color-gold-dark": "#9A7438",
+    "--color-ink": "#F7F1FF",
+    "--color-ink-soft": "#CBBDE3",
+    "--color-wine": "#C9A8F0",
+    "--color-wine-dark": "#A883DC",
+    "--color-sage": "#E9D8FF",
+    "--color-blush": "#9D7FD6",
+    "--tpl-petal-a": "#A98BE3",
+    "--tpl-petal-b": "#E9D8FF",
+    "--tpl-grad-a": "#120A22",
+    "--tpl-grad-b": "#2C1A4A",
+    "--tpl-accent": "#F6E2B0"
+   }
+  },
+  {
+   "id": "nikoh-kristall-3d-zumrad",
+   "name": "Zumrad",
+   "vars": {
+    "--color-paper": "#0B1F1A",
+    "--color-paper-2": "#0F2A23",
+    "--color-paper-3": "#14352C",
+    "--color-gold": "#D9B56C",
+    "--color-gold-light": "#F6E2B0",
+    "--color-gold-dark": "#9A7438",
+    "--color-ink": "#F2FBF7",
+    "--color-ink-soft": "#B9D6CB",
+    "--color-wine": "#9FD8C2",
+    "--color-wine-dark": "#7CC3AA",
+    "--color-sage": "#DDF5EC",
+    "--color-blush": "#3F9C7F",
+    "--tpl-petal-a": "#7FCFB2",
+    "--tpl-petal-b": "#E6F7EF",
+    "--tpl-grad-a": "#06140F",
+    "--tpl-grad-b": "#123A2F",
+    "--tpl-accent": "#F6E2B0"
+   }
+  },
+  {
+   "id": "nikoh-kristall-3d-shafaq",
+   "name": "Shafaq",
+   "vars": {
+    "--color-paper": "#26121C",
+    "--color-paper-2": "#311726",
+    "--color-paper-3": "#3C1C2F",
+    "--color-gold": "#E2BC7A",
+    "--color-gold-light": "#F8E6BE",
+    "--color-gold-dark": "#A57C42",
+    "--color-ink": "#FFF3F7",
+    "--color-ink-soft": "#E3C2CF",
+    "--color-wine": "#F2B3C8",
+    "--color-wine-dark": "#E28FAB",
+    "--color-sage": "#FCE3EC",
+    "--color-blush": "#C77D99",
+    "--tpl-petal-a": "#E9A6BE",
+    "--tpl-petal-b": "#FBE0EA",
+    "--tpl-grad-a": "#1A0B13",
+    "--tpl-grad-b": "#4A2034",
+    "--tpl-accent": "#F8E6BE"
+   }
+  }
  ]
 }

@@ -10,7 +10,7 @@ mkdir -p "$OUT"
 
 # Baza dizaynlar — mustaqil shablon emas, ulardan generatsiya qilinadi.
 # Ularni build qilish shart emas (public/t ichida ishlatilmaydi).
-BASES="luxe-vow watercolor-garden noir-gradient"
+BASES="luxe-vow watercolor-garden noir-gradient cinematic-3d"
 
 count=0
 for dir in templates-src/*/; do

@@ -1,6 +1,7 @@
 # 4-shablon oilasi: «Cinematic 3D» — rejalashtirish hujjati
 
-> Holat: **reja** (kod hali yozilmagan). Sana: 2026-11-04.
+> Holat: **1-bosqich bajarildi** — `cinematic-3d` baza va `nikoh-kristall-3d`
+> shabloni (pastdagi «Bajarilgan ish» bo'limi). Sana: 2026-11-04.
 >
 > **Muhim eslatma:** foydalanuvchi yuborgan 5 ta Instagram post
 > (`DexTHhNTeh0`, `DfPhwy_zHog`, `DfRznLZPt8Q`, `Dewo9q0zUIx`, `DexuTzTzHz5`)
@@ -252,3 +253,46 @@ O'zgaradigan mavjud fayllar:
    beramizmi (ganch darvoza — eng muhim model)?
 4. Mijozning o'z surati 3D sahnaga tushadimi (masalan, ochilgan kartada yoki
    galereyada)? — tarif va hajmga ta'sir qiladi.
+
+---
+
+## 12. Bajarilgan ish (1-bosqich)
+
+Referenslar tahlili: `docs/instagram-referens-tahlil.md` (5-bo'lim — haqiqiy
+3D taklifnoma referenslari). Tanlangan uslub: **binafsha shisha mehrob +
+oltin naqsh + fonarlar** (`digital_nameera24` posti).
+
+**Texnologiya (rejadan farqi):** R3F/drei o'rniga to'g'ridan-to'g'ri
+`three` + `gsap` — kamroq bog'liqlik, kichikroq bundle, kino ssenariysini
+to'liq boshqarish. 3D chunk ≈ 187 KB gzip (dinamik `import()`), asosiy JS ≈ 77 KB.
+
+| Fayl | Vazifa |
+|---|---|
+| `templates-src/cinematic-3d/src/three/scene.ts` | Sahna: shisha mehrob plaket (ExtrudeGeometry), tilla poydevor, fonarlar (Lathe + teshikli alphaMap), shamlar, 2.5D gortenziyalar, gulbarglar (InstancedMesh), bokeh va oltin chang (shader), shisha ustidan nur chizig'i, bloom; `intro()` va `open()` GSAP timeline'lari |
+| `.../three/textures.ts` | Canvas teksturalar: plaketdagi ismlar/sana/hoshiya, girih panjara, saroy devori, gullar, alanga |
+| `.../three/quality.ts` | `high` / `medium` / `off` aniqlash; `?q=` bilan qo'lda tanlash |
+| `.../three/content.ts` | Palitrani CSS o'zgaruvchilardan o'qish, config'dan matn, shriftlarni kutish |
+| `.../components/CinematicOpening.tsx` | Poster → intro → «Ochish uchun bosing» → ochilish kinosi → chaqnash → taklifnoma; WebGL bo'lmasa CSS konvert |
+
+**Muhim qarorlar:**
+- Shisha refraksiyasi (`transmission`) sinab ko'rildi — qorong'i va «sutdek»
+  chiqdi. Shaffof fizik material referensga yaqinroq va arzonroq → hamma
+  darajada shu ishlatiladi. `high` faqat bloom va ko'proq zarracha qo'shadi.
+- Dastlabki ~2 soniyada sekin kadrlar ko'p bo'lsa, `high` → `medium` ga
+  avtomatik tushadi (bloom o'chadi, DPR 1.25).
+- Ranglar `:root` CSS o'zgaruvchilaridan → mijoz tanlagan palitra 3D'ga ham
+  tushadi (Ametist / Zumrad / Shafaq — `src/lib/templatePalettes.json`).
+
+**Ro'yxatdan o'tkazildi:** `scripts/templates-plan-taklif.json` (Luxury,
+249 000), `src/lib/templatePalettes.json`, `scripts/build-templates.sh`
+(`BASES` ga `cinematic-3d`). Generator (`generate-taklif-templates.mjs`)
+ga qo'shilmadi — u plan JSON'ni `tier`/`categories`'siz qayta yozadi, bu
+mavjud muammo, alohida hal qilish kerak.
+
+**Keyingi qadamlar:**
+1. Haqiqiy qurilmalarda (Telegram iOS/Android) FPS tekshiruvi.
+2. Production bazada `npm run db:seed` (yangi shablon katalogga chiqishi uchun)
+   va `npm run thumbs` (katalog rasmi).
+3. Ichki bo'limlar uchun 3D/scroll animatsiyalar (5-bo'lim) — hozir ochilishdan
+   keyin `noir-gradient` bo'limlari ishlatiladi.
+4. Ikkinchi shablon: «Save the Date» / mis medalyon (`unique__invites` uslubi).
