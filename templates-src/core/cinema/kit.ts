@@ -21,6 +21,8 @@ export type Scene3D = {
   moon?: boolean
   /** Orqada gullardan yasalgan arka */
   floralArch?: boolean
+  /** Orqada butun fonni qoplaydigan gul devori (to'y fotozonasidagi kabi) */
+  flowerWall?: boolean
   /** Pol o'rniga atlas mato */
   drape?: boolean
   /** Oldinda marvarid shodalari */

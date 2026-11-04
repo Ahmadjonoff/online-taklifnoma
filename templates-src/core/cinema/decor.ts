@@ -3,7 +3,7 @@
  * Qaysilari chiqishi `config.scene3d` dan olinadi (qarang: kit.ts → Scene3D).
  */
 import * as THREE from 'three'
-import { crescent, flame, glow, hydrangea, lanternPattern, rose } from './textures'
+import { crescent, flame, glow, hydrangea, lanternPattern, rose, shade } from './textures'
 import { additiveSprite, tex, type Kit } from './kit'
 
 type Flicker = { obj: THREE.Sprite; base: number; light?: THREE.PointLight; li: number }
@@ -168,6 +168,42 @@ export function buildDecor(k: Kit, halfWidth: number): DecorBuild {
       put(Math.cos(ang) * R, cy + Math.sin(ang) * R, 0.75 + Math.sin(a * 1.3) * 0.12)
     }
     for (const d of [-1, 1]) for (let y = 0.35; y < cy; y += 0.42) put(d * R, y, 0.8)
+  }
+
+  /* ---------- gul devori ---------- */
+  if (cfg.flowerWall) {
+    const z = -1.7
+    // Gullar orasidagi bo'shliq och devor bo'lib «teshik» ko'rinmasin — orqasida
+    // gullarning soyadagi tusidagi tag qatlam
+    // Tag qatlam gullardan biroz kichik — chetlari gullar orqasida yashirinadi
+    const backing = new THREE.Mesh(
+      new THREE.PlaneGeometry(7.6, 4.9),
+      new THREE.MeshBasicMaterial({ color: shade(pal.petalA, -0.38) }),
+    )
+    backing.position.set(0, 2.55, z - 0.08)
+    scene.add(backing)
+
+    // Panjara + tasodifiy siljish: tabiiy, zich gul devori. Balandligi telefon
+    // kadrining tepasigacha (tik ekranda kamera uzoqroq turadi).
+    // Teksturalar keshda — 7 xil gul ko'p marta takrorlanadi.
+    let i = 0
+    let s = 7
+    const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647
+    for (let y = 0.15; y <= 5.2; y += 0.42) {
+      const odd = Math.round(y / 0.42) % 2
+      for (let x = -4.1 + (odd ? 0.25 : 0); x <= 4.1; x += 0.5) {
+        const hyd = rnd() < 0.3
+        flower(
+          hyd ? 'hydrangea' : 'rose',
+          x + (rnd() - 0.5) * 0.18,
+          y + (rnd() - 0.5) * 0.14,
+          z + rnd() * 0.18,
+          (hyd ? 0.78 : 0.66) + rnd() * 0.16,
+          hyd ? 200 + (i % 3) * 31 : 300 + (i % 4) * 29,
+        )
+        i++
+      }
+    }
   }
 
   /* ---------- hilol va yulduzlar ---------- */

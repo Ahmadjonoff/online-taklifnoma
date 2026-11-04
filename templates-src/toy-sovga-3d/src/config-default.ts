@@ -12,6 +12,7 @@ export const config = {
   scene3d: {
     hero: 'giftbox',
     mood: 'day',
+    flowerWall: true,
     candles: true,
     flowers: 'rose',
     pearls: true,
