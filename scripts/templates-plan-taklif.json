@@ -28,6 +28,102 @@
       ]
     },
     {
+      "slug": "fotiha-hilol-3d",
+      "name": "Hilol 3D",
+      "base": "cinematic-3d",
+      "eventType": "fotiha-toyi",
+      "palette": "fotiha-hilol-3d",
+      "typo": "classic",
+      "desc": "Kinematik 3D: zumrad shisha mehrob, osmonda hilol va yulduzlar, fonarlar va oq atirgullar",
+      "price": 249000,
+      "emoji": "🌙",
+      "kicker": "Fotiha to‘yi",
+      "tier": "luxury",
+      "categories": [
+        "fotiha-toyi",
+        "nikoh-toyi",
+        "sunnat-toyi",
+        "toy"
+      ]
+    },
+    {
+      "slug": "toy-bordo-3d",
+      "name": "Bordo 3D",
+      "base": "cinematic-3d",
+      "eventType": "toy",
+      "palette": "toy-bordo-3d",
+      "typo": "classic",
+      "desc": "Kinematik 3D: molbertdagi bordo baxmal «Save the Date» kartasi, tilla folga, fonar va atirgullar",
+      "price": 249000,
+      "emoji": "🍷",
+      "kicker": "To‘y oqshomi",
+      "tier": "luxury",
+      "categories": [
+        "toy",
+        "nikoh-toyi",
+        "yubiley",
+        "bayramlar"
+      ]
+    },
+    {
+      "slug": "nikoh-medalyon-3d",
+      "name": "Medalyon 3D",
+      "base": "luxe-vow",
+      "eventType": "nikoh-toyi",
+      "palette": "nikoh-medalyon-3d",
+      "typo": "classic",
+      "desc": "Kinematik 3D: molbertdagi bronza medalyon va Bismillah, atlas mato, oq atirgullar, marvarid va shamlar",
+      "price": 249000,
+      "emoji": "🏅",
+      "kicker": "Nikoh to‘yi",
+      "tier": "luxury",
+      "categories": [
+        "nikoh-toyi",
+        "fotiha-toyi",
+        "toy"
+      ]
+    },
+    {
+      "slug": "toy-sovga-3d",
+      "name": "Sovg‘a 3D",
+      "base": "luxe-vow",
+      "eventType": "toy",
+      "palette": "toy-sovga-3d",
+      "typo": "classic",
+      "desc": "Kinematik 3D: lentali sovg‘a qutisi — bant uchib ketadi, qopqoq ochilib ichidan nur chiqadi",
+      "price": 249000,
+      "emoji": "🎁",
+      "kicker": "To‘y kechasi",
+      "tier": "luxury",
+      "categories": [
+        "toy",
+        "nikoh-toyi",
+        "tugilgan-kun",
+        "beshik-toyi",
+        "bayramlar",
+        "oilaviy"
+      ]
+    },
+    {
+      "slug": "qiz-bazmi-gulbog-3d",
+      "name": "Gul bog‘ 3D",
+      "base": "watercolor-garden",
+      "eventType": "qiz-bazmi",
+      "palette": "qiz-bazmi-gulbog-3d",
+      "typo": "classic",
+      "desc": "Kinematik 3D: gulli arka ostida pushti shisha plaket, atirgullar va yorug‘ kunduzgi zal",
+      "price": 249000,
+      "emoji": "🌸",
+      "kicker": "Qiz bazmi",
+      "tier": "luxury",
+      "categories": [
+        "qiz-bazmi",
+        "nikoh-toyi",
+        "fotiha-toyi",
+        "tugilgan-kun"
+      ]
+    },
+    {
       "slug": "nikoh-imperial",
       "name": "Imperial",
       "base": "luxe-vow",

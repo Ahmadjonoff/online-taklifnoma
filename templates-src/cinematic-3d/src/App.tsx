@@ -12,7 +12,8 @@ import { Wishes } from '@core/components/Wishes'
 import { Calendar, DearGuests, Details, DressCode, Events, Singers, Story } from '@core/taklif/sections'
 import type { Bg, Skin } from '@core/lib/skin'
 import { config } from './config'
-import { CinematicOpening } from './components/CinematicOpening'
+import { CinematicOpening } from '@core/cinema/CinematicOpening'
+import { Envelope } from './components/Envelope'
 import { Hero } from './components/Hero'
 import { Petals } from './components/decor/Petals'
 import { Timeline } from './components/Timeline'
@@ -68,7 +69,10 @@ export default function App() {
 
   return (
     <>
-      <CinematicOpening onOpen={() => setOpened(true)} />
+      <CinematicOpening
+        onOpen={() => setOpened(true)}
+        fallback={<Envelope onOpen={() => setOpened(true)} />}
+      />
 
       <main
         className="transition-opacity duration-1000"

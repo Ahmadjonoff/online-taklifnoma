@@ -1,7 +1,7 @@
 # 4-shablon oilasi: «Cinematic 3D» — rejalashtirish hujjati
 
-> Holat: **1-bosqich bajarildi** — `cinematic-3d` baza va `nikoh-kristall-3d`
-> shabloni (pastdagi «Bajarilgan ish» bo'limi). Sana: 2026-11-04.
+> Holat: **2-bosqich bajarildi** — umumiy 3D dvigatel (`templates-src/core/cinema`)
+> va 6 ta 3D shablon (12–13-bo'limlar). Sana: 2026-11-04.
 >
 > **Muhim eslatma:** foydalanuvchi yuborgan 5 ta Instagram post
 > (`DexTHhNTeh0`, `DfPhwy_zHog`, `DfRznLZPt8Q`, `Dewo9q0zUIx`, `DexuTzTzHz5`)
@@ -296,3 +296,55 @@ mavjud muammo, alohida hal qilish kerak.
 3. Ichki bo'limlar uchun 3D/scroll animatsiyalar (5-bo'lim) — hozir ochilishdan
    keyin `noir-gradient` bo'limlari ishlatiladi.
 4. Ikkinchi shablon: «Save the Date» / mis medalyon (`unique__invites` uslubi).
+
+---
+
+## 13. 2-bosqich: 3D shablonlar oilasi (6 ta)
+
+3D dvigatel shablon ichidan **`templates-src/core/cinema/`** ga ko'chirildi —
+endi har qanday baza uni ishlatadi, shablon esa faqat `config.scene3d` ni beradi:
+
+```ts
+scene3d: {
+  hero: 'mehrab' | 'arch' | 'medallion' | 'card' | 'giftbox',
+  mood: 'night' | 'day',
+  lanterns, candles, flowers: 'hydrangea' | 'rose' | 'none',
+  moon, floralArch, drape, pearls,
+  arabic,    // medalyon yozuvi
+  headline,  // karta sarlavhasi («Save the Date»)
+}
+```
+
+| Fayl | Vazifa |
+|---|---|
+| `core/cinema/scene.ts` | Dvigatel: renderer, yorug'lik (tun/kunduz), pol/devor, bokeh, oltin chang, gulbarglar, bloom, kamera, intro/ochilish kinosi, `compileAsync` |
+| `core/cinema/heroes.ts` | Markaziy obyektlar va ularning o'z ochilish harakati (medalyon aylanadi, karta egiladi, quti bandi uchib qopqog'i ochiladi) |
+| `core/cinema/decor.ts` | Fonarlar, shamlar, gortenziya/atirgul, gulli arka, hilol, marvaridlar |
+| `core/cinema/textures.ts` | Canvas teksturalar: plaket, medalyon (Amiri bilan arabcha yozuv), baxmal karta, quti yuzasi, atirgul, atlas mato, hilol |
+| `core/cinema/content.ts` | `config.scene3d`, palitra (CSS o'zgaruvchilar → hex, `color-mix` ham), matn, shriftlar |
+| `core/cinema/CinematicOpening.tsx` | Poster → intro → «Ochish uchun bosing» → kino → chaqnash; `fallback` — shablonning CSS konverti |
+
+| Shablon | Baza (ichki dizayn) | 3D sahna | Kayfiyat | Palitralar |
+|---|---|---|---|---|
+| `nikoh-kristall-3d` | cinematic-3d (noir) | binafsha shisha mehrob, fonarlar, gortenziya | tun | Ametist, Zumrad, Shafaq |
+| `fotiha-hilol-3d` | cinematic-3d (noir) | zumrad shisha mehrob, **hilol va yulduzlar**, oq atirgul | tun | Zumrad, Tungi moviy |
+| `toy-bordo-3d` | cinematic-3d (noir) | molbertdagi **bordo baxmal «Save the Date» kartasi** | tun | Bordo, Qora oltin |
+| `nikoh-medalyon-3d` | luxe-vow | molbertdagi **bronza medalyon + Bismillah**, atlas mato, marvarid | tun (iliq) | Bronza, Kumush |
+| `toy-sovga-3d` | luxe-vow | **lentali sovg'a qutisi** — bant uchadi, qopqoq ochiladi, ichidan nur | kunduz | Pushti lenta, Oltin lenta |
+| `qiz-bazmi-gulbog-3d` | watercolor-garden | yarim doira pushti shisha arka, **gulli arka** | kunduz | Atirgul, Lavanda |
+
+Hammasi Luxury (249 000), `scripts/templates-plan-taklif.json` va
+`src/lib/templatePalettes.json` da ro'yxatdan o'tgan.
+
+**Topilgan va tuzatilgan muammolar:**
+- Mijoz fon rangini tanlasa server `--tpl-grad-b`, `--color-blush` ga
+  `color-mix(...)` yozadi — avval 3D sahna bu qiymatni o'qiy olmay qora
+  bo'lib qolardi. Endi rang brauzerda hisoblanadi (1×1 canvas), sahna uchun
+  esa alohida `--tpl-scene-a/b`, `--tpl-glass`, `--tpl-satin` o'zgaruvchilari bor.
+- Kunduzgi sahnada metall folga oq atrofni aks ettirib yozuvni o'chirib
+  yuborardi → kunduzda folga mat, «bo'rtma» soyasiz.
+- Shader kompilyatsiyasi kuchsiz qurilmada asosiy oqimni band qilishi
+  mumkin → `renderer.compileAsync` (KHR_parallel_shader_compile), poster shu
+  vaqtgacha ko'rinadi.
+
+Natijalar: `docs/referens/natija-*.jpg`.

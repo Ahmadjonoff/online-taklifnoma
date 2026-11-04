@@ -48,6 +48,10 @@
   --tpl-grad-a: #120a22;
   --tpl-grad-b: #2c1a4a;
   --tpl-accent: #f6e2b0;
+  /* Faqat 3D sahna uchun — mijoz fon rangini o'zgartirsa ham sahna saqlanadi */
+  --tpl-scene-a: #120a22;
+  --tpl-scene-b: #2c1a4a;
+  --tpl-glass: #9d7fd6;
 }
 
 @keyframes fall {

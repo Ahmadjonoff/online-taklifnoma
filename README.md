@@ -80,7 +80,7 @@ qiladi, Next.js esa shablon kodini umuman yuklamaydi.
 | **luxe-vow** | Ikki qatlamli tilla hoshiya, mum muhr, tilla naqsh chekka |
 | **watercolor-garden** | Akvarel gullar, yumshoq to'lqinli chekka, konvertdan ko'tariladigan xat |
 | **noir-gradient** | Qorong'i gradient, katta displey shrifti, minimal chiziq bezak |
-| **cinematic-3d** | Real vaqtli 3D sahna (three.js + GSAP): shisha mehrob plaket, fonarlar, kinematik ochilish. WebGL bo'lmasa CSS konvert |
+| **cinematic-3d** | Qorong'i baza + kinematik 3D ochilish. 3D dvigatel umumiy: `templates-src/core/cinema/` — istalgan baza (`luxe-vow`, `watercolor-garden` ...) `CinematicOpening` bilan ulanadi. Sahna `config.scene3d` da tanlanadi (mehrob, arka, medalyon, karta, sovg'a qutisi; tun/kunduz). WebGL bo'lmasa shablonning CSS konverti |
 
 > Muhim: har bir shablon CSS'ida `@source '../../core';` qatori turishi shart.
 > Tailwind faqat shablon papkasini avtomatik skanerlaydi. Bu qatorsiz umumiy
