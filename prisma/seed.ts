@@ -65,16 +65,15 @@ const plan: Plan = {
 };
 
 async function main() {
-  // Vercel build'da `SEED_IF_EMPTY=1` bilan chaqiriladi: baza allaqachon
-  // to'ldirilgan bo'lsa, hech narsaga tegmaymiz — aks holda har deploy
+  // Vercel build'da `SEED_IF_EMPTY=1` bilan chaqiriladi. Baza allaqachon
+  // to'ldirilgan bo'lsa, mavjud yozuvlarga TEGMAYMIZ — aks holda har deploy
   // admin paneldan o'zgartirilgan narx/nomlarni plan qiymatlariga qaytarib
-  // yuboradi.
-  if (process.env.SEED_IF_EMPTY === "1" && (await prisma.eventType.count()) > 0) {
-    console.log("Seed o'tkazib yuborildi: baza allaqachon to'ldirilgan.");
-    return;
-  }
+  // yuboradi. Faqat bazada hali yo'q tadbir turlari va shablonlar qo'shiladi
+  // (yangi shablon chiqqanda katalogda o'zi paydo bo'lishi uchun).
+  const addMissingOnly =
+    process.env.SEED_IF_EMPTY === "1" && (await prisma.eventType.count()) > 0;
 
-  console.log("Seed boshlandi...");
+  console.log(addMissingOnly ? "Seed: faqat yo'q yozuvlar qo'shiladi..." : "Seed boshlandi...");
 
   // Shablon papkalarining mavjudligini tekshirish
   for (const t of plan.templates) {
@@ -85,6 +84,13 @@ async function main() {
   }
 
   for (const et of plan.eventTypes) {
+    if (addMissingOnly) {
+      if (!(await prisma.eventType.findUnique({ where: { slug: et.slug } }))) {
+        await prisma.eventType.create({ data: et });
+        console.log(`  + tadbir turi qo'shildi: ${et.slug}`);
+      }
+      continue;
+    }
     await prisma.eventType.upsert({
       where: { slug: et.slug },
       update: { name: et.name, emoji: et.emoji, order: et.order },
@@ -93,6 +99,8 @@ async function main() {
   }
 
   for (const t of plan.templates) {
+    if (addMissingOnly && (await prisma.template.findUnique({ where: { slug: t.slug } }))) continue;
+
     const eventType = await prisma.eventType.findUnique({
       where: { slug: t.eventType },
     });
@@ -122,6 +130,13 @@ async function main() {
       update: { ...data, categories: { set: categories } },
       create: { slug: t.slug, ...data, categories: { connect: categories } },
     });
+    if (addMissingOnly) console.log(`  + shablon qo'shildi: ${t.slug}`);
+  }
+
+  // Mavjud bazada eski shablonlarni o'chirish/faolsizlantirish o'tkazib yuboriladi
+  if (addMissingOnly) {
+    console.log("Seed tugadi: mavjud yozuvlar o'zgartirilmadi.");
+    return;
   }
 
   // Eski Templates (theme qadimiy bo'lgan) — plan'da yo'qlarini o'chirish.
