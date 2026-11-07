@@ -311,7 +311,8 @@ export function gate(k: Kit): HeroBuild {
     root,
     // Darvoza suzmaydi — faqat nur «nafas oladi» (inner)
     bob: new THREE.Object3D(),
-    frame: { w: 3.45, h: 4.55, cy: 2.15 },
+    // h — ramka + ostona + chetdan joy (keng ekranda kadr balandlik bo'yicha tanlanadi)
+    frame: { w: 3.45, h: 5.0, cy: 2.1 },
     burst: new THREE.Vector3(0, 1.6, 0.4),
     diveY: 1.65,
     diveLook: 1.65,
@@ -456,7 +457,7 @@ export function curtain(k: Kit): HeroBuild {
   return {
     root,
     bob: new THREE.Object3D(),
-    frame: { w: 3.9, h: 4.6, cy: 2.25 },
+    frame: { w: 3.9, h: 5.05, cy: 2.2 },
     burst: new THREE.Vector3(0, 2, 0.2),
     diveY: card.position.y,
     diveLook: card.position.y,
