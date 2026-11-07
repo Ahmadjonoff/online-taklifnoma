@@ -68,7 +68,7 @@ export function archPath(
   ctx.closePath()
 }
 
-function canvas(w: number, h: number) {
+export function canvas(w: number, h: number) {
   const c = document.createElement('canvas')
   c.width = w
   c.height = h
@@ -76,7 +76,7 @@ function canvas(w: number, h: number) {
   return { c, ctx }
 }
 
-function goldGradient(ctx: CanvasRenderingContext2D, x0: number, y0: number, x1: number, y1: number, pal: Palette, deep = false) {
+export function goldGradient(ctx: CanvasRenderingContext2D, x0: number, y0: number, x1: number, y1: number, pal: Palette, deep = false) {
   const g = ctx.createLinearGradient(x0, y0, x1, y1)
   // `deep` — yorug' fonda o'qilishi uchun to'q bronza tusli oltin
   const light = deep ? shade(pal.goldDark, 0.12) : pal.goldLight
@@ -104,7 +104,7 @@ export function shade(hex: string, amt: number) {
 }
 
 /** Harflar orasini kengaytirib yozish (ctx.letterSpacing hamma joyda yo'q). */
-function drawSpaced(ctx: CanvasRenderingContext2D, text: string, cx: number, y: number, spacing: number) {
+export function drawSpaced(ctx: CanvasRenderingContext2D, text: string, cx: number, y: number, spacing: number) {
   const chars = [...text]
   const widths = chars.map((ch) => ctx.measureText(ch).width)
   const total = widths.reduce((a, b) => a + b, 0) + spacing * (chars.length - 1)
@@ -119,7 +119,7 @@ function drawSpaced(ctx: CanvasRenderingContext2D, text: string, cx: number, y: 
 }
 
 /** Matnni berilgan kenglikka sig'diradigan shrift o'lchamini topadi. */
-function fitFont(ctx: CanvasRenderingContext2D, text: string, family: string, max: number, maxWidth: number) {
+export function fitFont(ctx: CanvasRenderingContext2D, text: string, family: string, max: number, maxWidth: number) {
   let size = max
   while (size > 20) {
     ctx.font = `${size}px ${family}`
@@ -129,11 +129,11 @@ function fitFont(ctx: CanvasRenderingContext2D, text: string, family: string, ma
   return size
 }
 
-const SCRIPT = `'Taklif Script', cursive`
-const SERIF = `'Playfair Display', Georgia, serif`
-const BODY = `'Cormorant Garamond', Georgia, serif`
+export const SCRIPT = `'Taklif Script', cursive`
+export const SERIF = `'Playfair Display', Georgia, serif`
+export const BODY = `'Cormorant Garamond', Georgia, serif`
 
-function embossShadow(ctx: CanvasRenderingContext2D, deep: boolean) {
+export function embossShadow(ctx: CanvasRenderingContext2D, deep: boolean) {
   // Yorug' fonda soya kerak emas: ingichka harflar atrofidagi har qanday
   // halqa harfning o'zidan katta bo'lib, yozuvni xiralashtiradi
   if (deep) return noShadow(ctx)
@@ -142,7 +142,7 @@ function embossShadow(ctx: CanvasRenderingContext2D, deep: boolean) {
   ctx.shadowOffsetY = 3
 }
 
-function noShadow(ctx: CanvasRenderingContext2D) {
+export function noShadow(ctx: CanvasRenderingContext2D) {
   ctx.shadowColor = 'transparent'
   ctx.shadowBlur = 0
   ctx.shadowOffsetY = 0
@@ -153,7 +153,7 @@ function noShadow(ctx: CanvasRenderingContext2D) {
 /* ------------------------------------------------------------------ */
 
 /** 8 qirrali islomiy yulduz (girih) rozetkasi. */
-function rosette(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number) {
+export function rosette(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number) {
   ctx.save()
   ctx.translate(cx, cy)
   for (const rot of [0, Math.PI / 4]) {
@@ -178,7 +178,7 @@ function rosette(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: numbe
 }
 
 /** Arka cho'qqisidagi toj (lola/barg shaklidagi bezak). */
-function crown(ctx: CanvasRenderingContext2D, cx: number, cy: number, s: number) {
+export function crown(ctx: CanvasRenderingContext2D, cx: number, cy: number, s: number) {
   ctx.save()
   ctx.translate(cx, cy)
   ctx.beginPath()
@@ -204,7 +204,7 @@ function crown(ctx: CanvasRenderingContext2D, cx: number, cy: number, s: number)
 }
 
 /** Gorizontal ajratuvchi: chiziq — romb — chiziq. */
-function divider(ctx: CanvasRenderingContext2D, cx: number, cy: number, half: number) {
+export function divider(ctx: CanvasRenderingContext2D, cx: number, cy: number, half: number) {
   ctx.beginPath()
   ctx.moveTo(cx - half, cy)
   ctx.lineTo(cx - 22, cy)
@@ -226,7 +226,7 @@ function divider(ctx: CanvasRenderingContext2D, cx: number, cy: number, half: nu
 }
 
 /** Burchakdagi o'simliksimon jingalak. */
-function cornerFlourish(ctx: CanvasRenderingContext2D, x: number, y: number, dx: 1 | -1, s: number, dy: 1 | -1 = 1) {
+export function cornerFlourish(ctx: CanvasRenderingContext2D, x: number, y: number, dx: 1 | -1, s: number, dy: 1 | -1 = 1) {
   ctx.save()
   ctx.translate(x, y)
   ctx.scale(dx, dy)

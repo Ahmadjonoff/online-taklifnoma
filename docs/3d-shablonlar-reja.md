@@ -348,3 +348,79 @@ Hammasi Luxury (249 000), `scripts/templates-plan-taklif.json` va
   vaqtgacha ko'rinadi.
 
 Natijalar: `docs/referens/natija-*.jpg`.
+
+---
+
+## 14. 3-bosqich: tezlik, yangi ochilishlar, scroll xoreografiyasi (2026-11-07)
+
+### 14.1. Nega sekin yuklanardi (o'lchov)
+
+O'lchov: Playwright + Chrome, 390×844 @2x, CPU 4× sekinlashtirilgan (o'rta
+Android), tarmoq 4 Mbit/s, haqiqiy GPU. Shablon: `nikoh-kristall-3d`.
+
+| Sabab | Ta'siri |
+|---|---|
+| `content.ts` → `kit.ts` → `import * as THREE` — `DEFAULT_SCENE` qiymati uchun butun three.js **asosiy** bundle'ga tushgan (lazy chunk ishlamagan) | asosiy JS 142 KB gzip (oddiy shablon ~70 KB) → poster 1.65 s da |
+| 3D chunk faqat React effektidan keyin so'ralardi, galereya suratlari (~400 KB) bilan tarmoqni bo'lishardi | chunk 0.9 s kechikib kelardi |
+| Birinchi kadrda ~10 ta katta canvas tekstura GPU'ga + bloom shader kompilyatsiyasi | **2.8 s** bitta «qotish» — intro shu payt to'xtab turardi |
+| «Ochish uchun bosing» faqat 3.4 s lik intro **tugagach** chiqardi | ko'rinadigan kutish +3.4 s |
+| Android'da 8 yadro / 8 GB dan kuchsiz telefonlarda ham `high` (bloom + MSAA HalfFloat) | o'rta telefonda kadr tushishi |
+
+Tuzatishlar:
+- `core/cinema/scene3d.ts` — `Scene3D`/`DEFAULT_SCENE` three'siz alohida faylda
+  (bu faylga `three` import qilinmasin!).
+- `CinematicOpening` modul yuklanishi bilanoq `import('./scene')` va shriftlarni so'raydi.
+- `onPrimed` — taklifnoma kontenti (suratlar) 3D chunk kelgandan keyin render
+  qilinadi, shader'lar fonda kompilyatsiya bo'layotganda.
+- `scene.ts` `ready`: teksturalar kadrlar orasida bittadan `initTexture`, bloom
+  poster ostida bir marta «isitiladi».
+- CTA intro boshlanganidan 1.3 s keyin chiqadi.
+- `quality.ts`: Android'da `high` faqat ≥8 yadro va ≥8 GB bo'lsa.
+
+| | Oldin | Keyin |
+|---|---|---|
+| Poster (FCP) | 1.65 s | 0.63 s |
+| 3D sahna ko'rinadi | 8.0 s | 2.7 s |
+| «Ochish uchun bosing» | 11.8 s | 3.7 s |
+| Asosiy oqim qotishlari (jami) | 4.1 s | 0.5 s |
+| Asosiy JS (gzip) | 142 KB | 77 KB |
+
+### 14.2. Yangi ochilish turlari (`config.scene3d.hero`)
+
+Fayllar: `core/cinema/openings.ts`, `core/cinema/openingTextures.ts`.
+
+| `hero` | Ochilish |
+|---|---|
+| `envelope` | 3D konvert: mum muhr ikkiga bo'linib uchadi, qanot orqaga bukiladi (ichida naqshli astar), karta ko'tariladi, kamera kartaga «kiradi» |
+| `gate` | Ganch naqshli darvoza: tavaqalarda kuyov/kelin ismlari, ichkariga ochiladi, eshikdan hajmli nur va yorug'lik |
+| `curtain` | Baxmal sahna pardasi burmalari bilan ikki yonga yig'iladi (vertex animatsiya), prožektor ostida taklif kartasi |
+
+`HeroBuild.diveLook` — ochilishda kamera qaraydigan balandlik (konvertdan
+ko'tarilgan karta, darvoza ichi).
+
+### 14.3. Scroll xoreografiyasi (`core/motion`)
+
+`ScrollStory` + `config.motion`:
+- **Fon sahnalari** — har biri tus (`paper/gold/wine/blush/sage/deep`) + bezak
+  (`stars/rays/arches/girih/bokeh/moon`); ranglar palitra o'zgaruvchilaridan.
+  O'tish: `iris` (doira), `wipe` (pastdan to'lqin), `sweep` (diagonal), `fade`.
+- **Bo'lim effektlari** (`fx`): `rise/zoom/tilt/blur/slide/mask/flip` — mavjud
+  `Reveal` elementlariga CSS orqali qo'llanadi, core komponentlar o'zgarmagan.
+- **Hero** chiqib ketayotganda sekinroq siljiydi va so'nadi; `fold: true` —
+  bo'limlar varaq kabi orqaga buklanadi.
+- **Zarrachalar** (`petals/dust/lanterns/stars`) — 2D canvas, chuqurlikka qarab
+  scroll bilan parallaks.
+- Bo'limlar `bg: 'clear'` (shaffof) — orqadagi sahna ko'rinadi.
+- Scroll: CPU 4× sekin, @2x da 60 FPS, qotish yo'q.
+
+### 14.4. Yangi shablonlar
+
+| Shablon | Ochilish | Scroll | Palitralar |
+|---|---|---|---|
+| `nikoh-darvoza-3d` | `gate` (tun) | iris, fonarlar, fold | Firuza, Lojuvard, Ametist |
+| `nikoh-parda-3d` | `curtain` (tun) | sweep, oltin chang, fold | Bordo parda, Zumrad parda |
+| `toy-konvert-3d` | `envelope` (iliq kechki zal), ichki sahifa yorug' | wipe, gulbarglar | Shampan, Zaytun |
+
+Hammasi Luxury (249 000). Deploy'dan keyin seed yangi shablonlarni o'zi
+qo'shadi (`SEED_IF_EMPTY` — faqat yo'q yozuvlar); katalog keshi `catalog-v6`.
+Katalog rasmi uchun `npm run thumbs` kerak.

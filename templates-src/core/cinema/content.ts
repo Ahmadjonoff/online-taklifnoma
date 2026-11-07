@@ -1,5 +1,5 @@
 import { config } from '@config'
-import { DEFAULT_SCENE, type Scene3D } from './kit'
+import { DEFAULT_SCENE, type Scene3D } from './scene3d'
 import type { Palette, PlaqueText } from './textures'
 
 /** Shablonning sahna sozlamasi (`config.scene3d`) standart qiymatlar ustiga. */

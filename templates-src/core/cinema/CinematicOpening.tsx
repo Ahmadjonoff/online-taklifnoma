@@ -9,6 +9,24 @@ import './cinematic.css'
 type Phase = 'loading' | 'intro' | 'ready' | 'opening' | 'flash' | 'fade' | 'gone' | 'fallback'
 
 /**
+ * 3D chunk va shriftlarni modul yuklanishi bilanoq so'raymiz — React render
+ * va effektni kutmasdan (sekin telefonda bu ~0.3–0.8 s yutuq). Sifat `off`
+ * bo'lsa (WebGL yo'q / kamroq harakat) hech narsa yuklanmaydi.
+ */
+const initialQuality = detectQuality()
+const early =
+  initialQuality === 'off'
+    ? null
+    : (() => {
+        const scene = sceneConfig()
+        const text = plaqueText()
+        return { scene, text, mod: import('./scene'), fonts: loadFonts(text, scene) }
+      })()
+
+/** Intro boshlangandan keyin «Ochish uchun bosing» qancha kutadi (ms). */
+const CTA_DELAY = 1300
+
+/**
  * Kinematik 3D ochilish ekrani.
  *
  * Bosqichlar:
@@ -24,9 +42,23 @@ type Phase = 'loading' | 'intro' | 'ready' | 'opening' | 'flash' | 'fade' | 'gon
  *
  * Sahna turi (mehrob, medalyon, karta, quti ...) `config.scene3d` dan olinadi.
  */
-export function CinematicOpening({ onOpen, fallback }: { onOpen: () => void; fallback: ReactNode }) {
-  const [quality] = useState(detectQuality)
-  const [scene] = useState(sceneConfig)
+export function CinematicOpening({
+  onOpen,
+  fallback,
+  onPrimed,
+}: {
+  onOpen: () => void
+  fallback: ReactNode
+  /**
+   * Taklifnoma (asosiy kontent) qachon render qilinsin. 3D chunk kelguncha
+   * galereya suratlari u bilan tarmoqni bo'lishmasin — shu sabab kontent
+   * chunk kelib, sahna shader'lari fonda kompilyatsiya bo'layotganda (asosiy
+   * oqim bo'sh) chiqariladi. WebGL bo'lmasa — darhol.
+   */
+  onPrimed?: () => void
+}) {
+  const [quality] = useState(initialQuality)
+  const [scene] = useState(() => early?.scene ?? sceneConfig())
   const [phase, setPhase] = useState<Phase>(quality === 'off' ? 'fallback' : 'loading')
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const stageRef = useRef<Stage | null>(null)
@@ -41,13 +73,28 @@ export function CinematicOpening({ onOpen, fallback }: { onOpen: () => void; fal
   }, [covering])
 
   // Sahnani yaratish va tozalash — bitta effektda (StrictMode'da ham to'g'ri)
+  const primedRef = useRef(false)
+  const onPrimedRef = useRef(onPrimed)
+  useEffect(() => {
+    onPrimedRef.current = onPrimed
+  }, [onPrimed])
+  const primed = () => {
+    if (primedRef.current) return
+    primedRef.current = true
+    onPrimedRef.current?.()
+  }
+  useEffect(() => {
+    if (phase === 'fallback') primed()
+  })
+
   useEffect(() => {
     if (quality === 'off') return
     let cancelled = false
+    let ctaTimer = 0
     ;(async () => {
       try {
-        const text = plaqueText()
-        const [, mod] = await Promise.all([loadFonts(text, scene), import('./scene')])
+        const text = early?.text ?? plaqueText()
+        const [, mod] = await Promise.all([early?.fonts ?? loadFonts(text, scene), early?.mod ?? import('./scene')])
         if (cancelled || !canvasRef.current) return
         const stage = mod.createStage({
           canvas: canvasRef.current,
@@ -63,9 +110,12 @@ export function CinematicOpening({ onOpen, fallback }: { onOpen: () => void; fal
           },
         })
         stageRef.current = stage
+        primed()
         await stage.ready
         if (cancelled) return
         setPhase('intro')
+        // Tugma intro oxirini kutmaydi — kamera hali yaqinlashayotganda chiqadi
+        ctaTimer = window.setTimeout(() => setPhase((p) => (p === 'intro' ? 'ready' : p)), CTA_DELAY)
         await stage.intro()
         if (!cancelled) setPhase((p) => (p === 'intro' ? 'ready' : p))
       } catch (err) {
@@ -75,6 +125,7 @@ export function CinematicOpening({ onOpen, fallback }: { onOpen: () => void; fal
     })()
     return () => {
       cancelled = true
+      window.clearTimeout(ctaTimer)
       stageRef.current?.dispose()
       stageRef.current = null
     }

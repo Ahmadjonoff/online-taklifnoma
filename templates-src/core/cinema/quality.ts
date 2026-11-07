@@ -44,7 +44,11 @@ export function detectQuality(): Quality {
   const iOS = /iPhone|iPad|iPod/i.test(navigator.userAgent)
   if (iOS) return 'high'
 
-  if (mobile && (cores <= 4 || memory <= 3)) return 'medium'
+  // Android: bloom + MSAA (HalfFloat) faqat haqiqatan kuchli telefonda.
+  // 6 GB / 8 yadroli o'rta telefonlar ham bloom bilan 30 FPS dan tushib ketadi,
+  // avtomatik `degrade` esa faqat ~2 soniyadan keyin ishlaydi — shu vaqtgacha
+  // intro qotib ko'rinadi. Chrome deviceMemory'ni 8 dan yuqori bermaydi.
+  if (mobile && (cores < 8 || memory < 8)) return 'medium'
   if (cores <= 2) return 'medium'
   return 'high'
 }

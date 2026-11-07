@@ -6,7 +6,7 @@
 
 export const config = {
   /* ---------------------------------------------------------- 3D SAHNA */
-  /** Kinematik ochilish sahnasi (qarang: templates-src/core/cinema/kit.ts → Scene3D). */
+  /** Kinematik ochilish sahnasi (qarang: templates-src/core/cinema/scene3d.ts → Scene3D). */
   scene3d: {
     hero: 'card',
     mood: 'night',

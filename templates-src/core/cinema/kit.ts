@@ -6,40 +6,10 @@
  */
 import * as THREE from 'three'
 import type { ArchKind, Palette, PlaqueText } from './textures'
+import type { Scene3D } from './scene3d'
 
-export type HeroKind = 'mehrab' | 'arch' | 'medallion' | 'card' | 'giftbox'
-
-export type Scene3D = {
-  /** Markaziy obyekt */
-  hero: HeroKind
-  /** night — qorong'i zal, sham va fonar nuri; day — yorug', havodor */
-  mood: 'night' | 'day'
-  lanterns?: boolean
-  candles?: boolean
-  flowers?: 'hydrangea' | 'rose' | 'none'
-  /** Osmonda hilol va yulduzlar */
-  moon?: boolean
-  /** Orqada gullardan yasalgan arka */
-  floralArch?: boolean
-  /** Orqada butun fonni qoplaydigan gul devori (to'y fotozonasidagi kabi) */
-  flowerWall?: boolean
-  /** Pol o'rniga atlas mato */
-  drape?: boolean
-  /** Oldinda marvarid shodalari */
-  pearls?: boolean
-  /** Medalyondagi arabcha yozuv (masalan, Bismillah) */
-  arabic?: string
-  /** Kartadagi sarlavha («Save the Date») */
-  headline?: string
-}
-
-export const DEFAULT_SCENE: Scene3D = {
-  hero: 'mehrab',
-  mood: 'night',
-  lanterns: true,
-  candles: true,
-  flowers: 'hydrangea',
-}
+export type { HeroKind, Scene3D } from './scene3d'
+export { DEFAULT_SCENE } from './scene3d'
 
 /** Sahna qismlarini quruvchi funksiyalarga beriladigan kontekst. */
 export type Kit = {
