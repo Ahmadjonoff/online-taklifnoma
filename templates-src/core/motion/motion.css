@@ -1,0 +1,264 @@
+/* ===========================================================================
+   Scroll xoreografiyasi — qarang: ScrollStory.tsx
+   Ranglar faqat palitra o'zgaruvchilaridan (mijoz rangi fon sahnasiga tushadi).
+   =========================================================================== */
+
+.mo-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background-color: var(--color-paper);
+}
+.mo-particles {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+.mo-story {
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------------------------------------------------------------- qatlamlar */
+.mo-layer {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-paper);
+  transition:
+    opacity 1.3s ease,
+    clip-path 1.5s cubic-bezier(0.7, 0, 0.2, 1);
+}
+.mo-layer:first-child {
+  clip-path: none !important;
+  opacity: 1 !important;
+}
+
+[data-transition='fade'] .mo-layer { opacity: 0; }
+[data-transition='fade'] .mo-layer[data-on='true'] { opacity: 1; }
+
+/* Ichkaridan kengayuvchi doira — «ko'z qorachig'i» */
+[data-transition='iris'] .mo-layer { clip-path: circle(0% at 50% 55%); }
+[data-transition='iris'] .mo-layer[data-on='true'] { clip-path: circle(150% at 50% 55%); }
+
+/* Pastdan ko'tariluvchi to'lqin */
+[data-transition='wipe'] .mo-layer { clip-path: inset(100% 0 0 0); }
+[data-transition='wipe'] .mo-layer[data-on='true'] { clip-path: inset(0 0 0 0); }
+
+/* Diagonal supurish */
+[data-transition='sweep'] .mo-layer { clip-path: polygon(-40% 0, -40% 0, -80% 100%, -80% 100%); }
+[data-transition='sweep'] .mo-layer[data-on='true'] { clip-path: polygon(-40% 0, 180% 0, 140% 100%, -80% 100%); }
+
+/* ---------------------------------------------------------------- tuslar */
+/* background-color alohida: color-mix bo'lmagan eski brauzerda ham fon qoladi */
+[data-tone='paper'] {
+  background-image: radial-gradient(120% 80% at 50% 0%, var(--color-paper-2), var(--color-paper) 72%);
+}
+[data-tone='gold'] {
+  background-image: radial-gradient(120% 70% at 50% 0%, color-mix(in oklab, var(--color-gold) 30%, var(--color-paper)), var(--color-paper-2) 78%);
+}
+[data-tone='wine'] {
+  background-image: radial-gradient(130% 80% at 50% 100%, color-mix(in oklab, var(--color-wine) 42%, var(--color-paper)), var(--color-paper-2) 82%);
+}
+[data-tone='blush'] {
+  background-image: radial-gradient(120% 80% at 30% 15%, color-mix(in oklab, var(--color-blush) 60%, var(--color-paper)), var(--color-paper) 78%);
+}
+[data-tone='sage'] {
+  background-image: radial-gradient(120% 80% at 70% 15%, color-mix(in oklab, var(--color-sage) 32%, var(--color-paper)), var(--color-paper) 78%);
+}
+[data-tone='deep'] {
+  background-image: linear-gradient(180deg, color-mix(in oklab, var(--color-paper) 62%, black), var(--color-paper-3));
+}
+
+/* ---------------------------------------------------------------- bezaklar */
+/* Butun bezak qatlami scroll bilan sekin siljiydi (parallaks) — --sp: 0..1 */
+.mo-art {
+  position: absolute;
+  inset: -12% 0;
+  transform: translate3d(0, calc(var(--sp, 0) * -9%), 0);
+  will-change: transform;
+}
+.mo-art::before,
+.mo-art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+/* Yulduzli osmon: ikki qatlam turli tezlikda miltillaydi */
+[data-art='stars']::before,
+[data-art='moon']::after {
+  background-image:
+    radial-gradient(1.6px 1.6px at 12% 18%, var(--color-gold-light) 50%, transparent 52%),
+    radial-gradient(1.2px 1.2px at 64% 9%, var(--color-ink) 50%, transparent 52%),
+    radial-gradient(1.8px 1.8px at 38% 72%, var(--color-gold-light) 50%, transparent 52%),
+    radial-gradient(1.1px 1.1px at 84% 46%, var(--color-ink) 50%, transparent 52%),
+    radial-gradient(1.4px 1.4px at 22% 54%, var(--color-gold) 50%, transparent 52%);
+  background-size: 230px 230px;
+  animation: mo-twinkle 3.8s ease-in-out infinite alternate;
+}
+[data-art='stars']::after {
+  background-image:
+    radial-gradient(1.3px 1.3px at 30% 30%, var(--color-ink) 50%, transparent 52%),
+    radial-gradient(2px 2px at 75% 65%, var(--color-gold-light) 50%, transparent 52%),
+    radial-gradient(1.2px 1.2px at 52% 88%, var(--color-gold) 50%, transparent 52%);
+  background-size: 170px 170px;
+  animation: mo-twinkle 5.2s ease-in-out -2s infinite alternate;
+}
+
+/* Tepadan tushayotgan oltin nur (sekin tebranadi) */
+[data-art='rays']::before {
+  inset: -30% -40% 0;
+  background: repeating-conic-gradient(
+    from -90deg at 50% 0%,
+    color-mix(in srgb, var(--color-gold) 20%, transparent) 0deg 3deg,
+    transparent 3deg 10deg
+  );
+  -webkit-mask-image: radial-gradient(ellipse 60% 55% at 50% 0%, #000 0%, transparent 78%);
+  mask-image: radial-gradient(ellipse 60% 55% at 50% 0%, #000 0%, transparent 78%);
+  transform-origin: 50% 0%;
+  animation: mo-sway 16s ease-in-out infinite alternate;
+}
+[data-art='rays']::after {
+  background: radial-gradient(ellipse 70% 40% at 50% 0%, color-mix(in srgb, var(--color-gold-light) 35%, transparent), transparent 70%);
+}
+
+/* Mehrob arkalari qatori (SVG maska — rang palitradan) */
+[data-art='arches']::before {
+  background-color: color-mix(in srgb, var(--color-gold) 22%, transparent);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='200' viewBox='0 0 120 200'%3E%3Cpath d='M14 200V92C14 60 40 44 60 18C80 44 106 60 106 92V200' fill='none' stroke='%23000' stroke-width='2'/%3E%3Cpath d='M26 200V96C26 70 46 58 60 38C74 58 94 70 94 96V200' fill='none' stroke='%23000' stroke-width='1'/%3E%3C/svg%3E") 0 0 / 120px 200px repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='200' viewBox='0 0 120 200'%3E%3Cpath d='M14 200V92C14 60 40 44 60 18C80 44 106 60 106 92V200' fill='none' stroke='%23000' stroke-width='2'/%3E%3Cpath d='M26 200V96C26 70 46 58 60 38C74 58 94 70 94 96V200' fill='none' stroke='%23000' stroke-width='1'/%3E%3C/svg%3E") 0 0 / 120px 200px repeat;
+  opacity: 0.8;
+}
+[data-art='arches']::after {
+  background: linear-gradient(180deg, var(--color-paper) 0%, transparent 30%, transparent 70%, var(--color-paper) 100%);
+  opacity: 0.85;
+}
+
+/* Girih — 8 qirrali yulduz naqshi, sekin «nafas oladi» */
+[data-art='girih']::before {
+  background-color: color-mix(in srgb, var(--color-gold) 26%, transparent);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke='%23000' stroke-width='1.4'%3E%3Crect x='30' y='30' width='36' height='36'/%3E%3Crect x='30' y='30' width='36' height='36' transform='rotate(45 48 48)'/%3E%3Ccircle cx='48' cy='48' r='8'/%3E%3Cpath d='M0 48H22M74 48H96M48 0V22M48 74V96'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 96px 96px repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke='%23000' stroke-width='1.4'%3E%3Crect x='30' y='30' width='36' height='36'/%3E%3Crect x='30' y='30' width='36' height='36' transform='rotate(45 48 48)'/%3E%3Ccircle cx='48' cy='48' r='8'/%3E%3Cpath d='M0 48H22M74 48H96M48 0V22M48 74V96'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 96px 96px repeat;
+  animation: mo-breathe 9s ease-in-out infinite alternate;
+}
+[data-art='girih']::after {
+  background: radial-gradient(ellipse 70% 55% at 50% 50%, transparent 0%, var(--color-paper) 95%);
+}
+
+/* Bokeh — katta yumshoq nur dog'lari suzadi */
+[data-art='bokeh']::before {
+  background:
+    radial-gradient(circle at 18% 22%, color-mix(in srgb, var(--color-gold-light) 30%, transparent) 0 46px, transparent 70px),
+    radial-gradient(circle at 78% 34%, color-mix(in srgb, var(--color-blush) 34%, transparent) 0 70px, transparent 100px),
+    radial-gradient(circle at 40% 68%, color-mix(in srgb, var(--color-gold) 22%, transparent) 0 36px, transparent 58px),
+    radial-gradient(circle at 86% 82%, color-mix(in srgb, var(--color-gold-light) 26%, transparent) 0 54px, transparent 84px),
+    radial-gradient(circle at 10% 88%, color-mix(in srgb, var(--color-wine) 30%, transparent) 0 60px, transparent 92px);
+  filter: blur(6px);
+  animation: mo-drift 22s ease-in-out infinite alternate;
+}
+
+/* Hilol + yulduzlar */
+[data-art='moon']::before {
+  inset: 6% 8% auto auto;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, var(--color-gold-light) 0 34px, transparent 35px),
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--color-gold-light) 30%, transparent) 0, transparent 60px);
+  -webkit-mask-image: radial-gradient(circle at 64% 40%, transparent 0 30px, #000 31px);
+  mask-image: radial-gradient(circle at 64% 40%, transparent 0 30px, #000 31px);
+  animation: mo-glow 6s ease-in-out infinite alternate;
+}
+
+@keyframes mo-twinkle {
+  from { opacity: 0.35; }
+  to { opacity: 1; }
+}
+@keyframes mo-sway {
+  from { transform: rotate(-4deg); }
+  to { transform: rotate(4deg); }
+}
+@keyframes mo-breathe {
+  from { opacity: 0.45; transform: scale(1); }
+  to { opacity: 0.9; transform: scale(1.06); }
+}
+@keyframes mo-drift {
+  from { transform: translate3d(-3%, 2%, 0); }
+  to { transform: translate3d(3%, -3%, 0); }
+}
+@keyframes mo-glow {
+  from { opacity: 0.75; }
+  to { opacity: 1; }
+}
+
+/* ---------------------------------------------------------------- bo'lim effektlari */
+/* Specificity: shablon CSS'idagi `.reveal` (0,1,0) dan yuqori bo'lishi shart */
+.mo-sec[data-fx] .reveal {
+  transition:
+    opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.15s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 1s ease,
+    clip-path 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.mo-sec[data-fx='zoom'] .reveal {
+  transform: scale(0.84);
+}
+.mo-sec[data-fx='tilt'] .reveal {
+  transform: perspective(900px) translateY(36px) rotateX(30deg);
+  transform-origin: 50% 100%;
+}
+.mo-sec[data-fx='blur'] .reveal {
+  filter: blur(10px);
+  transform: translateY(14px) scale(1.04);
+}
+.mo-sec[data-fx='slide'] .reveal {
+  transform: translateX(-56px);
+}
+.mo-sec[data-fx='slide']:nth-child(even) .reveal {
+  transform: translateX(56px);
+}
+.mo-sec[data-fx='mask'] .reveal {
+  clip-path: inset(0 0 100% 0);
+  transform: translateY(26px);
+}
+.mo-sec[data-fx='flip'] .reveal {
+  transform: perspective(1000px) rotateY(-62deg) translateX(-20px);
+  transform-origin: 0% 50%;
+}
+.mo-sec[data-fx] .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  clip-path: inset(-30% -30% -30% -30%);
+}
+
+/* Hero: chiqib ketayotganda sekinroq siljiydi va so'nadi («pin» hissi) */
+.mo-sec[data-key='hero'] > * {
+  transform: translate3d(0, calc(var(--out, 0) * 30vh), 0) scale(calc(1 - var(--out, 0) * 0.08));
+  opacity: calc(1 - var(--out, 0) * 1.15);
+  will-change: transform, opacity;
+}
+
+/* Chiqib ketayotgan bo'lim orqaga buklanadi — varaq ag'darilgandek */
+.mo-sec[data-fold] {
+  perspective: 1600px;
+}
+.mo-sec[data-fold] > * {
+  transform-origin: 50% 100%;
+  transform: rotateX(calc(var(--out, 0) * 16deg)) scale(calc(1 - var(--out, 0) * 0.06));
+  opacity: calc(1 - var(--out, 0) * 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mo-layer { transition: opacity 0.6s ease; }
+  [data-transition] .mo-layer { clip-path: none; opacity: 0; }
+  [data-transition] .mo-layer[data-on='true'] { opacity: 1; }
+  .mo-art, .mo-art::before, .mo-art::after { animation: none !important; transform: none !important; }
+  .mo-sec[data-fx] .reveal { transform: none !important; filter: none !important; clip-path: none !important; }
+  .mo-sec > * { transform: none !important; opacity: 1 !important; }
+}

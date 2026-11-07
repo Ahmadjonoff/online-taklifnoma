@@ -6,6 +6,7 @@
  *   medallion — molbertdagi bronza medalyon, arabcha yozuv (Medalyon)
  *   card      — molbertdagi baxmal «Save the Date» kartasi (Bordo)
  *   giftbox   — lentali sovg'a qutisi: bant uchadi, qopqoq ochiladi (Sovg'a)
+ *   envelope, gate, curtain — qarang: openings.ts (konvert, darvoza, parda)
  */
 import * as THREE from 'three'
 import type gsap from 'gsap'
@@ -21,6 +22,7 @@ import {
   tex,
   type Kit,
 } from './kit'
+import { curtain, envelope, gate } from './openings'
 
 export type HeroBuild = {
   /** Idle'da yengil buriladigan guruh */
@@ -33,6 +35,11 @@ export type HeroBuild = {
   burst: THREE.Vector3
   /** Ochilishda kamera «kirib» boradigan balandlik */
   diveY: number
+  /**
+   * Ochilishda kamera qaraydigan balandlik (berilmasa — kadr markazi).
+   * Masalan, konvertdan ko'tarilgan kartaga yoki darvoza ichiga qarash uchun.
+   */
+  diveLook?: number
   /** Footprint yarim kengligi — gul va shamlar shu atrofga qo'yiladi */
   halfWidth: number
   sweeps: THREE.ShaderMaterial[]
@@ -43,7 +50,7 @@ export type HeroBuild = {
   open?(tl: gsap.core.Timeline): void
 }
 
-function halo(k: Kit, y: number, scale: number, z = -1.2) {
+export function halo(k: Kit, y: number, scale: number, z = -1.2) {
   const h = additiveSprite(k.own(tex(glow(k.pal.glass, k.pal.goldLight))), 0.1)
   h.scale.set(scale, scale, 1)
   h.position.set(0, y, z)
@@ -428,6 +435,12 @@ export function buildHero(k: Kit): HeroBuild {
       return card(k)
     case 'giftbox':
       return giftbox(k)
+    case 'envelope':
+      return envelope(k)
+    case 'gate':
+      return gate(k)
+    case 'curtain':
+      return curtain(k)
     default:
       return plaque(k, 'ogee')
   }

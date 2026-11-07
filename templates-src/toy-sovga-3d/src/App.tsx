@@ -68,12 +68,15 @@ function sectionList(): SectionDef[] {
 
 export default function App() {
   const [opened, setOpened] = useState(false)
+  // Kontent 3D chunk kelgandan keyin chiqadi (qarang: CinematicOpening → onPrimed)
+  const [primed, setPrimed] = useState(false)
   const sections = sectionList()
 
   return (
     <>
       <CinematicOpening
         onOpen={() => setOpened(true)}
+        onPrimed={() => setPrimed(true)}
         fallback={<Envelope onOpen={() => setOpened(true)} />}
       />
 
@@ -83,7 +86,8 @@ export default function App() {
         style={{ opacity: opened ? 1 : 0 }}
         aria-hidden={!opened}
       >
-        {sections.map(({ key, bg, Comp }, i) => (
+        {(primed || opened) &&
+          sections.map(({ key, bg, Comp }, i) => (
           <Comp key={key} bg={bg} prevBg={sections[i - 1]?.bg} />
         ))}
       </main>

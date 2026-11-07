@@ -356,6 +356,7 @@ export function createStage(opts: StageOptions): Stage {
     bloom: bloomBase,
     glow: 0,
     idle: 0,
+    lookY: 0,
   }
   let baseDist = 6
   let baseFov = 38
@@ -432,7 +433,7 @@ export function createStage(opts: StageOptions): Stage {
       target.y - 0.12 + ctl.camY + (-pointer.y * 0.18 + Math.sin(t * 0.17) * 0.05) * idle,
       baseDist * ctl.dist,
     )
-    camera.lookAt(target)
+    camera.lookAt(target.x, target.y + ctl.lookY, target.z)
 
     hero.root.rotation.y = ctl.rot + (pointer.x * 0.1 + Math.sin(t * 0.35) * 0.035) * idle
     if (!opening) hero.bob.position.y = bobBase + Math.sin(t * 0.9) * 0.012 * idle
@@ -484,12 +485,27 @@ export function createStage(opts: StageOptions): Stage {
   ctl.camY = -0.75
   ctl.rot = -0.6
   ctl.fovMul = 1.12
-  const ready = renderer
-    .compileAsync(scene, camera)
-    .catch(() => undefined)
-    .then(() => {
-      if (!disposed) raf = requestAnimationFrame(tick)
-    })
+  //
+  // NEGA BOSQICHMA-BOSQICH: o'rta Android'da (CPU ~4 marta sekin) birinchi
+  // kadr bitta ~2.8 soniyalik «qotish» edi — 10 ga yaqin katta canvas
+  // teksturani GPU'ga yuklash + bloom shader'larini kompilyatsiya qilish bir
+  // kadrga tushardi va intro animatsiyasi shu payt to'xtab qolardi. Endi
+  // teksturalar kadrlar orasida bittadan yuklanadi, bloom esa poster
+  // ko'rinib turganida bir marta «isitiladi» (canvas hali shaffof).
+  const nextFrame = () => new Promise<void>((r) => requestAnimationFrame(() => r()))
+  const ready = (async () => {
+    await renderer.compileAsync(scene, camera).catch(() => undefined)
+    for (const t of owned) {
+      if (disposed) return
+      renderer.initTexture(t)
+      await nextFrame()
+    }
+    if (disposed) return
+    if (composer) composer.render(0)
+    else renderer.render(scene, camera)
+    await nextFrame()
+    if (!disposed) raf = requestAnimationFrame(tick)
+  })()
 
   /* ---------- kino ---------- */
   const tweens: gsap.core.Animation[] = []
@@ -528,6 +544,7 @@ export function createStage(opts: StageOptions): Stage {
         .to(ctl, { dist: 0.12, camY: diveCamY, fovMul: 0.78, duration: 2.3, ease: 'power3.in' }, 0.55)
         .call(onFlash, [], 1.95)
         .to({}, { duration: 0.6 }, 2.55)
+      if (hero.diveLook != null) tl.to(ctl, { lookY: hero.diveLook - target.y, duration: 1.6, ease: 'sine.inOut' }, 0.4)
       hero.open?.(tl)
       tweens.push(tl)
     })

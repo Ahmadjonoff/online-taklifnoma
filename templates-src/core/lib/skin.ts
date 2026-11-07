@@ -8,7 +8,8 @@
  * esa o'zining tepasidagi chekkani `prevBg` orqali oladi.
  */
 
-export type Bg = 'paper' | 'paper-2' | 'paper-3'
+/** `clear` — shaffof: orqadagi scroll sahnasi ko'rinadi (core/motion). */
+export type Bg = 'paper' | 'paper-2' | 'paper-3' | 'clear'
 
 /** Har bir bo'lim shu ikki xossani App'dan oladi. */
 export type Skin = {
@@ -23,6 +24,7 @@ const CLASS: Record<Bg, string> = {
   paper: 'bg-paper',
   'paper-2': 'bg-paper-2',
   'paper-3': 'bg-paper-3',
+  clear: 'bg-transparent',
 }
 
 export const bgClass = (bg: Bg): string => CLASS[bg]

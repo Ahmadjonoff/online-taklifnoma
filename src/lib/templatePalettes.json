@@ -1475,5 +1475,200 @@
     "--tpl-satin": "#FCFAFF"
    }
   }
+ ],
+ "nikoh-darvoza-3d": [
+  {
+   "id": "nikoh-darvoza-3d",
+   "name": "Firuza",
+   "vars": {
+    "--color-paper": "#0A1F24",
+    "--color-paper-2": "#0E2930",
+    "--color-paper-3": "#13343C",
+    "--color-gold": "#D9B56C",
+    "--color-gold-light": "#F6E2B0",
+    "--color-gold-dark": "#9A7438",
+    "--color-ink": "#F1FBFA",
+    "--color-ink-soft": "#B9D6D4",
+    "--color-wine": "#1F7F86",
+    "--color-wine-dark": "#145E64",
+    "--color-sage": "#D8F1EE",
+    "--color-blush": "#3FA7A8",
+    "--tpl-petal-a": "#E8C98A",
+    "--tpl-petal-b": "#FFF6E0",
+    "--tpl-grad-a": "#061316",
+    "--tpl-grad-b": "#12363D",
+    "--tpl-accent": "#F6E2B0",
+    "--tpl-scene-a": "#051114",
+    "--tpl-scene-b": "#123A42",
+    "--tpl-glass": "#3FA7A8",
+    "--tpl-satin": "#EFE3D0"
+   }
+  },
+  {
+   "id": "nikoh-darvoza-3d-2",
+   "name": "Lojuvard",
+   "vars": {
+    "--color-paper": "#0C1230",
+    "--color-paper-2": "#111A40",
+    "--color-paper-3": "#17224F",
+    "--color-gold": "#D9B56C",
+    "--color-gold-light": "#F6E2B0",
+    "--color-gold-dark": "#9A7438",
+    "--color-ink": "#F3F5FF",
+    "--color-ink-soft": "#C0C8EA",
+    "--color-wine": "#2A3F9A",
+    "--color-wine-dark": "#1D2D72",
+    "--color-sage": "#DBE2FF",
+    "--color-blush": "#4A63C8",
+    "--tpl-petal-a": "#E8C98A",
+    "--tpl-petal-b": "#FFF6E0",
+    "--tpl-grad-a": "#070B20",
+    "--tpl-grad-b": "#16215A",
+    "--tpl-accent": "#F6E2B0",
+    "--tpl-scene-a": "#060A1C",
+    "--tpl-scene-b": "#18245E",
+    "--tpl-glass": "#4A63C8",
+    "--tpl-satin": "#EFE3D0"
+   }
+  },
+  {
+   "id": "nikoh-darvoza-3d-3",
+   "name": "Ametist",
+   "vars": {
+    "--color-paper": "#170E2B",
+    "--color-paper-2": "#1F1338",
+    "--color-paper-3": "#281945",
+    "--color-gold": "#D9B56C",
+    "--color-gold-light": "#F6E2B0",
+    "--color-gold-dark": "#9A7438",
+    "--color-ink": "#F7F1FF",
+    "--color-ink-soft": "#CBBDE3",
+    "--color-wine": "#6B3FA0",
+    "--color-wine-dark": "#4E2D78",
+    "--color-sage": "#E9D8FF",
+    "--color-blush": "#9D7FD6",
+    "--tpl-petal-a": "#E8C98A",
+    "--tpl-petal-b": "#FFF6E0",
+    "--tpl-grad-a": "#120A22",
+    "--tpl-grad-b": "#2C1A4A",
+    "--tpl-accent": "#F6E2B0",
+    "--tpl-scene-a": "#120A22",
+    "--tpl-scene-b": "#2C1A4A",
+    "--tpl-glass": "#9D7FD6",
+    "--tpl-satin": "#EFE3D0"
+   }
+  }
+ ],
+ "nikoh-parda-3d": [
+  {
+   "id": "nikoh-parda-3d",
+   "name": "Bordo parda",
+   "vars": {
+    "--color-paper": "#1A0A10",
+    "--color-paper-2": "#231019",
+    "--color-paper-3": "#2D1520",
+    "--color-gold": "#D9B56C",
+    "--color-gold-light": "#F6E2B0",
+    "--color-gold-dark": "#9A7438",
+    "--color-ink": "#FBF1F3",
+    "--color-ink-soft": "#DCBFC6",
+    "--color-wine": "#7A1F33",
+    "--color-wine-dark": "#4E1420",
+    "--color-sage": "#F3DFE4",
+    "--color-blush": "#B4475E",
+    "--tpl-petal-a": "#B4475E",
+    "--tpl-petal-b": "#F6DFE5",
+    "--tpl-grad-a": "#12060A",
+    "--tpl-grad-b": "#3A1420",
+    "--tpl-accent": "#F6E2B0",
+    "--tpl-scene-a": "#0E0508",
+    "--tpl-scene-b": "#34121C",
+    "--tpl-glass": "#B4475E",
+    "--tpl-satin": "#EFE3D0"
+   }
+  },
+  {
+   "id": "nikoh-parda-3d-2",
+   "name": "Zumrad parda",
+   "vars": {
+    "--color-paper": "#07160F",
+    "--color-paper-2": "#0B1F16",
+    "--color-paper-3": "#10291D",
+    "--color-gold": "#D9B56C",
+    "--color-gold-light": "#F6E2B0",
+    "--color-gold-dark": "#9A7438",
+    "--color-ink": "#F3FBF6",
+    "--color-ink-soft": "#BCD8C8",
+    "--color-wine": "#1D5C3F",
+    "--color-wine-dark": "#123D29",
+    "--color-sage": "#DFF3E8",
+    "--color-blush": "#2F8A5F",
+    "--tpl-petal-a": "#F2E9DA",
+    "--tpl-petal-b": "#FFFFFF",
+    "--tpl-grad-a": "#040D09",
+    "--tpl-grad-b": "#123323",
+    "--tpl-accent": "#F6E2B0",
+    "--tpl-scene-a": "#030A07",
+    "--tpl-scene-b": "#10301F",
+    "--tpl-glass": "#2F8A5F",
+    "--tpl-satin": "#EFE3D0"
+   }
+  }
+ ],
+ "toy-konvert-3d": [
+  {
+   "id": "toy-konvert-3d",
+   "name": "Shampan",
+   "vars": {
+    "--color-paper": "#FBF6EF",
+    "--color-paper-2": "#F5EBDF",
+    "--color-paper-3": "#ECDCC9",
+    "--color-gold": "#A8834A",
+    "--color-gold-light": "#E8CC95",
+    "--color-gold-dark": "#735630",
+    "--color-ink": "#3B2D24",
+    "--color-ink-soft": "#6F5D50",
+    "--color-wine": "#9E3B4F",
+    "--color-wine-dark": "#742A3A",
+    "--color-sage": "#9AA886",
+    "--color-blush": "#F0D6D6",
+    "--tpl-petal-a": "#ECBCC4",
+    "--tpl-petal-b": "#FFF4F2",
+    "--tpl-grad-a": "#FBF6EF",
+    "--tpl-grad-b": "#ECDCC9",
+    "--tpl-accent": "#A8834A",
+    "--tpl-scene-a": "#24161A",
+    "--tpl-scene-b": "#55343A",
+    "--tpl-glass": "#F0D6D6",
+    "--tpl-satin": "#FBF3E8"
+   }
+  },
+  {
+   "id": "toy-konvert-3d-2",
+   "name": "Zaytun",
+   "vars": {
+    "--color-paper": "#F7F6EF",
+    "--color-paper-2": "#EEEEE2",
+    "--color-paper-3": "#E1E3D1",
+    "--color-gold": "#A0864E",
+    "--color-gold-light": "#E2CF9B",
+    "--color-gold-dark": "#6E5A32",
+    "--color-ink": "#2F3328",
+    "--color-ink-soft": "#5E6553",
+    "--color-wine": "#5F7350",
+    "--color-wine-dark": "#45553A",
+    "--color-sage": "#7D8F6A",
+    "--color-blush": "#DFE6D3",
+    "--tpl-petal-a": "#DFE8D0",
+    "--tpl-petal-b": "#FFFFFF",
+    "--tpl-grad-a": "#F7F6EF",
+    "--tpl-grad-b": "#E1E3D1",
+    "--tpl-accent": "#A0864E",
+    "--tpl-scene-a": "#171B13",
+    "--tpl-scene-b": "#3B4532",
+    "--tpl-glass": "#DFE6D3",
+    "--tpl-satin": "#FAFAF2"
+   }
+  }
  ]
 }

@@ -124,6 +124,65 @@
       ]
     },
     {
+      "slug": "nikoh-darvoza-3d",
+      "name": "Darvoza 3D",
+      "base": "cinematic-3d",
+      "eventType": "nikoh-toyi",
+      "palette": "nikoh-darvoza-3d",
+      "typo": "classic",
+      "desc": "Kinematik 3D: ganch naqshli darvoza ochilib ichidan nur chiqadi; scroll bilan yulduzli tun, oltin nur va fonarlar almashadi",
+      "price": 249000,
+      "emoji": "🕌",
+      "kicker": "Nikoh to‘yi",
+      "tier": "luxury",
+      "categories": [
+        "nikoh-toyi",
+        "toy",
+        "fotiha-toyi",
+        "sunnat-toyi"
+      ]
+    },
+    {
+      "slug": "nikoh-parda-3d",
+      "name": "Parda 3D",
+      "base": "cinematic-3d",
+      "eventType": "nikoh-toyi",
+      "palette": "nikoh-parda-3d",
+      "typo": "classic",
+      "desc": "Kinematik 3D: baxmal sahna pardasi ochiladi, prožektor ostida taklif kartasi; scroll bilan sahnalar supurilib almashadi",
+      "price": 249000,
+      "emoji": "🎭",
+      "kicker": "Visol oqshomi",
+      "tier": "luxury",
+      "categories": [
+        "nikoh-toyi",
+        "toy",
+        "yubiley",
+        "tugilgan-kun",
+        "bayramlar"
+      ]
+    },
+    {
+      "slug": "toy-konvert-3d",
+      "name": "Konvert 3D",
+      "base": "luxe-vow",
+      "eventType": "toy",
+      "palette": "toy-konvert-3d",
+      "typo": "classic",
+      "desc": "Kinematik 3D: mum muhr sinadi, konvert qanoti ochilib ichidan karta ko‘tariladi; scroll bilan gulbarglar va yorug‘ sahnalar",
+      "price": 249000,
+      "emoji": "💌",
+      "kicker": "To‘y kechasi",
+      "tier": "luxury",
+      "categories": [
+        "toy",
+        "nikoh-toyi",
+        "fotiha-toyi",
+        "qiz-bazmi",
+        "oilaviy"
+      ]
+    },
+    {
       "slug": "nikoh-imperial",
       "name": "Imperial",
       "base": "luxe-vow",
