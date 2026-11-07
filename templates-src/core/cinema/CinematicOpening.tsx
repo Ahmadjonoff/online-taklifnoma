@@ -183,10 +183,14 @@ export function CinematicOpening({
         </p>
       </div>
 
+      {/* `fade` da canvas darhol yashiriladi: sahna yopilganda WebGL konteksti
+          o'chiriladi (forceContextLoss) va Chrome konteksti yo'qolgan canvas
+          o'rniga «qayg'u yuzli» belgi chizadi — u so'nayotgan canvas ichida
+          mehmonga ko'rinib qolardi. Bu paytda chaqnash ekranni to'liq yopib turadi. */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 h-full w-full transition-opacity duration-[1400ms]"
-        style={{ opacity: showCanvas ? 1 : 0, touchAction: 'none' }}
+        style={{ opacity: showCanvas ? 1 : 0, visibility: phase === 'fade' ? 'hidden' : 'visible', touchAction: 'none' }}
       />
 
       {/* Yuqori va pastki matn (HTML — o'qilishi va tarjima uchun) */}
