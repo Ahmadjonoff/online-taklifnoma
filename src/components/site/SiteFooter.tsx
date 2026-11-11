@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { BrandMark } from "./BrandMark";
+import { InstagramIcon } from "./InstagramIcon";
 import { TelegramIcon } from "./TelegramIcon";
-import { telegramUrl } from "@/lib/contact";
+import { INSTAGRAM_DM_URL, telegramUrl } from "@/lib/contact";
 import { t, type Dictionary } from "@/lib/i18n/dictionary";
 
 /** Sayt pastidagi umumiy blok. */
@@ -89,6 +90,17 @@ export function SiteFooter({
               >
                 <TelegramIcon />
                 {t(dict.footer.telegramContact, { label: dict.common.telegramLabel })}
+              </a>
+            </li>
+            <li>
+              <a
+                href={INSTAGRAM_DM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 transition hover:text-rose-700"
+              >
+                <InstagramIcon />
+                {dict.common.instagramDm}
               </a>
             </li>
             <li>

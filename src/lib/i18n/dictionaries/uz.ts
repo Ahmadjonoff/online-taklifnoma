@@ -13,6 +13,7 @@ export const uz = {
     telegramLabel: "@Abdurauf_Ahmadjonov",
     priceShort: "{price} so'm",
     priceFrom: "{price} so'mdan",
+    instagramDm: "Instagram'da yozish",
     priceNote:
       "Narx dizayn darajasiga bog'liq — musiqa, taymer, RSVP, tilaklar va rang tanlash hammasiga kiritilgan. To'lov Telegram orqali: buyurtma yuborgach, to'lov uchun operatorga yozing.",
     tierStandard: "Standart",
@@ -64,6 +65,7 @@ export const uz = {
       "Konvert bilan ochiladigan jonli taklifnomalar. Shablonni tanlang — mehmonlaringizga havola yoki QR kod yuboring, javoblarni bir joydan kuzatib boring.",
     ctaViewTemplates: "Shablonlarni ko'rish",
     ctaHowItWorks: "Qanday ishlaydi?",
+    heroPrice: "Narxi {price} so'mdan — musiqa, taymer va RSVP ichida",
     statTemplates: "shablon",
     statEventTypes: "tadbir turi",
     statFast: "5 daq",

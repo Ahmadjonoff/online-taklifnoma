@@ -7,6 +7,7 @@ export const ru: Dictionary = {
     telegramLabel: "@Abdurauf_Ahmadjonov",
     priceShort: "{price} сум",
     priceFrom: "от {price} сум",
+    instagramDm: "Написать в Instagram",
     priceNote:
       "Цена зависит от уровня дизайна — музыка, таймер, RSVP, пожелания и выбор цвета включены всегда. Оплата через Telegram: после заказа напишите оператору для оплаты.",
     tierStandard: "Стандарт",
@@ -58,6 +59,7 @@ export const ru: Dictionary = {
       "Живые приглашения, открывающиеся конвертом. Выберите шаблон — отправьте гостям ссылку или QR-код, следите за ответами в одном месте.",
     ctaViewTemplates: "Смотреть шаблоны",
     ctaHowItWorks: "Как это работает?",
+    heroPrice: "Цена от {price} сум — музыка, таймер и RSVP включены",
     statTemplates: "шаблонов",
     statEventTypes: "типов мероприятий",
     statFast: "5 мин",

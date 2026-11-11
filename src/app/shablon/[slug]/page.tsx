@@ -6,9 +6,10 @@ import { Reveal } from "@/components/site/Reveal";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { TemplateCard } from "@/components/site/TemplateCard";
+import { InstagramIcon } from "@/components/site/InstagramIcon";
 import { TelegramIcon } from "@/components/site/TelegramIcon";
 import { formatPrice, TIER_STYLE, tierLabel as labelOf, tierOf } from "@/lib/catalog";
-import { telegramUrl } from "@/lib/contact";
+import { INSTAGRAM_DM_URL, telegramUrl } from "@/lib/contact";
 import { getDictionary, t } from "@/lib/i18n/dictionary";
 import { getLocale } from "@/lib/i18n/server";
 
@@ -153,6 +154,16 @@ export default async function TemplatePage({
                 >
                   <TelegramIcon />
                   {td.telegramBtn}
+                </a>
+
+                <a
+                  href={INSTAGRAM_DM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 flex items-center justify-center gap-2 rounded-full border border-stone-300 py-3.5 text-center text-sm font-semibold text-stone-700 transition hover:border-fuchsia-300 hover:bg-fuchsia-50 hover:text-fuchsia-800"
+                >
+                  <InstagramIcon />
+                  {dict.common.instagramDm}
                 </a>
 
                 <p className="mt-3 text-center text-xs text-stone-400">{td.noOnlinePayment}</p>

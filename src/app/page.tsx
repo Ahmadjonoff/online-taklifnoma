@@ -9,9 +9,10 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { TelegramIcon } from "@/components/site/TelegramIcon";
 import { TemplateCard } from "@/components/site/TemplateCard";
-import { formatPrice } from "@/lib/catalog";
+import { formatPrice, mixTiers } from "@/lib/catalog";
 import { CUSTOM_MUSIC_PRICE, TIER_PRICE, type Tier } from "@/lib/pricing";
-import { telegramUrl } from "@/lib/contact";
+import { INSTAGRAM_DM_URL, telegramUrl } from "@/lib/contact";
+import { InstagramIcon } from "@/components/site/InstagramIcon";
 import { getDictionary, t } from "@/lib/i18n/dictionary";
 import { getLocale } from "@/lib/i18n/server";
 import { getShowcase } from "@/lib/showcase";
@@ -27,7 +28,8 @@ export default async function HomePage() {
   const home = dict.home;
 
   const [{ eventTypes, templates }, showcase] = await Promise.all([getCatalog(), getShowcase().catch(() => [])]);
-  const featured = templates.slice(0, 6);
+  // Har darajadan 2 tadan: reklamadagi «79 000 so'mdan» birinchi ekranda ham ko'rinsin
+  const featured = mixTiers(templates).slice(0, 6);
   const total = templates.length;
 
   // Bosh sahifadagi jonli namuna — eng chiroyli ko'rinadigan Imperial
@@ -86,6 +88,9 @@ export default async function HomePage() {
                     {home.ctaHowItWorks}
                   </Link>
                 </div>
+                <p className="mt-5 text-sm font-medium text-stone-600">
+                  💰 {t(home.heroPrice, { price: formatPrice(TIER_PRICE.standard) })}
+                </p>
               </Reveal>
 
               <Reveal delay={480}>
@@ -186,7 +191,7 @@ export default async function HomePage() {
             </div>
           </Reveal>
 
-          <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
             {featured.map((tpl, i) => (
               <Reveal key={tpl.id} delay={i * 80}>
                 <TemplateCard
@@ -224,7 +229,7 @@ export default async function HomePage() {
                 </Link>
               </div>
             </Reveal>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {showcase.map((s, i) => (
                 <Reveal key={s.slug} delay={(i % 3) * 80}>
                   <a
@@ -486,6 +491,15 @@ export default async function HomePage() {
                 >
                   <TelegramIcon />
                   Telegram: {dict.common.telegramLabel}
+                </a>
+                <a
+                  href={INSTAGRAM_DM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-fuchsia-600 to-rose-500 px-8 py-4 font-semibold text-white shadow-xl transition hover:-translate-y-0.5"
+                >
+                  <InstagramIcon />
+                  {dict.common.instagramDm}
                 </a>
               </div>
             </div>

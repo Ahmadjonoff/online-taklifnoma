@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { TemplateCard, type CardTemplate } from "./TemplateCard";
-import { formatPrice, tierOf, type Tier } from "@/lib/catalog";
+import { formatPrice, mixTiers, tierOf, type Tier } from "@/lib/catalog";
 import { TIER_PRICE } from "@/lib/pricing";
 import { t, type Dictionary } from "@/lib/i18n/dictionary";
 
@@ -77,7 +77,8 @@ export function TemplateCatalog({
       );
     });
 
-    const sorted = [...list];
+    // «Tavsiya etilgan»: darajalar aralash — 79 000 lik shablonlar ham birinchi qatorda
+    const sorted = sort === "featured" ? mixTiers(list) : [...list];
     if (sort === "priceAsc") {
       sorted.sort((a, b) => a.price - b.price);
     } else if (sort === "priceDesc") {
@@ -234,7 +235,7 @@ export function TemplateCatalog({
         )}
       </div>
 
-      <div className="mt-6 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-6 grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((tpl) => (
           <TemplateCard
             key={tpl.slug}

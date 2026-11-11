@@ -4,7 +4,7 @@
  * Daraja (tier) narxdan kelib chiqib aniqlanadi — chegaralar va narxlar
  * `@/lib/pricing` da. Bu yerda — faqat ko'rinish (badge uslubi).
  */
-import type { Tier } from "./pricing";
+import { tierOf, type Tier } from "./pricing";
 
 export { formatPrice, tierOf, type Tier } from "./pricing";
 
@@ -24,4 +24,19 @@ export function tierLabel(
   labels: { tierStandard: string; tierPremium: string; tierLuxury: string }
 ): string {
   return tier === "luxury" ? labels.tierLuxury : tier === "premium" ? labels.tierPremium : labels.tierStandard;
+}
+
+/**
+ * Darajalarni aralashtirish: Standart → Premium → Luxury → Standart … (har
+ * daraja ichidagi tartib saqlanadi). Reklama «79 000 so'mdan» deydi — birinchi
+ * ekranda faqat 249 000 lik kartalar tursa, odam «aldashdi» deb chiqib ketadi.
+ */
+export function mixTiers<T extends { price: number }>(list: T[]): T[] {
+  const order: Tier[] = ["standard", "premium", "luxury"];
+  const buckets = order.map((tier) => list.filter((x) => tierOf(x.price) === tier));
+  const out: T[] = [];
+  for (let i = 0; out.length < list.length; i++) {
+    for (const b of buckets) if (i < b.length) out.push(b[i]);
+  }
+  return out;
 }

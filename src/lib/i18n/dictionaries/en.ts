@@ -7,6 +7,7 @@ export const en: Dictionary = {
     telegramLabel: "@Abdurauf_Ahmadjonov",
     priceShort: "{price} UZS",
     priceFrom: "from {price} UZS",
+    instagramDm: "Message on Instagram",
     priceNote:
       "The price depends on the design tier — music, countdown, RSVP, guest wishes and colour choice are always included. Payment via Telegram: after you order, message the operator to pay.",
     tierStandard: "Standard",
@@ -58,6 +59,7 @@ export const en: Dictionary = {
       "Live invitations that open like an envelope. Pick a template, send guests a link or QR code, and track every reply in one place.",
     ctaViewTemplates: "Browse templates",
     ctaHowItWorks: "How it works?",
+    heroPrice: "From {price} UZS — music, countdown and RSVP included",
     statTemplates: "templates",
     statEventTypes: "event types",
     statFast: "5 min",

@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BrandMark } from "./BrandMark";
+import { InstagramIcon } from "./InstagramIcon";
 import { TelegramIcon } from "./TelegramIcon";
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import { telegramUrl } from "@/lib/contact";
+import { INSTAGRAM_DM_URL, telegramUrl } from "@/lib/contact";
 import type { Dictionary } from "@/lib/i18n/dictionary";
 import type { Locale } from "@/lib/i18n/locales";
 
@@ -109,6 +110,15 @@ export function SiteHeader({ locale, dict }: { locale: Locale; dict: Dictionary 
             >
               <TelegramIcon />
               Telegram: {dict.common.telegramLabel}
+            </a>
+            <a
+              href={INSTAGRAM_DM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 inline-flex items-center justify-center gap-2 rounded-full border border-fuchsia-300 bg-fuchsia-50 px-5 py-3 text-center text-sm font-semibold text-fuchsia-800"
+            >
+              <InstagramIcon />
+              {dict.common.instagramDm}
             </a>
             <Link
               href="/shablonlar"

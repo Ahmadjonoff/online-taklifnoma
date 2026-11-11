@@ -21,6 +21,9 @@ export const SITE_URL = "https://online-taklifnoma-neon.vercel.app";
 
 export const INSTAGRAM_URL = "https://www.instagram.com/online_taklifnomalarrrr/";
 
+/** Instagram Direct chati — reklamadan kelganlar shu yerda yozishni afzal ko'radi. */
+export const INSTAGRAM_DM_URL = "https://ig.me/m/online_taklifnomalarrrr";
+
 /**
  * Har bir taklifnoma oxiridagi reklama bloki (shablonlardagi Footer
  * ko'rsatadi): mehmonlar ham shunday taklifnoma buyurtma qilishi uchun.
