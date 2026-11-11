@@ -291,6 +291,25 @@ export const uz = {
     relatedAll: "Barchasi ({total} shablon) →",
   },
 
+  quickOrder: {
+    tag: "⚡ Tezkor buyurtma",
+    title: "Vaqtingiz yo'qmi? Ism va telefoningizni qoldiring",
+    text: "Taklifnomani o'zimiz to'ldiramiz: ismlar, sana va to'yxonani telefonda so'raymiz, tayyor havolani sizga yuboramiz.",
+    name: "Ismingiz",
+    namePh: "Masalan: Dilnoza",
+    phone: "Telefon",
+    date: "To'y sanasi (ixtiyoriy)",
+    note: "Izoh (ixtiyoriy)",
+    notePh: "Masalan: qachon qo'ng'iroq qilaylik",
+    submit: "Qo'ng'iroq kutaman",
+    sending: "Yuborilmoqda…",
+    doneTitle: "Rahmat! So'rovingiz qabul qilindi",
+    doneText: "Tez orada qo'ng'iroq qilamiz. Kutmasdan yozmoqchi bo'lsangiz:",
+    orFull: "yoki",
+    fullBtn: "Hammasini o'zim to'ldiraman — 6 qadam, jonli ko'rinish bilan",
+    fullHint: "Ismlar, sana, to'yxona, kun tartibi, musiqa va ranglarni o'zingiz kiritasiz — o'ng tomonda taklifnoma darhol ko'rinadi.",
+  },
+
   order: {
     tag: "Buyurtma",
     title: "Taklifnomangizni shakllantiring",

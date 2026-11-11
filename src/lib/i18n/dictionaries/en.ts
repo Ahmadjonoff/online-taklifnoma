@@ -285,6 +285,25 @@ export const en: Dictionary = {
     relatedAll: "All ({total} templates) →",
   },
 
+  quickOrder: {
+    tag: "⚡ Quick order",
+    title: "No time? Leave your name and phone",
+    text: "We'll fill in the invitation for you: we'll ask for the names, date and venue by phone and send you the ready link.",
+    name: "Your name",
+    namePh: "e.g. Dilnoza",
+    phone: "Phone",
+    date: "Event date (optional)",
+    note: "Note (optional)",
+    notePh: "e.g. best time to call",
+    submit: "Call me back",
+    sending: "Sending…",
+    doneTitle: "Thank you! Request received",
+    doneText: "We'll call you soon. Want to write right away?",
+    orFull: "or",
+    fullBtn: "I'll fill everything myself — 6 steps with live preview",
+    fullHint: "Names, date, venue, schedule, music and colours — the invitation updates live next to the form.",
+  },
+
   order: {
     tag: "Order",
     title: "Put together your invitation",

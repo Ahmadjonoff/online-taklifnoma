@@ -94,8 +94,7 @@ export function validateOrderContent(
 
   // Telefon: O'zbekiston (+998 / 998 / 9 xonali) yoki chet el raqami xalqaro formatda (+7…, +90…;
   // E.164 — 8–15 raqam). Chet eldagi qarindoshlar ham buyurtma bera olsin.
-  const phoneDigits = v.phone.replace(/[\s()-]/g, "");
-  if (!/^(\+?998)?\d{9}$/.test(phoneDigits) && !/^\+[1-9]\d{7,14}$/.test(phoneDigits)) {
+  if (!isValidPhone(v.phone)) {
     return { ok: false, error: "Telefon raqami noto'g'ri formatda" };
   }
 
@@ -157,4 +156,13 @@ export function validateGuestSubmission(input: unknown): Result<GuestSubmission>
   const guest = typeof o.guest === "string" && /^[a-z0-9]{6,16}$/i.test(o.guest) ? o.guest : null;
 
   return { ok: true, value: { kind: "rsvp", name, attending, guestsCount, comment, guest } };
+}
+
+/**
+ * Telefon: O'zbekiston (+998 / 998 / 9 xonali) yoki chet el raqami xalqaro formatda (+7…, +90…;
+ * E.164 — 8–15 raqam). Buyurtma va tezkor so'rov (/api/leads) shu tekshiruvdan foydalanadi.
+ */
+export function isValidPhone(phone: string): boolean {
+  const digits = phone.replace(/[\s()-]/g, "");
+  return /^(\+?998)?\d{9}$/.test(digits) || /^\+[1-9]\d{7,14}$/.test(digits);
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { OrderForm } from "@/components/OrderForm";
+import { QuickOrder } from "@/components/QuickOrder";
 import { BrandMark } from "@/components/site/BrandMark";
 import { TelegramIcon } from "@/components/site/TelegramIcon";
 import { telegramUrl } from "@/lib/contact";
@@ -46,6 +47,22 @@ export default async function OrderPage({
   const defaultEventType =
     categories.find((c) => c.slug === tadbir)?.slug ?? template?.eventType.slug ?? "";
 
+  const form = (
+    <OrderForm
+      templateSlug={template?.slug ?? ""}
+      templateName={template?.name ?? dict.order.title}
+      templateTheme={template?.theme ?? ""}
+      templatePrice={template?.price ?? 0}
+      tier={tierOf(template?.price ?? 0)}
+      palettes={palettes}
+      swatches={template ? roleSwatches(template.theme) : { paper: [], gold: [], wine: [] }}
+      categories={categories}
+      defaultEventType={defaultEventType}
+      musicTracks={PICKER_TRACKS}
+      dict={dict}
+    />
+  );
+
   return (
     <div className="min-h-screen bg-[#faf7f2]">
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
@@ -81,19 +98,14 @@ export default async function OrderPage({
         </p>
 
         <div className="mt-10">
-          <OrderForm
-            templateSlug={template?.slug ?? ""}
-            templateName={template?.name ?? dict.order.title}
-            templateTheme={template?.theme ?? ""}
-            templatePrice={template?.price ?? 0}
-            tier={tierOf(template?.price ?? 0)}
-            palettes={palettes}
-            swatches={template ? roleSwatches(template.theme) : { paper: [], gold: [], wine: [] }}
-            categories={categories}
-            defaultEventType={defaultEventType}
-            musicTracks={PICKER_TRACKS}
-            dict={dict}
-          />
+          {/* Shablon tanlangan bo'lsa — avval tezkor so'rov (ism + telefon), to'liq 6 qadamli forma tugma ortida */}
+          {template ? (
+            <QuickOrder templateSlug={template.slug} templateName={template.name} templatePrice={template.price} dict={dict}>
+              {form}
+            </QuickOrder>
+          ) : (
+            form
+          )}
         </div>
       </main>
     </div>

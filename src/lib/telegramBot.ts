@@ -134,6 +134,32 @@ export async function notifyAdminNewOrder(order: NewOrderNotice): Promise<boolea
   return sendWithRetry(text);
 }
 
+/** Tezkor so'rov (/api/leads): mijoz faqat ism va telefon qoldirdi — operator qo'ng'iroq qilib, taklifnomani o'zi to'ldiradi */
+export async function notifyAdminQuickLead(lead: {
+  name: string;
+  phone: string;
+  templateName: string;
+  templateUrl: string;
+  eventDate?: string;
+  note?: string;
+  source?: string;
+}): Promise<boolean> {
+  const text = [
+    "⚡ Tezkor so'rov — qo'ng'iroq qiling!",
+    `🎨 ${lead.templateName}`,
+    lead.templateUrl,
+    "",
+    `👤 ${lead.name}`,
+    `📞 ${lead.phone}`,
+    ...(lead.eventDate ? [`📅 ${lead.eventDate}`] : []),
+    ...(lead.note ? [`💬 ${lead.note}`] : []),
+    ...(lead.source ? [`🔎 Manba: ${lead.source}`] : []),
+    "",
+    "Mijoz formani to'ldirmagan: ismlar, sana va to'yxonani telefonda so'rab, taklifnomani tayyorlang.",
+  ].join("\n");
+  return sendWithRetry(text);
+}
+
 /** Mijozlar botidan xabar (webhook javoblari) */
 export function sendTelegram(chatId: string, text: string): Promise<boolean> {
   return sendWithRetry(text, chatId, BOT_TOKEN);
