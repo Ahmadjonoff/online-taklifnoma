@@ -12,11 +12,30 @@ import { isPreviewContext, submit } from '@core/lib/submit'
  */
 
 type Stage = 'envelope' | 'ask' | 'choose' | 'done'
-type IconName = 'cafe' | 'dinner' | 'cinema' | 'walk' | 'pin' | 'clock'
+type IconName = 'cafe' | 'dinner' | 'cinema' | 'walk' | 'pin' | 'clock' | 'pen'
 
 // Buyurtma formasining jonli preview'i joy bo'sh bo'lsa shu namunani qo'yadi
 const VENUE_PLACEHOLDER = "To'yxona nomi"
 const NO_LABELS = ['Yo‘q', 'Rostdanmi?', 'Yana bir o‘ylab ko‘ring', 'Iltimos…', 'Baribir «ha» bo‘ladi']
+
+const MONTHS = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentabr', 'oktabr', 'noyabr', 'dekabr']
+const WEEKDAYS = ['Yakshanba', 'Dushanba', 'Seshanba', 'Chorshanba', 'Payshanba', 'Juma', 'Shanba']
+const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/
+const pad = (n: number) => String(n).padStart(2, '0')
+const isoOf = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+function dayParts(iso: string) {
+  const [y, m, d] = iso.split('-').map(Number)
+  const dt = new Date(y, m - 1, d)
+  return { week: WEEKDAYS[dt.getDay()], date: `${d}-${MONTHS[m - 1]}` }
+}
+// Uchrashuv turiga qarab joy maydonining namunasi
+const PLACE_HINT: Record<string, string> = {
+  cafe: 'Kafe nomi yoki manzili',
+  dinner: 'Restoran nomi',
+  cinema: 'Kinoteatr nomi',
+  walk: 'Qayerda sayr qilamiz? (park, ko‘cha…)',
+}
+const ROMAN = ['I', 'II', 'III', 'IV']
 
 const cfg = config as typeof config & {
   promo?: { enabled?: boolean; siteUrl?: string }
@@ -54,6 +73,12 @@ const ICON_PATHS: Record<IconName, ReactNode> = {
     <>
       <path d="M12 21s-6.5-5.8-6.5-10.5a6.5 6.5 0 0 1 13 0C18.5 15.2 12 21 12 21Z" />
       <circle cx="12" cy="10.5" r="2.3" />
+    </>
+  ),
+  pen: (
+    <>
+      <path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4Z" />
+      <path d="M13.5 6.5l4 4" />
     </>
   ),
   clock: (
@@ -159,6 +184,37 @@ function Dust({ count = 18 }: { count?: number }) {
   )
 }
 
+function Section({ n, title, children }: { n: number; title: string; children: ReactNode }) {
+  return (
+    <section className="mt-7">
+      <p className="mb-3 flex items-baseline gap-2">
+        <span className="font-display text-[0.95rem] text-gold-dark">{ROMAN[n]}.</span>
+        <span className="oq-caps text-[var(--tpl-card-soft)]">{title}</span>
+      </p>
+      {children}
+    </section>
+  )
+}
+
+function Check() {
+  return (
+    <span className="oq-check">
+      <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M2.5 6.5l2.2 2.2 4.8-5" />
+      </svg>
+    </span>
+  )
+}
+
+function TicketField({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="min-w-0">
+      <p className="oq-caps !text-[0.58rem] text-[var(--tpl-card-soft)]">{label}</p>
+      <p className="mt-1 break-words font-display text-[1.08rem] leading-snug">{value}</p>
+    </div>
+  )
+}
+
 /* ---------------------------------------------------------------- sahifa */
 export default function App() {
   const from = cfg.couple.groom
@@ -166,24 +222,46 @@ export default function App() {
   const message = cfg.blessing.text
   const initial = (from || '✦').trim().charAt(0).toUpperCase()
 
-  const places = useMemo(() => {
-    const own = cfg.venue.name && cfg.venue.name !== VENUE_PLACEHOLDER ? cfg.venue.name : ''
-    const list = cfg.places.map((p) => ({ icon: p.icon as IconName, label: p.label, note: p.note }))
-    return own ? [{ icon: 'pin' as IconName, label: own, note: cfg.venue.address || 'Men tanlagan joy' }, ...list] : list
-  }, [])
+  /* --- taklif qiluvchining tavsiyalari va mehmon tanlovi --- */
+  const kinds = cfg.places.map((p) => ({ icon: p.icon as IconName, label: p.label }))
+  const ownVenue =
+    cfg.venue.name && cfg.venue.name !== VENUE_PLACEHOLDER
+      ? { name: cfg.venue.name, address: cfg.venue.address, map: cfg.venue.googleMapsUrl || cfg.venue.yandexMapsUrl }
+      : null
+
+  const today = useMemo(() => isoOf(new Date()), [])
+  const dates = useMemo(() => {
+    const out: { iso: string; tag: string }[] = []
+    const add = (iso: string, tag: string) => {
+      if (iso >= today && !out.some((d) => d.iso === iso)) out.push({ iso, tag })
+    }
+    add(cfg.event.dateISO.slice(0, 10), 'Taklif qilingan')
+    const d = new Date()
+    d.setDate(d.getDate() + 1)
+    add(isoOf(d), 'Ertaga')
+    for (let i = 0; i < 8 && out.length < 4; i++) {
+      d.setDate(d.getDate() + 1)
+      if (d.getDay() === 6 || d.getDay() === 0) add(isoOf(d), 'Dam olish kuni')
+    }
+    return out.slice(0, 4)
+  }, [today])
 
   const times = useMemo(() => {
-    const items = cfg.timeline.items.filter((t) => t.label || t.time)
-    if (items.length) return items.map((t) => ({ day: t.label, time: t.time }))
-    return [{ day: cfg.event.dateLabel, time: cfg.event.timeLabel }]
+    const list = [cfg.event.timeLabel, ...cfg.timeline.items.map((t) => t.time), '18:00', '19:00', '20:00', '21:00']
+    return [...new Set(list.filter((t) => TIME_RE.test(t || '')))].slice(0, 4)
   }, [])
 
   const [stage, setStage] = useState<Stage>('envelope')
   const [opening, setOpening] = useState(false)
   const [tries, setTries] = useState(0)
   const [noPos, setNoPos] = useState<{ left: number; top: number } | null>(null)
-  const [place, setPlace] = useState(-1)
-  const [time, setTime] = useState(-1)
+  const [kind, setKind] = useState(-1)
+  const [placeMode, setPlaceMode] = useState<'own' | 'custom' | ''>(ownVenue ? '' : 'custom')
+  const [customPlace, setCustomPlace] = useState('')
+  const [date, setDate] = useState('')
+  const [dateCustom, setDateCustom] = useState(false)
+  const [time, setTime] = useState('')
+  const [timeCustom, setTimeCustom] = useState(false)
   const [sending, setSending] = useState(false)
   const [error, setError] = useState('')
   const preview = isPreviewContext()
@@ -195,8 +273,11 @@ export default function App() {
     window.scrollTo({ top: 0 })
   }, [stage])
 
-  const placeLabel = place >= 0 ? places[place].label : ''
-  const timeLabel = time >= 0 ? [times[time].day, times[time].time].filter(Boolean).join(', ') : ''
+  const kindLabel = kind >= 0 ? kinds[kind].label : ''
+  const placeLabel = placeMode === 'own' && ownVenue ? ownVenue.name : placeMode === 'custom' ? customPlace.trim() : ''
+  const dateLabel = date ? (({ week, date: dd }) => `${week}, ${dd}`)(dayParts(date)) : ''
+  const timeLabel = TIME_RE.test(time) ? time : ''
+  const ready = Boolean(kindLabel && placeLabel && dateLabel && timeLabel)
 
   function open() {
     if (opening) return
@@ -225,7 +306,7 @@ export default function App() {
   }
 
   async function send() {
-    if (place < 0 || time < 0 || sending) return
+    if (!ready || sending) return
     setError('')
     if (preview || !cfg.rsvp.enabled) {
       setStage('done')
@@ -238,7 +319,7 @@ export default function App() {
         name: to || 'Mehmon',
         attending: 'keladi',
         guests: 1,
-        comment: `Javob: Ha\nJoy: ${placeLabel}\nVaqt: ${timeLabel}`,
+        comment: `Uchrashuv: ${kindLabel}\nJoy: ${placeLabel}\nSana: ${dateLabel}\nVaqt: ${timeLabel}`,
       })
       setStage('done')
     } catch {
@@ -330,48 +411,141 @@ export default function App() {
 
         {/* ------------------------------------------------ 3. tanlov */}
         {stage === 'choose' && (
-          <div className="oq-card oq-in relative w-full px-8 pb-11 pt-12">
+          <div className="oq-card oq-in relative w-full px-7 pb-11 pt-12">
             <Corners />
             <div className="oq-stagger relative">
               <p className="oq-caps text-center text-gold-dark">Ajoyib</p>
               <h2 className="mt-3 text-center font-display text-[1.7rem] leading-tight">
-                <span className="oq-foil">Oqshomni tanlang</span>
+                <span className="oq-foil">Oqshomni birga rejalaymiz</span>
               </h2>
 
-              <p className="oq-caps mt-6 text-[var(--tpl-card-soft)]">Qayerda?</p>
-              <div className="mt-3 grid gap-2">
-                {places.map((p, i) => (
-                  <button key={p.label} type="button" className="oq-opt" aria-pressed={place === i} onClick={() => setPlace(i)}>
-                    <span className="oq-ico">
-                      <Icon name={p.icon} />
-                    </span>
-                    <span className="min-w-0">
-                      <span className="block truncate font-display text-[1.05rem]">{p.label}</span>
-                      {p.note && <span className="block truncate font-body text-[0.92rem] italic leading-tight text-[var(--tpl-card-soft)]">{p.note}</span>}
-                    </span>
-                    <span className="oq-check">
-                      <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M2.5 6.5l2.2 2.2 4.8-5" />
-                      </svg>
-                    </span>
-                  </button>
-                ))}
-              </div>
+              <Section n={0} title="Qanday uchrashuv?">
+                <div className="grid grid-cols-2 gap-2">
+                  {kinds.map((k, i) => (
+                    <button key={k.label} type="button" className="oq-opt !gap-2.5" aria-pressed={kind === i} onClick={() => setKind(i)}>
+                      <span className="oq-ico !h-8 !w-8">
+                        <Icon name={k.icon} size={18} />
+                      </span>
+                      <span className="font-display text-[0.98rem] leading-tight">{k.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </Section>
 
-              <p className="oq-caps mt-6 text-[var(--tpl-card-soft)]">Qachon?</p>
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                {times.map((t, i) => (
-                  <button key={`${t.day}${t.time}`} type="button" className="oq-opt flex-col !items-start !gap-0.5" aria-pressed={time === i} onClick={() => setTime(i)}>
-                    <span className="oq-caps !text-[0.6rem] text-[var(--tpl-card-soft)]">{t.day}</span>
-                    <span className="font-display text-[1.5rem] leading-none">{t.time}</span>
-                  </button>
-                ))}
-              </div>
+              <Section n={1} title="Qayerda?">
+                <div className="grid gap-2">
+                  {ownVenue && (
+                    <button type="button" className="oq-opt" aria-pressed={placeMode === 'own'} onClick={() => setPlaceMode('own')}>
+                      <span className="oq-ico">
+                        <Icon name="pin" />
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block truncate font-display text-[1.02rem]">{ownVenue.name}</span>
+                        <span className="block truncate font-body text-[0.92rem] italic leading-tight text-[var(--tpl-card-soft)]">
+                          {ownVenue.address || `${from || 'U'} tanlagan joy`}
+                        </span>
+                      </span>
+                      <Check />
+                    </button>
+                  )}
+                  {ownVenue && (
+                    <button type="button" className="oq-opt" aria-pressed={placeMode === 'custom'} onClick={() => setPlaceMode('custom')}>
+                      <span className="oq-ico">
+                        <Icon name="pen" />
+                      </span>
+                      <span className="font-display text-[1.02rem]">Boshqa joy taklif qilaman</span>
+                      <Check />
+                    </button>
+                  )}
+                  {placeMode === 'custom' && (
+                    <input
+                      className="oq-input"
+                      value={customPlace}
+                      maxLength={80}
+                      autoFocus={Boolean(ownVenue)}
+                      onChange={(e) => setCustomPlace(e.target.value)}
+                      placeholder={PLACE_HINT[kinds[kind]?.icon] ?? 'Joy nomi yoki manzili'}
+                    />
+                  )}
+                </div>
+              </Section>
 
-              <div className="mt-7 text-center">
-                <button type="button" className="oq-yes" disabled={place < 0 || time < 0 || sending} onClick={send}>
-                  {sending ? 'Yuborilmoqda…' : 'Taklifni qabul qilaman'}
+              <Section n={2} title="Qaysi kuni?">
+                <div className="grid grid-cols-2 gap-2">
+                  {dates.map((d) => {
+                    const p = dayParts(d.iso)
+                    return (
+                      <button
+                        key={d.iso}
+                        type="button"
+                        className="oq-opt flex-col !items-start !gap-0.5"
+                        aria-pressed={!dateCustom && date === d.iso}
+                        onClick={() => {
+                          setDateCustom(false)
+                          setDate(d.iso)
+                        }}
+                      >
+                        <span className="oq-caps !text-[0.56rem] !tracking-[0.22em] text-[var(--tpl-card-soft)]">{d.tag}</span>
+                        <span className="font-display text-[1.1rem] leading-tight">{p.date}</span>
+                        <span className="font-body text-[0.92rem] italic leading-none text-[var(--tpl-card-soft)]">{p.week}</span>
+                      </button>
+                    )
+                  })}
+                  <button
+                    type="button"
+                    className="oq-opt col-span-2 justify-center"
+                    aria-pressed={dateCustom}
+                    onClick={() => {
+                      setDateCustom(true)
+                      setDate('')
+                    }}
+                  >
+                    <span className="font-display text-[0.98rem]">Boshqa kun</span>
+                  </button>
+                  {dateCustom && (
+                    <input type="date" className="oq-input col-span-2" min={today} value={date} onChange={(e) => setDate(e.target.value)} />
+                  )}
+                </div>
+              </Section>
+
+              <Section n={3} title="Soat nechada?">
+                <div className="grid grid-cols-4 gap-2">
+                  {times.map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      className="oq-opt justify-center !px-1"
+                      aria-pressed={!timeCustom && time === t}
+                      onClick={() => {
+                        setTimeCustom(false)
+                        setTime(t)
+                      }}
+                    >
+                      <span className="font-display text-[1.05rem]">{t}</span>
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    className="oq-opt col-span-4 justify-center"
+                    aria-pressed={timeCustom}
+                    onClick={() => {
+                      setTimeCustom(true)
+                      setTime('')
+                    }}
+                  >
+                    <span className="font-display text-[0.98rem]">Boshqa vaqt</span>
+                  </button>
+                  {timeCustom && <input type="time" className="oq-input col-span-4" value={time} onChange={(e) => setTime(e.target.value)} />}
+                </div>
+              </Section>
+
+              <div className="mt-8 text-center">
+                <button type="button" className="oq-yes" disabled={!ready || sending} onClick={send}>
+                  {sending ? 'Yuborilmoqda…' : 'Javobni yuborish'}
                 </button>
+                {!ready && (
+                  <p className="mt-3 font-body text-[0.98rem] italic text-[var(--tpl-card-soft)]">Turi, joy, kun va vaqtni tanlang</p>
+                )}
                 {error && <p className="mt-3 font-body text-base italic text-wine">{error}</p>}
               </div>
             </div>
@@ -390,16 +564,17 @@ export default function App() {
                   {to}
                 </span>
               </h2>
-              <div className="mt-7 grid grid-cols-2 gap-4 text-left">
-                <div>
-                  <p className="oq-caps !text-[0.58rem] text-[var(--tpl-card-soft)]">Joy</p>
-                  <p className="mt-1 font-display text-[1.1rem] leading-snug">{placeLabel}</p>
-                </div>
-                <div>
-                  <p className="oq-caps !text-[0.58rem] text-[var(--tpl-card-soft)]">Vaqt</p>
-                  <p className="mt-1 font-display text-[1.1rem] leading-snug">{timeLabel}</p>
-                </div>
+              <div className="mt-7 grid grid-cols-2 gap-x-4 gap-y-5 text-left">
+                <TicketField label="Uchrashuv" value={kindLabel} />
+                <TicketField label="Joy" value={placeLabel} />
+                <TicketField label="Sana" value={dateLabel} />
+                <TicketField label="Vaqt" value={timeLabel} />
               </div>
+              {placeMode === 'own' && ownVenue?.map && (
+                <a href={ownVenue.map} target="_blank" rel="noopener" className="oq-caps mt-6 inline-block text-gold-dark underline-offset-4 hover:underline">
+                  Xaritada ochish →
+                </a>
+              )}
             </div>
             <div className="oq-tk-stub flex items-center gap-4 px-8 py-6">
               <Seal letter={initial} size={58} />

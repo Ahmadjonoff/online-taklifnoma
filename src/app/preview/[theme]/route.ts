@@ -98,13 +98,7 @@ const THEME_DEMO: Record<string, Record<string, unknown>> = {
       text: "Har bir kun siz bilan yanada mazmunli bo'lishiga ishonaman. Birga vaqt o'tkazsak, men uchun katta baxt bo'lardi.",
       greeting: "",
     },
-    timeline: {
-      title: "Qachon?",
-      items: [
-        { time: "18:00", label: "Shanba" },
-        { time: "16:00", label: "Yakshanba" },
-      ],
-    },
+    timeline: { title: "", items: [] },
     venue: { ...DEMO.venue, name: "" },
     footer: { title: "", signature: "Jasur" },
   },

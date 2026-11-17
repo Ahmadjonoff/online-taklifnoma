@@ -6,9 +6,10 @@
  *    couple.groom  — taklif qiluvchi (formadagi «Ism 1»)
  *    couple.bride  — taklif qilinuvchi (formadagi «Ism 2»)
  *    blessing.text — maktub matni
- *    venue.name    — taklif qilinayotgan joy (birinchi variant bo'lib chiqadi)
- *    timeline      — «Qachon?» variantlari: { time, label } → «label, time»
- *    event         — variantlar bo'lmasa: sana va vaqt
+ *    venue         — taklif qiluvchi tavsiya qilgan joy (birinchi variant; xarita havolasi bilan)
+ *    event         — taklif qiluvchi tavsiya qilgan sana va vaqt (birinchi variantlar)
+ *    timeline      — qo'shimcha vaqt variantlari (faqat `time`)
+ *  Mehmon «Ha» degach: uchrashuv turi, joy, sana va vaqtni tanlaydi (yoki o'zi yozadi).
  * ==========================================================================*/
 
 export const config = {
@@ -28,12 +29,10 @@ export const config = {
     text: "Har bir kun siz bilan yanada mazmunli bo'lishiga ishonaman. Birga vaqt o'tkazsak, men uchun katta baxt bo'lardi.",
     greeting: '',
   },
+  /** Taklif qiluvchi qo'shimcha vaqt variantlari bersa (buyurtmadagi dastur) — faqat `time` olinadi */
   timeline: {
-    title: 'Qachon?',
-    items: [
-      { time: '18:00', label: 'Shanba' },
-      { time: '16:00', label: 'Yakshanba' },
-    ] as { time: string; label: string }[],
+    title: '',
+    items: [] as { time: string; label: string }[],
   },
   venue: {
     title: 'Qayerga?',
@@ -42,7 +41,7 @@ export const config = {
     googleMapsUrl: '',
     yandexMapsUrl: '',
   },
-  /** Joy variantlari — mijoz joy yozsa, u birinchi bo'lib qo'shiladi. */
+  /** Uchrashuv turlari — mehmon «Ha» degach birini tanlaydi */
   places: [
     { icon: 'cafe', label: 'Kafe', note: 'Qahva va suhbat' },
     { icon: 'dinner', label: 'Kechki ovqat', note: 'Shinam restoranda' },

@@ -298,7 +298,7 @@ function GuestResponses({
             <li key={r.id} className="flex items-start justify-between gap-3 py-3 text-sm">
               <div className="min-w-0">
                 <p className="font-medium text-stone-900">{r.guestName}</p>
-                {r.comment && <p className="mt-0.5 text-stone-500">{r.comment}</p>}
+                {r.comment && <p className="mt-0.5 whitespace-pre-line text-stone-500">{r.comment}</p>}
                 <p className="mt-0.5 text-xs text-stone-400">{dateFmt.format(r.createdAt)}</p>
               </div>
               <span

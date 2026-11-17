@@ -46,6 +46,9 @@ export async function GET(req: Request) {
 // taklifnomani to'ldirib tashlamasin. Bir IP uchun daqiqasiga 20 ta (mobil
 // operatorlarda ko'p mehmon bitta IP ortida — CGNAT), shu
 // taklifnomaga esa (IP'dan qat'i nazar) soatiga 300 ta yozuv.
+/** «Uchrashuvga taklif» — javobi botga uchrashuv tafsilotlari bilan boradi */
+const DATE_INVITE_THEME = "uchrashuv-taklif";
+
 const IP_LIMIT = 20;
 const IP_WINDOW_MS = 60_000;
 const INVITATION_LIMIT = 300;
@@ -72,7 +75,10 @@ export async function POST(req: Request) {
 
     const invitation = await prisma.invitation.findUnique({
       where: { slug },
-      include: { order: { select: { status: true, notifyChatId: true, accessToken: true } } },
+      include: {
+        order: { select: { status: true, notifyChatId: true, accessToken: true } },
+        template: { select: { theme: true } },
+      },
     });
 
     if (!invitation || invitation.order.status !== "PAID") {
@@ -99,7 +105,8 @@ export async function POST(req: Request) {
       const chatId = invitation.order.notifyChatId;
       if (!chatId) return;
       const pageUrl = `${new URL(req.url).origin}/buyurtma/${invitation.order.accessToken}`;
-      after(() => notifyCustomerResponse(chatId, { invitationTitle: invitation.title, name: v.name, pageUrl, ...r }));
+      const dateInvite = invitation.template.theme === DATE_INVITE_THEME;
+      after(() => notifyCustomerResponse(chatId, { invitationTitle: invitation.title, name: v.name, pageUrl, dateInvite, ...r }));
     };
 
     if (v.kind === "rsvp") {

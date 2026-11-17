@@ -190,10 +190,40 @@ export function getBotUsername(): Promise<string> {
 }
 
 /** Mijozga: yangi RSVP yoki tilak (u botga /start bosgan bo'lsa) */
+/**
+ * «Uchrashuvga taklif» javobi: shablon izohni «Uchrashuv: …\nJoy: …\nSana: …\nVaqt: …»
+ * ko'rinishida yuboradi — bot har qatorga belgi qo'yib, o'qilishi oson xabar qiladi.
+ */
+export function dateInviteReply(name: string, text: string, pageUrl: string): string {
+  const ICON: Record<string, string> = { Uchrashuv: "✨", Joy: "📍", Sana: "📅", Vaqt: "🕐" };
+  const lines = text
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .map((l) => {
+      const key = l.split(":", 1)[0];
+      return ICON[key] ? `${ICON[key]} ${l}` : l;
+    });
+  return [`💌 ${name} taklifingizga «HA» dedi!`, "", ...lines, "", `📋 Barcha javoblar: ${pageUrl}`].join("\n");
+}
+
 export function notifyCustomerResponse(
   chatId: string,
-  r: { invitationTitle: string; kind: "rsvp" | "wish"; name: string; attending?: boolean; guests?: number; text?: string; pageUrl: string }
+  r: {
+    invitationTitle: string;
+    kind: "rsvp" | "wish";
+    name: string;
+    attending?: boolean;
+    guests?: number;
+    text?: string;
+    pageUrl: string;
+    /** «Uchrashuvga taklif» shabloni: javob — tanlangan uchrashuv tafsilotlari */
+    dateInvite?: boolean;
+  }
 ): Promise<boolean> {
+  if (r.kind === "rsvp" && r.dateInvite) {
+    return sendWithRetry(dateInviteReply(r.name, r.text ?? "", r.pageUrl), chatId, BOT_TOKEN);
+  }
   const head =
     r.kind === "rsvp"
       ? r.attending

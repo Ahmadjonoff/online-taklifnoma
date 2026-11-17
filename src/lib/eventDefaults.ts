@@ -74,11 +74,9 @@ export function defaultTimeline(eventType: string): TimelineItem[] {
       { time: "19:00", label: "Dasturxon" },
       { time: "20:30", label: "Qo'shiqlar va raqslar" },
     ],
-    // Uchrashuvga taklif: kun tartibi emas — «Qachon?» variantlari (kun, vaqt)
-    uchrashuv: [
-      { time: "18:00", label: "Shanba" },
-      { time: "16:00", label: "Yakshanba" },
-    ],
+    // Uchrashuvga taklif: kun tartibi yo'q — mehmon sana va vaqtni o'zi tanlaydi
+    // (taklif qiluvchining sanasi/vaqti birinchi variant bo'lib chiqadi)
+    uchrashuv: [],
   };
   return T[eventType] ?? T.toy;
 }
