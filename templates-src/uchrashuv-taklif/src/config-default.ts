@@ -21,7 +21,7 @@ export const config = {
     dateISO: '2026-12-19T18:00:00',
     dateLabel: '19.12.2026',
     timeLabel: '18:00',
-    kicker: 'Uchrashuvga taklif',
+    kicker: 'Shaxsiy taklif',
   },
   blessing: {
     lines: [] as string[],
@@ -44,10 +44,10 @@ export const config = {
   },
   /** Joy variantlari — mijoz joy yozsa, u birinchi bo'lib qo'shiladi. */
   places: [
-    { emoji: '☕', label: 'Kafe' },
-    { emoji: '🍽️', label: 'Restoran' },
-    { emoji: '🎬', label: 'Kino' },
-    { emoji: '🌳', label: 'Sayr' },
+    { icon: 'cafe', label: 'Kafe', note: 'Qahva va suhbat' },
+    { icon: 'dinner', label: 'Kechki ovqat', note: 'Shinam restoranda' },
+    { icon: 'cinema', label: 'Kino', note: 'Yangi film premyerasi' },
+    { icon: 'walk', label: 'Oqshom sayri', note: 'Shahar chiroqlari ostida' },
   ],
   rsvp: { enabled: true },
   music: { enabled: false, src: '' },

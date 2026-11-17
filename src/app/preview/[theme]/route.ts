@@ -92,7 +92,7 @@ const DEMO = {
 const THEME_DEMO: Record<string, Record<string, unknown>> = {
   "uchrashuv-taklif": {
     couple: { groom: "Jasur", bride: "Madina", monogram: "J&M" },
-    event: { ...DEMO.event, kicker: "Uchrashuvga taklif" },
+    event: { ...DEMO.event, kicker: "Shaxsiy taklif" },
     blessing: {
       lines: [],
       text: "Har bir kun siz bilan yanada mazmunli bo'lishiga ishonaman. Birga vaqt o'tkazsak, men uchun katta baxt bo'lardi.",
