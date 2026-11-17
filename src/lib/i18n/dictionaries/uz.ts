@@ -334,6 +334,18 @@ export const uz = {
     venueAddressPlaceholder: "Toshkent, Chilonzor 5-kvartal",
     message: "Taklifnoma matni",
     messagePlaceholder: "Sizni to'yimizda ko'rishdan baxtiyor bo'lamiz!",
+    /** «Uchrashuvga taklif» tadbir turi tanlanganda maydon nomlari shu bilan almashadi */
+    dateInvite: {
+      name1: "Sizning ismingiz *",
+      name1Placeholder: "Jasur",
+      name2: "Kimni taklif qilasiz?",
+      name2Placeholder: "Madina",
+      date: "Taxminiy sana *",
+      venueName: "Joy *",
+      venueNamePlaceholder: "Masalan: «Bon» kafesi",
+      message: "Maktub matni",
+      messagePlaceholder: "Birga vaqt o'tkazsak, men uchun katta baxt bo'lardi.",
+    },
     submit: "Buyurtmani yuborish",
     submitting: "Yuborilmoqda...",
     noPaymentTitle: "To'lovni amalga oshirish uchun Telegram orqali yozing",

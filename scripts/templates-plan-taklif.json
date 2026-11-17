@@ -5,6 +5,12 @@
       "name": "Qiz bazmi",
       "emoji": "💃",
       "order": 11
+    },
+    {
+      "slug": "uchrashuv",
+      "name": "Uchrashuvga taklif",
+      "emoji": "💌",
+      "order": 12
     }
   ],
   "templates": [
@@ -244,6 +250,22 @@
         "yubiley",
         "bayramlar",
         "biznes"
+      ]
+    },
+    {
+      "slug": "uchrashuv-taklif",
+      "name": "Uchrashuvga taklif",
+      "base": "uchrashuv-taklif",
+      "eventType": "uchrashuv",
+      "palette": "uchrashuv-taklif",
+      "typo": "classic",
+      "desc": "Sevgan insoningizga: muhrli konvert, maktub, qochadigan «Yo‘q» tugmasi, joy va vaqt tanlash — javob Telegramingizga keladi",
+      "price": 19000,
+      "emoji": "💌",
+      "kicker": "Uchrashuvga taklif",
+      "tier": "standard",
+      "categories": [
+        "uchrashuv"
       ]
     }
   ]

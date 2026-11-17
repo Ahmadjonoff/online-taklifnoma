@@ -1670,5 +1670,61 @@
     "--tpl-satin": "#FAFAF2"
    }
   }
+ ],
+ "uchrashuv-taklif": [
+  {
+   "id": "uchrashuv-taklif",
+   "name": "Pushti",
+   "vars": {
+    "--color-paper": "#FDF2F4",
+    "--color-paper-2": "#F9E1E6",
+    "--color-paper-3": "#F1C9D2",
+    "--color-gold": "#C2577A",
+    "--color-gold-light": "#EEB3C5",
+    "--color-gold-dark": "#8E3253",
+    "--color-ink": "#4A2433",
+    "--color-ink-soft": "#85606E",
+    "--color-wine": "#D63A72",
+    "--color-wine-dark": "#A8255A",
+    "--color-sage": "#b9a6c9",
+    "--color-blush": "#FBE3EA"
+   }
+  },
+  {
+   "id": "uchrashuv-taklif-2",
+   "name": "Lavanda",
+   "vars": {
+    "--color-paper": "#F5F2FB",
+    "--color-paper-2": "#E9E2F6",
+    "--color-paper-3": "#D9CDEE",
+    "--color-gold": "#7D5BB5",
+    "--color-gold-light": "#C7B5E6",
+    "--color-gold-dark": "#4F3580",
+    "--color-ink": "#2E2442",
+    "--color-ink-soft": "#6A5F80",
+    "--color-wine": "#8C5BD6",
+    "--color-wine-dark": "#6239A8",
+    "--color-sage": "#b9a6c9",
+    "--color-blush": "#ECE4F8"
+   }
+  },
+  {
+   "id": "uchrashuv-taklif-3",
+   "name": "Tungi",
+   "vars": {
+    "--color-paper": "#1C1420",
+    "--color-paper-2": "#271B2C",
+    "--color-paper-3": "#33233A",
+    "--color-gold": "#E7A3BD",
+    "--color-gold-light": "#F3C9D8",
+    "--color-gold-dark": "#B9708C",
+    "--color-ink": "#F6E9EE",
+    "--color-ink-soft": "#CBB4BF",
+    "--color-wine": "#E2557F",
+    "--color-wine-dark": "#B23561",
+    "--color-sage": "#b9a6c9",
+    "--color-blush": "#3A2633"
+   }
+  }
  ]
 }

@@ -113,6 +113,8 @@ export function OrderForm({
   const [palette, setPalette] = useState(palettes[0]?.id ?? "");
   const [colors, setColors] = useState<MainColors>(palettes[0]?.main ?? { paper: "", gold: "", wine: "" });
   const [eventType, setEventType] = useState(initialCategory?.slug ?? "");
+  // «Uchrashuvga taklif»: «Ism 1/2», «Joy», «Taklifnoma matni» o'rniga mos nomlar
+  const f = eventType === "uchrashuv" ? { ...o, ...o.dateInvite } : o;
   const [kicker, setKicker] = useState(initialCategory?.name ?? "");
   const [timeline, setTimeline] = useState<TimelineItem[]>(initialCategory?.timeline ?? []);
   // Mijoz o'zi tahrirlagan bo'lsa — tadbir turini almashtirganda ustidan yozmaymiz
@@ -671,30 +673,30 @@ export function OrderForm({
             <div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className={labelClass}>{o.name1}</label>
+                  <label className={labelClass}>{f.name1}</label>
                   <input
                     required
                     value={partner1}
                     maxLength={CONTENT_LIMITS.partner}
                     onChange={(e) => setPartner1(e.target.value)}
                     className={inputClass}
-                    placeholder={o.name1Placeholder}
+                    placeholder={f.name1Placeholder}
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>{o.name2}</label>
+                  <label className={labelClass}>{f.name2}</label>
                   <input
                     value={partner2}
                     maxLength={CONTENT_LIMITS.partner}
                     onChange={(e) => setPartner2(e.target.value)}
                     className={inputClass}
-                    placeholder={o.name2Placeholder}
+                    placeholder={f.name2Placeholder}
                   />
                 </div>
               </div>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className={labelClass}>{o.date}</label>
+                  <label className={labelClass}>{f.date}</label>
                   <input
                     required
                     type="date"
@@ -716,14 +718,14 @@ export function OrderForm({
                 </div>
               </div>
               <div className="mt-4">
-                <label className={labelClass}>{o.venueName}</label>
+                <label className={labelClass}>{f.venueName}</label>
                 <input
                   required
                   value={venueName}
                   maxLength={CONTENT_LIMITS.venueName}
                   onChange={(e) => setVenueName(e.target.value)}
                   className={inputClass}
-                  placeholder={o.venueNamePlaceholder}
+                  placeholder={f.venueNamePlaceholder}
                 />
               </div>
               <div className="mt-4">
@@ -786,14 +788,14 @@ export function OrderForm({
                 </div>
               )}
               <div className="mt-4">
-                <label className={labelClass}>{o.message}</label>
+                <label className={labelClass}>{f.message}</label>
                 <textarea
                   value={message}
                   maxLength={CONTENT_LIMITS.message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={3}
                   className={inputClass}
-                  placeholder={o.messagePlaceholder}
+                  placeholder={f.messagePlaceholder}
                 />
               </div>
 

@@ -74,6 +74,11 @@ export function defaultTimeline(eventType: string): TimelineItem[] {
       { time: "19:00", label: "Dasturxon" },
       { time: "20:30", label: "Qo'shiqlar va raqslar" },
     ],
+    // Uchrashuvga taklif: kun tartibi emas — «Qachon?» variantlari (kun, vaqt)
+    uchrashuv: [
+      { time: "18:00", label: "Shanba" },
+      { time: "16:00", label: "Yakshanba" },
+    ],
   };
   return T[eventType] ?? T.toy;
 }
@@ -99,6 +104,7 @@ export function defaultNotes(eventType: string): NoteItem[] {
     ],
     oilaviy: [{ title: "Kutamiz", text: "Oilangiz bilan keling" }],
     "qiz-bazmi": [{ title: "An'ana", text: "Kina marosimida milliy liboslar kutiladi" }],
+    uchrashuv: [],
   };
   return N[eventType] ?? N.toy;
 }

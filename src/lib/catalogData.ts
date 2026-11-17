@@ -48,7 +48,8 @@ export const getCatalog = unstable_cache(
   // v4: 2026-10 narxlari (79/149/249 ming) — bazadagi Template.price ham ko'chirilgan
   // v5: 3D shablonlar qo'shildi — deploy'dan keyin katalog darhol yangilansin
   // v6: Darvoza, Parda, Konvert 3D shablonlari
-  ["catalog-v6"],
+  // v7: «Uchrashuvga taklif» shabloni va tadbir turi
+  ["catalog-v7"],
   // revalidate: katalog faqat seed orqali o'zgaradi — soatiga bir marta
   // yangilash yetarli (har 5 daqiqada uxlab yotgan Neon'ni uyg'otmaymiz)
   { tags: [CATALOG_TAG], revalidate: 3600 }

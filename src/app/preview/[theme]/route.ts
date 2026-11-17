@@ -88,6 +88,28 @@ const DEMO = {
   promo: INVITATION_PROMO,
 };
 
+/** To'y bo'lmagan shablonlar uchun o'z namunasi (DEMO ustiga qo'yiladi) */
+const THEME_DEMO: Record<string, Record<string, unknown>> = {
+  "uchrashuv-taklif": {
+    couple: { groom: "Jasur", bride: "Madina", monogram: "J&M" },
+    event: { ...DEMO.event, kicker: "Uchrashuvga taklif" },
+    blessing: {
+      lines: [],
+      text: "Har bir kun siz bilan yanada mazmunli bo'lishiga ishonaman. Birga vaqt o'tkazsak, men uchun katta baxt bo'lardi.",
+      greeting: "",
+    },
+    timeline: {
+      title: "Qachon?",
+      items: [
+        { time: "18:00", label: "Shanba" },
+        { time: "16:00", label: "Yakshanba" },
+      ],
+    },
+    venue: { ...DEMO.venue, name: "" },
+    footer: { title: "", signature: "Jasur" },
+  },
+};
+
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ theme: string }> }
@@ -112,7 +134,7 @@ export async function GET(
   // ?draft=... — buyurtma formasidagi jonli preview: mijoz kiritgan
   // ma'lumotlar tayyor taklifnoma bilan bir xil yo'l bilan config'ga
   // aylantiriladi (tekshiruv + buildInvitationConfig).
-  let config = DEMO as Record<string, unknown>;
+  let config = { ...DEMO, ...THEME_DEMO[theme] } as Record<string, unknown>;
   let paletteStyle = "";
   const url = new URL(req.url);
   const draftParam = url.searchParams.get("draft");
@@ -126,7 +148,7 @@ export async function GET(
   } else if (url.searchParams.get("thumb") === "1") {
     // Katalog kartasidagi kichik ko'rinish: gulbarg animatsiyasi o'chiriladi
     // (o'nlab karta bir vaqtda animatsiya qilsa telefon qiynaladi)
-    config = { ...DEMO, petals: { enabled: false, count: 0 } };
+    config = { ...config, petals: { enabled: false, count: 0 } };
   }
 
   // ?static=1 — bosh sahifa va katalogdagi ko'rinish: shablon rasmdek qotib
