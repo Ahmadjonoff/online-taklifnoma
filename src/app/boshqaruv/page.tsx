@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { OrderActions } from "@/components/OrderActions";
+import { ResponsesLink } from "@/components/ResponsesLink";
 import { customizationSummary, parseStoredCustomization } from "@/lib/customization";
 import { musicTrack } from "@/lib/music";
 import { tierLabel } from "@/lib/catalog";
@@ -240,6 +241,9 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
                         QR yuklab olish
                       </a>
                     </div>
+                  )}
+                  {order.status === "PAID" && order.invitation && (
+                    <ResponsesLink token={order.accessToken} title={order.invitation.title} />
                   )}
                 </div>
               </div>
