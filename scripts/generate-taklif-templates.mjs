@@ -1003,6 +1003,16 @@ svg {
   color: transparent;
 }
 
+/* Skript shriftlarning dumlari (z, g, l ...) gradient matn chegarasidan chiqib kesilmasin */
+@layer components {
+  .text-gilded {
+    padding: 0.12em 0.3em 0.3em;
+    margin: -0.12em -0.3em -0.3em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+}
+
 .tracking-wider-caps {
   letter-spacing: 0.28em;
   text-transform: uppercase;

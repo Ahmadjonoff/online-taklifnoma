@@ -349,6 +349,17 @@ for (const t of plan.templates) {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: none; }
 }
+
+/* Skript shriftlarning dumlari (z, g, l ...) gradient matn chegarasidan chiqib kesilmasin:
+   bo'yoq maydonini kengaytirib, joylashuvni manfiy margin bilan qaytaramiz. */
+@layer components {
+  .text-gilded {
+    padding: 0.12em 0.3em 0.3em;
+    margin: -0.12em -0.3em -0.3em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+}
 `;
 
   fs.writeFileSync(path.join(destDir, "src", "index.css"), css);
